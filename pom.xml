@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2020 RedHat
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>35</version>
+    </parent>
+
+    <groupId>org.wildfly.extension.vertx</groupId>
+    <artifactId>vertx-subsystem</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>WildFly Vertx Subsystem</name>
+
+    <packaging>jar</packaging>
+
+    <properties>
+        <!-- WildFly versions -->
+        <version.wildfly>20.0.1.Final</version.wildfly>
+        <version.wildfly.arquillian>2.2.0.Final</version.wildfly.arquillian>
+
+        <version.vertx>4.0.0-SNAPSHOT</version.vertx>
+        <version.junit>4.11</version.junit>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <module.name>org.wildfly.extension.vertx</module.name>
+        <temp.file>tempfiles</temp.file>
+
+        <jboss.home></jboss.home>
+        <org.jboss.model.test.cache.root>[pom.xml,testsuite]</org.jboss.model.test.cache.root>
+        <org.jboss.model.test.classpath.cache>target/model-test-classpath-cache</org.jboss.model.test.classpath.cache>
+
+        <!-- properties for maven-surefile-plugin -->
+        <!-- Modularized JDK support (various workarounds) - activated via profile -->
+        <modular.jdk.args></modular.jdk.args>
+        <modular.jdk.props></modular.jdk.props>
+        <!-- Surefire args -->
+        <surefire.extra.args></surefire.extra.args>
+        <surefire.jpda.args></surefire.jpda.args>
+        <surefire.system.args>${modular.jdk.args} ${modular.jdk.props} -ea -Duser.region=US -Duser.language=en -XX:MaxMetaspaceSize=512m ${surefire.jpda.args} ${surefire.extra.args}</surefire.system.args>
+        <surefire.logmanager>org.jboss.logmanager.LogManager</surefire.logmanager>
+        <surefire.redirect.tofile>true</surefire.redirect.tofile>
+        <surefire.enable.assert>true</surefire.enable.assert>
+    </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/gaol/wildfly-vertx-extension.git</connection>
+        <developerConnection>scm:git:https://github.com/gaol/wildfly-vertx-extension.git</developerConnection>
+        <url>https://github.com/gaol/wildfly-vertx-extension/</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-parent</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${version.wildfly}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-stack-depchain</artifactId>
+                <type>pom</type>
+                <scope>import</scope>
+                <version>${version.vertx}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-subsystem-test</artifactId>
+                <type>pom</type>
+                <scope>test</scope>
+                <version>${version.wildfly}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+                <version>${version.junit}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-controller</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-server</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-naming</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-weld-common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.msc</groupId>
+            <artifactId>jboss-msc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly.core</groupId>
+            <artifactId>wildfly-subsystem-test</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>${surefire.redirect.tofile}</redirectTestOutputToFile>
+                    <enableAssertions>${surefire.enable.assert}</enableAssertions>
+                    <systemProperties>
+                        <property>
+                            <name>java.util.logging.manager</name>
+                            <value>${surefire.logmanager}</value>
+                        </property>
+                    </systemProperties>
+                    <argLine>${surefire.system.args}</argLine>
+                </configuration>
+            </plugin>
+            <!--plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <filters>
+                        <filter>src/assemble/filter.properties</filter>
+                    </filters>
+                    <descriptors>
+                        <descriptor>src/assemble/distribution.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <inherited>false</inherited>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>build-dist</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <!-- Replace the '.' in ${module.name} with '/' to get its path  -->
+                                <tempfile property="temp.file" />
+                                <echo message="${module.name}" file="${temp.file}" />
+                                <replace file="${temp.file}" token="." value="/" />
+                                <loadfile srcfile="${temp.file}" property="module.path" />
+                                <delete file="${temp.file}" />
+
+                                <delete dir="target/module" />
+                                <property name="module.dir" value="target/module/${module.path}/main" />
+
+                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" />
+                                <copy file="target/${project.artifactId}-${project.version}.jar" todir="${module.dir}" />
+
+                                <echo>Module ${module.name} has been created in the target/module directory. Copy to your WildFly installation.</echo>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>jdk9</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <modular.jdk.args>--add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+                    --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED
+                    --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
+                    --add-modules=java.se</modular.jdk.args>
+            </properties>
+        </profile>
+        <profile>
+            <id>jpda</id>
+            <activation>
+                <property>
+                    <name>jpda</name>
+                </property>
+            </activation>
+            <properties>
+                <surefire.jpda.args>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</surefire.jpda.args>
+            </properties>
+        </profile>
+    </profiles>
+</project>

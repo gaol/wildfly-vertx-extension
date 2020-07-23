@@ -213,13 +213,14 @@
                                 <replace file="${temp.file}" token="." value="/" />
                                 <loadfile srcfile="${temp.file}" property="module.path" />
                                 <delete file="${temp.file}" />
-
                                 <delete dir="target/module" />
                                 <property name="module.dir" value="target/module/${module.path}/main" />
-
-                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" />
+                                <filter token="project.artifactId" value="${project.artifactId}"/>
+                                <filter token="project.version" value="${project.version}"/>
+                                <filter token="version.vertx" value="${version.vertx}"/>
+                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" filtering="true" />
                                 <copy file="target/${project.artifactId}-${project.version}.jar" todir="${module.dir}" />
-
+                                <copy file="${settings.localRepository}/io/vertx/vertx-core/${version.vertx}/vertx-core-${version.vertx}.jar" todir="${module.dir}" />
                                 <echo>Module ${module.name} has been created in the target/module directory. Copy to your WildFly installation.</echo>
                             </target>
                         </configuration>

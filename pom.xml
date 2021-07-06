@@ -22,12 +22,12 @@
     </parent>
 
     <groupId>org.wildfly.extension.vertx</groupId>
-    <artifactId>vertx-subsystem</artifactId>
+    <artifactId>vertx-extension-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
-    <name>WildFly Vertx Subsystem</name>
+    <name>WildFly Vertx Extension - POM</name>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <!-- WildFly versions -->
@@ -71,6 +71,11 @@
         </license>
     </licenses>
 
+    <modules>
+        <module>subsystem</module>
+        <module>examples</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -95,6 +100,11 @@
                 <version>${version.wildfly}</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <scope>test</scope>
@@ -103,84 +113,8 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-controller</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-server</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-naming</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-weld-common</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.msc</groupId>
-            <artifactId>jboss-msc</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging-annotations</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging-processor</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-core</artifactId>
-            <version>${version.vertx}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wildfly.core</groupId>
-            <artifactId>wildfly-subsystem-test</artifactId>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                </configuration>
-            </plugin>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -196,45 +130,8 @@
                     <argLine>${surefire.system.args}</argLine>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>build-dist</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <!-- Replace the '.' in ${module.name} with '/' to get its path  -->
-                                <tempfile property="temp.file" />
-                                <echo message="${module.name}" file="${temp.file}" />
-                                <replace file="${temp.file}" token="." value="/" />
-                                <loadfile srcfile="${temp.file}" property="module.path" />
-                                <delete file="${temp.file}" />
-                                <delete dir="target/module" />
-                                <property name="module.dir" value="target/module/${module.path}/main" />
-                                <filter token="project.artifactId" value="${project.artifactId}"/>
-                                <filter token="project.version" value="${project.version}"/>
-                                <filter token="version.vertx" value="${version.vertx}"/>
-                                <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" filtering="true" />
-                                <copy file="target/${project.artifactId}-${project.version}.jar" todir="${module.dir}" />
-                                <copy file="${settings.localRepository}/io/vertx/vertx-core/${version.vertx}/vertx-core-${version.vertx}.jar" todir="${module.dir}" />
-                                <echo>Module ${module.name} has been created in the target/module directory. Copy to your WildFly installation.</echo>
-                                <zip basedir="target/module/" destfile="target/${project.artifactId}-module.zip" />
-                                <echo>Please unzip target/${project.artifactId}-module.zip to your WildFly installation.</echo>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-
 
     <profiles>
         <profile>

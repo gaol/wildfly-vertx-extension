@@ -31,11 +31,11 @@
 
     <properties>
         <!-- WildFly versions -->
-        <version.wildfly>20.0.1.Final</version.wildfly>
-        <version.wildfly.arquillian>2.2.0.Final</version.wildfly.arquillian>
-
-        <version.vertx>4.0.0-SNAPSHOT</version.vertx>
+        <version.wildfly>24.0.0.Final</version.wildfly>
+        <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
+        <version.vertx>4.1.1</version.vertx>
         <version.junit>4.11</version.junit>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <module.name>org.wildfly.extension.vertx</module.name>
         <temp.file>tempfiles</temp.file>
@@ -70,7 +70,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
 
     <dependencyManagement>
         <dependencies>
@@ -128,10 +127,12 @@
         <dependency>
             <groupId>org.jboss.msc</groupId>
             <artifactId>jboss-msc</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
@@ -149,6 +150,12 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
+            <version>${version.vertx}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
         </dependency>
 
         <dependency>
@@ -166,6 +173,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+            </plugin>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -181,18 +196,6 @@
                     <argLine>${surefire.system.args}</argLine>
                 </configuration>
             </plugin>
-            <!--plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <filters>
-                        <filter>src/assemble/filter.properties</filter>
-                    </filters>
-                    <descriptors>
-                        <descriptor>src/assemble/distribution.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -222,6 +225,8 @@
                                 <copy file="target/${project.artifactId}-${project.version}.jar" todir="${module.dir}" />
                                 <copy file="${settings.localRepository}/io/vertx/vertx-core/${version.vertx}/vertx-core-${version.vertx}.jar" todir="${module.dir}" />
                                 <echo>Module ${module.name} has been created in the target/module directory. Copy to your WildFly installation.</echo>
+                                <zip basedir="target/module/" destfile="target/${project.artifactId}-module.zip" />
+                                <echo>Please unzip target/${project.artifactId}-module.zip to your WildFly installation.</echo>
                             </target>
                         </configuration>
                     </execution>

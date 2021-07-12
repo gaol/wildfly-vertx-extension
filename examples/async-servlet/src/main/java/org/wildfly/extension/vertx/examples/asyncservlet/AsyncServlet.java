@@ -17,6 +17,7 @@
 package org.wildfly.extension.vertx.examples.asyncservlet;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.MessageConsumer;
 
 import javax.annotation.Resource;
 import javax.servlet.AsyncContext;
@@ -36,12 +37,28 @@ import java.io.PrintWriter;
 @WebServlet(value = "/async", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
-    @Resource(name = "default-vertx")
+    @Resource(name = "java:/vertx/default")
     private Vertx vertx;
+
+    private MessageConsumer<String> consumer;
+
+    @Override
+    public void init() throws ServletException {
+        consumer = vertx.eventBus()
+                .<String>consumer("echo")
+                .handler(msg -> msg.reply(msg.body()));
+    }
+
+    @Override
+    public void destroy() {
+        if (consumer != null) {
+            consumer.unregister();
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String message = req.getParameter("message") == null || req.getParameter("message") == "" ? "Ni Hao" : req.getParameter("message");
+        String message = req.getParameter("message") == null || req.getParameter("message").length() == 0 ? "Ni Hao" : req.getParameter("message");
         final AsyncContext asyncContext = req.startAsync();
         vertx.eventBus()
                 .request("echo", "Hello from Servlet: " + message)

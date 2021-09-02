@@ -46,6 +46,21 @@
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-clustering-service</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-clustering-infinispan-spi</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-clustering-infinispan-extension</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
             <artifactId>wildfly-weld-common</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -75,9 +90,24 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>${version.vertx}</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-infinispan</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-multimap</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-clustered-lock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-clustered-counter</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
@@ -131,9 +161,14 @@
                                 <filter token="project.artifactId" value="${project.artifactId}"/>
                                 <filter token="project.version" value="${project.version}"/>
                                 <filter token="version.vertx" value="${version.vertx}"/>
+                                <filter token="version.infinispan" value="${version.infinispan}"/>
                                 <copy file="src/main/resources/module/main/module.xml" tofile="${module.dir}/module.xml" filtering="true" />
                                 <copy file="target/${project.artifactId}-${project.version}.jar" todir="${module.dir}" />
                                 <copy file="${settings.localRepository}/io/vertx/vertx-core/${version.vertx}/vertx-core-${version.vertx}.jar" todir="${module.dir}" />
+                                <copy file="${settings.localRepository}/io/vertx/vertx-infinispan/${version.vertx}/vertx-infinispan-${version.vertx}.jar" todir="${module.dir}" />
+                                <copy file="${settings.localRepository}/org/infinispan/infinispan-multimap/${version.infinispan}/infinispan-multimap-${version.infinispan}.jar" todir="${module.dir}" />
+                                <copy file="${settings.localRepository}/org/infinispan/infinispan-clustered-lock/${version.infinispan}/infinispan-clustered-lock-${version.infinispan}.jar" todir="${module.dir}" />
+                                <copy file="${settings.localRepository}/org/infinispan/infinispan-clustered-counter/${version.infinispan}/infinispan-clustered-counter-${version.infinispan}.jar" todir="${module.dir}" />
                                 <echo>Module ${module.name} has been created in the target/module directory. Copy to your WildFly installation.</echo>
                                 <zip basedir="target/module/" destfile="target/${project.artifactId}-module.zip" />
                                 <echo>Please unzip target/${project.artifactId}-module.zip to your WildFly installation.</echo>

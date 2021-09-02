@@ -31,7 +31,8 @@
 
     <properties>
         <!-- WildFly versions -->
-        <version.wildfly>24.0.0.Final</version.wildfly>
+        <version.wildfly>24.0.1.Final</version.wildfly>
+        <version.infinispan>12.1.6.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.1.1</version.vertx>
         <version.junit>4.13.1</version.junit>
@@ -98,6 +99,21 @@
                 <type>pom</type>
                 <scope>test</scope>
                 <version>${version.wildfly}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-multimap</artifactId>
+                <version>${version.infinispan}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-clustered-lock</artifactId>
+                <version>${version.infinispan}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-clustered-counter</artifactId>
+                <version>${version.infinispan}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

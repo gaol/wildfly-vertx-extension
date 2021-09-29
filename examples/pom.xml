@@ -28,6 +28,10 @@
 
     <packaging>pom</packaging>
 
+    <build>
+        <finalName>${project.artifactId}</finalName>
+    </build>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -41,6 +45,7 @@
     </dependencyManagement>
     <modules>
         <module>async-servlet</module>
+        <module>ejb</module>
     </modules>
 
 </project>

@@ -14,7 +14,7 @@
  *  implied.  See the License for the specific language governing
  *  permissions and limitations under the License.
  */
-package org.wildfly.extension.vertx.examples.asyncservlet;
+package org.wildfly.extension.vertx.examples.ejb;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
@@ -45,7 +45,7 @@ public class AsyncServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         consumer = vertx.eventBus()
-                .<String>consumer("echo")
+                .<String>localConsumer("echo")
                 .handler(msg -> msg.reply(msg.body()));
     }
 

@@ -22,7 +22,7 @@
     </parent>
 
     <groupId>org.wildfly.extension.vertx</groupId>
-    <artifactId>vertx-extension-pom</artifactId>
+    <artifactId>wildfly-vertx-extension-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <name>WildFly Vertx Extension - POM</name>
@@ -32,6 +32,8 @@
     <properties>
         <!-- WildFly versions -->
         <version.wildfly>24.0.1.Final</version.wildfly>
+        <version.org.wildfly.core>16.0.1.Final</version.org.wildfly.core>
+        <version.org.wildfly.common>1.5.2.Final</version.org.wildfly.common>
         <version.infinispan>12.1.6.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.1.1</version.vertx>
@@ -56,6 +58,18 @@
         <surefire.logmanager>org.jboss.logmanager.LogManager</surefire.logmanager>
         <surefire.redirect.tofile>true</surefire.redirect.tofile>
         <surefire.enable.assert>true</surefire.enable.assert>
+        <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
+        <version.org.wildfly.galleon.plugin>5.2.6.Final</version.org.wildfly.galleon.plugin>
+
+        <!-- Galleon -->
+        <galleon.fork.embedded>true</galleon.fork.embedded>
+        <galleon.log.time>true</galleon.log.time>
+        <galleon.offline>false</galleon.offline>
+        <assembly.tarLongFileMode>posix</assembly.tarLongFileMode>
+
+        <!-- Release Information -->
+        <full.dist.product.release.name>WildFly Vertx Extension</full.dist.product.release.name>
+        <full.dist.product.release.version>${project.version}</full.dist.product.release.version>
     </properties>
 
     <scm>
@@ -74,6 +88,8 @@
 
     <modules>
         <module>subsystem</module>
+        <module>galleon-feature-pack</module>
+        <module>dist</module>
         <module>examples</module>
     </modules>
 
@@ -94,13 +110,6 @@
                 <version>${version.vertx}</version>
             </dependency>
             <dependency>
-                <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-subsystem-test</artifactId>
-                <type>pom</type>
-                <scope>test</scope>
-                <version>${version.wildfly}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-multimap</artifactId>
                 <version>${version.infinispan}</version>
@@ -115,10 +124,48 @@
                 <artifactId>infinispan-clustered-counter</artifactId>
                 <version>${version.infinispan}</version>
             </dependency>
+
+            <!-- Project own artifacts dependencies -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
+                <artifactId>wildfly-vertx-extension</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wildfly-vertx-distribution-pom</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wildfly-vertx-feature-pack</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wildfly-vertx-dist</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wildfly-vertx-feature-pack</artifactId>
+                <type>pom</type>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>wildfly-vertx-feature-pack</artifactId>
+                <type>zip</type>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Test Dependencies -->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-subsystem-test</artifactId>
+                <type>pom</type>
+                <scope>test</scope>
+                <version>${version.wildfly}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -130,6 +177,32 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jboss.galleon</groupId>
+                    <artifactId>galleon-maven-plugin</artifactId>
+                    <version>${version.org.jboss.galleon}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.galleon-plugins</groupId>
+                    <artifactId>wildfly-galleon-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.galleon.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.wildfly.core</groupId>
+                            <artifactId>wildfly-embedded</artifactId>
+                            <version>${version.org.wildfly.core}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.wildfly.common</groupId>
+                            <artifactId>wildfly-common</artifactId>
+                            <version>${version.org.wildfly.common}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

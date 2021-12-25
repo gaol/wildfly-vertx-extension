@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<layer-spec xmlns="urn:jboss:galleon:layer-spec:1.0" name="vertx-ha">
+    <dependencies>
+        <layer name="core-server" />
+        <layer name="naming"/>
+    </dependencies>
+
+    <feature-group name="standalone-vertx-ha"/>
+    <feature-group name="vertx-jgroups-sockets"/>
+    <feature-group name="vertx-jgroups-stack"/>
+
+</layer-spec>

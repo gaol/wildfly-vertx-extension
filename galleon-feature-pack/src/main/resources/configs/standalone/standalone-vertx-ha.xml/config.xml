@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<config xmlns="urn:jboss:galleon:config:1.0" name="standalone-vertx-ha.xml" model="standalone">
+    <layers>
+        <include name="cloud-server"/>
+        <include name="vertx-ha" />
+        <include name="web-clustering"/>
+    </layers>
+
+    <feature-group name="distributable-web-local"/>
+<!--    <feature-group name="infinispan-local-web"/>-->
+    <packages>
+        <!-- The distributable-web subsystem doesn't assume undertow,
+             and undertow subsystem doesn't assume clustering, but the
+             combination requires the clustering<->undertow integration package -->
+        <package name="org.wildfly.clustering.web.undertow"/>
+    </packages>
+</config>

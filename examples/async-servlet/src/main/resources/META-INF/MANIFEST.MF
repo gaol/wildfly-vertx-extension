@@ -1,1 +1,1 @@
-Dependencies: org.wildfly.extension.vertx
+Dependencies: org.wildfly.extension.vertx, io.vertx.core

@@ -34,7 +34,7 @@
         <version.wildfly>24.0.1.Final</version.wildfly>
         <version.org.wildfly.core>16.0.1.Final</version.org.wildfly.core>
         <version.org.wildfly.common>1.5.2.Final</version.org.wildfly.common>
-        <version.infinispan>12.1.6.Final</version.infinispan>
+        <version.infinispan>12.1.4.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.1.1</version.vertx>
         <version.junit>4.13.1</version.junit>
@@ -86,13 +86,6 @@
         </license>
     </licenses>
 
-    <modules>
-        <module>subsystem</module>
-        <module>galleon-feature-pack</module>
-        <module>dist</module>
-        <module>examples</module>
-    </modules>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -104,9 +97,14 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
-                <artifactId>vertx-stack-depchain</artifactId>
+                <artifactId>vertx-dependencies</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
+                <version>${version.vertx}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-core</artifactId>
                 <version>${version.vertx}</version>
             </dependency>
             <dependency>
@@ -175,6 +173,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <modules>
+        <module>subsystem</module>
+        <module>galleon-feature-pack</module>
+        <module>dist</module>
+        <module>examples</module>
+    </modules>
 
     <build>
         <pluginManagement>

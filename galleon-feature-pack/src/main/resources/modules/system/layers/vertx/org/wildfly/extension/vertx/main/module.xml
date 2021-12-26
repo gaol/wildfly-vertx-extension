@@ -31,7 +31,7 @@
 
         <module name="io.vertx.core" />
         <module name="org.wildfly.clustering.jgroups.spi" optional="true" />
-        <module name="io.vertx.infinispan" optional="true" export="true" />
+        <module name="io.vertx.infinispan" optional="true" export="true" services="export" />
         <module name="org.infinispan" optional="true" />
         <module name="org.jgroups" optional="true" />
         <module name="io.vertx.ext.modules" optional="true" />

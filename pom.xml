@@ -66,6 +66,8 @@
         <galleon.log.time>true</galleon.log.time>
         <galleon.offline>false</galleon.offline>
         <assembly.tarLongFileMode>posix</assembly.tarLongFileMode>
+        <server.output.dir.prefix>wildfly</server.output.dir.prefix>
+        <server.output.dir.version>${project.version}</server.output.dir.version>
 
         <!-- Release Information -->
         <full.dist.product.release.name>WildFly Vertx Extension</full.dist.product.release.name>

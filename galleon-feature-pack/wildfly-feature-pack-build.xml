@@ -18,14 +18,11 @@
         <dependency group-id="org.wildfly" artifact-id="wildfly-ee-galleon-pack">
             <name>org.wildfly:wildfly-ee-galleon-pack</name>
             <packages inherit="false">
-<!--                <exclude name="docs.licenses.merge"/>-->
                 <include name="docs"/>
-                <!-- appclient is not referenced from standalone nor domain configuration models.-->
+                <exclude name="docs.examples" />
                 <include name="appclient"/>
                 <include name="bin"/>
-<!--                <include name="JBossEULA.txt"/>-->
                 <include name="product.conf"/>
-<!--                <include name="version.txt"/>-->
             </packages>
             <default-configs inherit="false">
                 <exclude name="standalone.xml" model="standalone"/>
@@ -38,9 +35,9 @@
     </dependencies>
     <default-packages>
         <package name="modules.all"/>
-<!--        <package name="docs.licenses.merge"/>-->
+        <package name="docs.licenses.merge"/>
         <package name="layers.conf"/>
-<!--        <package name="docs.examples"/>-->
+        <package name="docs.examples"/>
     </default-packages>
     <package-schemas>
         <group name="org.jboss.as"/>

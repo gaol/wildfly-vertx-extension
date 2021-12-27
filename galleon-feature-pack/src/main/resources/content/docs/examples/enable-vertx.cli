@@ -1,0 +1,19 @@
+# This CLI script allows to enable Vertx for the standalone configurations.
+# By default, standalone.xml is updated.
+# Run it from JBOSS_HOME as:
+# bin/jboss-cli.sh --file=docs/examples/enable-vertx.cli [-Dconfig=<standalone-full.xml|standalone-ha.xml|standalone-full-ha.xml>]
+
+embed-server --server-config=${config:standalone.xml}
+
+echo INFO: Updating configuration to enable Vert.x
+
+if (outcome != success) of /subsystem=vertx:read-resource
+  /extension=org.wildfly.extension.vertx:add
+  /subsystem=vertx:add
+else
+  echo INFO: vertx already in configuration, subsystem not added.
+end-if
+
+echo INFO: Configuration done.
+
+stop-embedded-server

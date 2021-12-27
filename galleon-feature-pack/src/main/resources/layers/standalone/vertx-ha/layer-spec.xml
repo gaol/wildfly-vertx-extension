@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <layer-spec xmlns="urn:jboss:galleon:layer-spec:1.0" name="vertx-ha">
     <dependencies>
-        <layer name="core-server" />
+        <layer name="undertow" />
         <layer name="naming"/>
     </dependencies>
 

@@ -17,7 +17,8 @@
     </resources>
 
     <dependencies>
-        <module name="javax.api" />
+        <module name="java.logging"/>
+<!--        <module name="javax.api" />-->
         <module name="javax.transaction.api" />
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.modules"/>
@@ -35,5 +36,6 @@
         <module name="org.infinispan" optional="true" />
         <module name="org.jgroups" optional="true" />
         <module name="io.vertx.ext.modules" optional="true" />
+        <module name="org.slf4j" optional="true"/>
     </dependencies>
 </module>

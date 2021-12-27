@@ -57,6 +57,8 @@
     <config name="standalone-load-balancer.xml" model="standalone"/>
     <config name="standalone-vertx.xml" model="standalone"/>
     <config name="standalone-vertx-ha.xml" model="standalone"/>
+    <config name="standalone-vertx-full-ha.xml" model="standalone"/>
+    <config name="standalone-vertx-mini.xml" model="standalone"/>
 
     <plugins>
         <plugin artifact="org.wildfly.galleon-plugins:wildfly-galleon-plugins"/>

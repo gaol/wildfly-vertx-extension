@@ -18,7 +18,7 @@
         <dependency group-id="org.wildfly" artifact-id="wildfly-ee-galleon-pack">
             <name>org.wildfly:wildfly-ee-galleon-pack</name>
             <packages inherit="false">
-                <!--exclude name="docs.licenses.merge"/-->
+<!--                <exclude name="docs.licenses.merge"/>-->
                 <include name="docs"/>
                 <!-- appclient is not referenced from standalone nor domain configuration models.-->
                 <include name="appclient"/>
@@ -28,11 +28,11 @@
 <!--                <include name="version.txt"/>-->
             </packages>
             <default-configs inherit="false">
-                <include name="standalone.xml" model="standalone"/>
-                <include name="standalone-ha.xml" model="standalone"/>
-                <include name="standalone-full.xml" model="standalone"/>
-                <include name="standalone-full-ha.xml" model="standalone"/>
-                <include name="standalone-load-balancer.xml" model="standalone"/>
+                <exclude name="standalone.xml" model="standalone"/>
+                <exclude name="standalone-ha.xml" model="standalone"/>
+                <exclude name="standalone-full.xml" model="standalone"/>
+                <exclude name="standalone-full-ha.xml" model="standalone"/>
+                <exclude name="standalone-load-balancer.xml" model="standalone"/>
             </default-configs>
         </dependency>
     </dependencies>
@@ -50,11 +50,6 @@
         <group name="org.wildfly.security"/>
     </package-schemas>
 
-    <config name="standalone.xml" model="standalone"/>
-    <config name="standalone-ha.xml" model="standalone"/>
-    <config name="standalone-full.xml" model="standalone"/>
-    <config name="standalone-full-ha.xml" model="standalone"/>
-    <config name="standalone-load-balancer.xml" model="standalone"/>
     <config name="standalone-vertx.xml" model="standalone"/>
     <config name="standalone-vertx-ha.xml" model="standalone"/>
     <config name="standalone-vertx-full-ha.xml" model="standalone"/>

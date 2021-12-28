@@ -179,6 +179,7 @@
     <modules>
         <module>subsystem</module>
         <module>galleon-feature-pack</module>
+        <module>build</module>
         <module>dist</module>
         <module>examples</module>
     </modules>

@@ -56,6 +56,10 @@
         <surefire.jpda.args></surefire.jpda.args>
         <surefire.system.args>${modular.jdk.args} ${modular.jdk.props} -ea -Duser.region=US -Duser.language=en -XX:MaxMetaspaceSize=512m ${surefire.jpda.args} ${surefire.extra.args}</surefire.system.args>
         <surefire.logmanager>org.jboss.logmanager.LogManager</surefire.logmanager>
+        <!-- Arquillian dependency versions -->
+        <version.arquillian_wildfly>${project.parent.version}</version.arquillian_wildfly>
+        <thin.server.path>build/target/wildfly-vertx-build-${project.version}</thin.server.path>
+
         <surefire.redirect.tofile>true</surefire.redirect.tofile>
         <surefire.enable.assert>true</surefire.enable.assert>
         <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
@@ -96,6 +100,12 @@
                 <type>pom</type>
                 <scope>import</scope>
                 <version>${version.wildfly}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.core</groupId>
+                <artifactId>wildfly-core-testsuite-shared</artifactId>
+                <version>${version.org.wildfly.core}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
@@ -181,6 +191,7 @@
         <module>galleon-feature-pack</module>
         <module>build</module>
         <module>dist</module>
+        <module>testsuite</module>
         <module>examples</module>
     </modules>
 
@@ -211,23 +222,6 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-        <plugins>
-           <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <redirectTestOutputToFile>${surefire.redirect.tofile}</redirectTestOutputToFile>
-                    <enableAssertions>${surefire.enable.assert}</enableAssertions>
-                    <systemProperties>
-                        <property>
-                            <name>java.util.logging.manager</name>
-                            <value>${surefire.logmanager}</value>
-                        </property>
-                    </systemProperties>
-                    <argLine>${surefire.system.args}</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
     <profiles>

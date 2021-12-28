@@ -18,7 +18,6 @@
 
     <dependencies>
         <module name="java.logging"/>
-<!--        <module name="javax.api" />-->
         <module name="javax.transaction.api" />
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.modules"/>
@@ -30,7 +29,7 @@
         <module name="org.jboss.as.server"/>
         <module name="org.wildfly.security.manager" />
 
-        <module name="io.vertx.core" />
+        <module name="io.vertx.core" export="true" />
         <module name="org.wildfly.clustering.jgroups.spi" optional="true" />
         <module name="io.vertx.infinispan" optional="true" export="true" services="export" />
         <module name="org.infinispan" optional="true" />

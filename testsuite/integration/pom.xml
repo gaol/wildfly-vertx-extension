@@ -122,4 +122,17 @@
             </plugins>
         </pluginManagement>
     </build>
+    <profiles>
+        <profile>
+            <id>server.debug</id>
+            <activation>
+                <property>
+                    <name>server.debug</name>
+                </property>
+            </activation>
+            <properties>
+                <extra.server.jvm.args>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</extra.server.jvm.args>
+            </properties>
+        </profile>
+    </profiles>
 </project>

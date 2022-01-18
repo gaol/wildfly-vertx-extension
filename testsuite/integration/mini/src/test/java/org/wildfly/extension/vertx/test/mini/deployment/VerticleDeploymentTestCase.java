@@ -45,7 +45,7 @@ public class VerticleDeploymentTestCase {
     @ArquillianResource
     private URL url;
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive<?> deployment() {
         return ShrinkWrap.create(WebArchive.class, "test-verticle.war")
                 .addAsWebInfResource("vertx-deployment.json")

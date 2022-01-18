@@ -39,7 +39,7 @@ import java.io.PrintWriter;
 @WebServlet(value = "/file-access", asyncSupported = true)
 public class FileAccessServelt extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(name = "java:/vertx/vertx-test")
     private Vertx vertx;
 
     @Override

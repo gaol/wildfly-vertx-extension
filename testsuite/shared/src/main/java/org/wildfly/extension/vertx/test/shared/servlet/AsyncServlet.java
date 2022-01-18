@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.ExecutionException;
 
 /**
  * AsyncServlet which requests a response from `echo` Vert.x EventBus address.
@@ -52,7 +53,12 @@ public class AsyncServlet extends HttpServlet {
     @Override
     public void destroy() {
         if (consumer != null) {
-            consumer.unregister();
+            try {
+                consumer.unregister().toCompletionStage().toCompletableFuture().get();
+                consumer = null;
+            } catch (Exception e) {
+                ; //ignore
+            }
         }
     }
 

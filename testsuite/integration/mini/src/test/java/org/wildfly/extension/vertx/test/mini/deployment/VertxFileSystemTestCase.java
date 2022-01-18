@@ -22,6 +22,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.vertx.test.shared.StreamUtils;
+import org.wildfly.extension.vertx.test.shared.VertxSetupTaskBase;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -41,13 +43,14 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
+@ServerSetup(VertxSetupTaskBase.class)
 @RunAsClient
 public class VertxFileSystemTestCase {
 
     @ArquillianResource
     private URL url;
 
-    @Deployment(testable = false)
+    @Deployment
     public static Archive<?> deployment() {
         WebArchive web = ShrinkWrap.create(WebArchive.class, "test-vertx-filesystem.war")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "vertx-deployment.json")
@@ -58,11 +61,12 @@ public class VertxFileSystemTestCase {
     }
 
     @Test
-    public void testEchoAsyncServlet() throws Exception {
+    public void testFileAccess() throws Exception {
         String res = HttpRequest.get( url.toExternalForm() + "file-access", 10, TimeUnit.SECONDS);
         JsonObject json = new JsonObject(res);
         Assert.assertEquals("Beijing", json.getJsonObject("geo.json").getString("location"));
         Assert.assertEquals("2022", json.getJsonObject("config").getString("covid.year.vanish"));
+        Assert.assertNull(json.getValue("error"));
     }
 
 }

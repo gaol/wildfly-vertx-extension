@@ -1,0 +1,10 @@
+{
+  "ver": 1,
+  "deployments": [
+    {
+      "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.multiple.ResourceAccessVerticle",
+      "vertx": "default",
+      "deploy-options": {}
+    }
+  ]
+}

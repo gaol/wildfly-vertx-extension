@@ -96,6 +96,9 @@
         <!-- Don't try to deploy the testsuite modules because they don't build jars -->
         <maven.deploy.skip>true</maven.deploy.skip>
 
+        <!-- If containers based tests are mandatory to run -->
+        <container.tests.mandatory>true</container.tests.mandatory>
+
     </properties>
 
     <dependencyManagement>

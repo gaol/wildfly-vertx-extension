@@ -95,6 +95,12 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-auth-properties</artifactId>
         </dependency>
+
+        <!-- clients -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-redis-client</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

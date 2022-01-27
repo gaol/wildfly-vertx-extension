@@ -50,6 +50,11 @@
             <groupId>org.wildfly.extension.vertx</groupId>
             <artifactId>wildfly-vertx-extension-testsuite-shared</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

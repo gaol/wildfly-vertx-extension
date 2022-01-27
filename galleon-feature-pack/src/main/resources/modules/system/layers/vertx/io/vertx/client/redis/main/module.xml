@@ -22,25 +22,18 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.9" name="io.vertx.auth">
+<module xmlns="urn:jboss:module:1.9" name="io.vertx.client.redis">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
     <resources>
-        <artifact name="${io.vertx:vertx-auth-common}"/>
-        <artifact name="${io.vertx:vertx-auth-htdigest}"/>
-        <artifact name="${io.vertx:vertx-auth-htpasswd}"/>
-        <artifact name="${io.vertx:vertx-auth-jwt}"/>
-        <artifact name="${io.vertx:vertx-auth-ldap}"/>
-        <artifact name="${io.vertx:vertx-auth-oauth2}"/>
-        <artifact name="${io.vertx:vertx-auth-properties}"/>
+        <artifact name="${io.vertx:vertx-redis-client}"/>
     </resources>
 
     <dependencies>
         <module name="java.logging"/>
         <module name="io.vertx.core" />
-        <module name="org.apache.commons.codec" />
         <module name="org.slf4j" />
     </dependencies>
 </module>

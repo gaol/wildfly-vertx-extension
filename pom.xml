@@ -38,6 +38,7 @@
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.2.4</version.vertx>
         <version.junit>4.13.1</version.junit>
+        <version.testcontainer>1.16.0</version.testcontainer>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <module.name>org.wildfly.extension.vertx</module.name>
@@ -182,6 +183,12 @@
                 <artifactId>junit</artifactId>
                 <scope>test</scope>
                 <version>${version.junit}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainer}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

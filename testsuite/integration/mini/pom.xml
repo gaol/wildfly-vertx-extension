@@ -38,6 +38,7 @@
     </properties>
 
     <dependencies>
+        <!-- Auth -->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-auth-common</artifactId>
@@ -71,6 +72,13 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-auth-properties</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Clients -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-redis-client</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

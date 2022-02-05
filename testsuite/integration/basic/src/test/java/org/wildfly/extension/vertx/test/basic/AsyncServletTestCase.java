@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +48,6 @@ public class AsyncServletTestCase {
     public static WebArchive createDeployment() {
         final WebArchive war = ShrinkWrap.create(WebArchive.class, "async-servlet-basic.war");
         war.addClass(AsyncServlet.class);
-        war.addAsManifestResource(new StringAsset("Dependencies: org.wildfly.extension.vertx\n"), "MANIFEST.MF");
         return war;
     }
 

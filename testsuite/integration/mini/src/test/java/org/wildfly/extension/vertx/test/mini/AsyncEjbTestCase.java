@@ -22,7 +22,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +29,6 @@ import org.junit.runner.RunWith;
 import org.wildfly.extension.vertx.test.shared.ejb.EchoService;
 import org.wildfly.extension.vertx.test.shared.rest.RestApp;
 import org.wildfly.extension.vertx.test.shared.rest.ServiceEndpoint;
-import org.wildfly.extension.vertx.test.shared.servlet.AsyncServlet;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +49,6 @@ public class AsyncEjbTestCase {
     public static WebArchive createDeployment() {
         final WebArchive war = ShrinkWrap.create(WebArchive.class, "async-ejb-mini.war");
         war.addClasses(EchoService.class, RestApp.class, ServiceEndpoint.class);
-        war.addAsManifestResource(new StringAsset("Dependencies: org.wildfly.extension.vertx\n"), "MANIFEST.MF");
         return war;
     }
 

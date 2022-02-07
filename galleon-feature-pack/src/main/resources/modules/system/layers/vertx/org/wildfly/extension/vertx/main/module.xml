@@ -32,6 +32,8 @@
         <module name="org.jboss.as.naming" />
         <module name="org.jboss.as.server"/>
         <module name="org.wildfly.security.manager" />
+        <module name="org.jboss.weld.core"/>
+        <module name="org.jboss.as.weld.common" optional="true"/>
 
         <module name="io.vertx.core" export="true" services="import" />
         <module name="org.wildfly.clustering.jgroups.spi" optional="true" />

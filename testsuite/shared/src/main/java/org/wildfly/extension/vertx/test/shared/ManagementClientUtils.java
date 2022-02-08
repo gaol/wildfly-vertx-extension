@@ -62,9 +62,7 @@ public final class ManagementClientUtils {
     }
 
     public static ModelNode addVertxOperation(String name) {
-        final ModelNode operation = vertxOperationBase(name, ADD);
-        operation.get("clustered").set(false);
-        return operation;
+        return vertxOperationBase(name, ADD);
     }
 
     public static ModelNode removeVertxOperation(String name) {

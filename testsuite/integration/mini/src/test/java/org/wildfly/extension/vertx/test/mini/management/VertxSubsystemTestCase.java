@@ -159,4 +159,16 @@ public class VertxSubsystemTestCase {
         Assert.assertEquals(DEFAULT_JNDI_PREFIX + "default", v1.get("jndi-name").asString());
     }
 
+    @Test
+    public void testAddVertxWithAlias() throws IOException {
+        final String vertxName = "vertx-with-alias";
+        ModelNode operation = addVertxOperation(vertxName);
+        operation.get("alias").add("vertx");// alias with 'vertx' is the default alias defined already
+        ModelNode response = executeOperation(managementClient, operation, false);
+        System.out.println("========================\n");
+        System.out.println(response.asString());
+        System.out.println("\n=====================\n");
+        Assert.assertTrue(response.asString().contains("Alias vertx has been used already in Vertx: default"));
+    }
+
 }

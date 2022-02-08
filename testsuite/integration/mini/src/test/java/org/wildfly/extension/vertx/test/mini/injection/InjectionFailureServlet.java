@@ -14,28 +14,21 @@
  *  implied.  See the License for the specific language governing
  *  permissions and limitations under the License.
  */
-package org.wildfly.extension.vertx.deployment;
+package org.wildfly.extension.vertx.test.mini.injection;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+
+import io.vertx.core.Vertx;
 
 /**
- * CDI Extension which adds the ability to inject the Vertx instances by the member name.
- *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
-public class CDIExtension implements Extension {
+@WebServlet(value = "/failure")
+public class InjectionFailureServlet extends HttpServlet {
 
-    public CDIExtension() {
-    }
-
-    @SuppressWarnings("unused")
-    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        AnnotatedType<VertxProducer> producer = bm.createAnnotatedType(VertxProducer.class);
-        bbd.addAnnotatedType(producer, null);
-    }
+  @Inject
+  private Vertx not_A_Alias;
 
 }

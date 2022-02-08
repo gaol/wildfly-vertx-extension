@@ -82,15 +82,25 @@ public final class ManagementClientUtils {
 
     public static ModelNode executeOperation(final ManagementClient managementClient, final ModelNode operation)
             throws IOException {
+        return executeOperation(managementClient, operation, true);
+    }
+
+    public static ModelNode executeOperation(final ManagementClient managementClient, final ModelNode operation, boolean exceptionOnFailure)
+      throws IOException {
         final ModelNode result = managementClient.getControllerClient().execute(operation);
         if (result.hasDefined(ClientConstants.OUTCOME) && ClientConstants.SUCCESS.equals(
-                result.get(ClientConstants.OUTCOME).asString())) {
+          result.get(ClientConstants.OUTCOME).asString())) {
             return result;
         } else if (result.hasDefined(ClientConstants.FAILURE_DESCRIPTION)) {
             final String failureDesc = result.get(ClientConstants.FAILURE_DESCRIPTION).toString();
-            throw new RuntimeException(failureDesc);
+            if (exceptionOnFailure) {
+                throw new RuntimeException(failureDesc);
+            } else {
+                return result.get(ClientConstants.FAILURE_DESCRIPTION);
+            }
         } else {
             throw new RuntimeException("Operation not successful; outcome = " + result.get(ClientConstants.OUTCOME));
         }
     }
+
 }

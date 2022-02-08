@@ -4,6 +4,7 @@
     <feature spec="subsystem.vertx">
         <feature spec="subsystem.vertx.vertx">
             <param name="vertx" value="default" />
+            <param name="alias" value="[vertx]" />
             <param name="clustered" value="false" />
         </feature>
     </feature>

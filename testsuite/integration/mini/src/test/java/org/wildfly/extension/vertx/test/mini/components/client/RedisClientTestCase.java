@@ -56,7 +56,6 @@ public class RedisClientTestCase extends ContainerBasedTestCase {
             redis = new GenericContainer<>("docker.io/library/redis:6.0.6")
                     .withExposedPorts(6379);
             redis.start();
-            System.out.println(redis.getContainerIpAddress() + " :::  " + redis.getFirstMappedPort());
         }
 
         @Override

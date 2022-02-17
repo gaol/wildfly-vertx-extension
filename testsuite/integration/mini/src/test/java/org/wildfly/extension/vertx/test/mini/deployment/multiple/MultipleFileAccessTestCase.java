@@ -57,7 +57,6 @@ public class MultipleFileAccessTestCase {
 
     private static URL packageResURL(String res) {
         String path = MultipleFileAccessTestCase.class.getPackage().getName().replace(".", "/") + "/" + res;
-        System.out.println("path used for deployment: " + path);
         return MultipleFileAccessTestCase.class.getClassLoader().getResource(path);
     }
 

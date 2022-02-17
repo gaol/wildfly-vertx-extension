@@ -38,6 +38,7 @@
         <package name="docs.licenses.merge"/>
         <package name="layers.conf"/>
         <package name="docs.examples"/>
+        <package name="default-vertx-options.json"/>
     </default-packages>
     <package-schemas>
         <group name="org.jboss.as"/>

@@ -9,8 +9,8 @@
             <param name="jgroups-channel" value="vertx" />
             <param name="option-name" value="clustered" />
         </feature>
-        <feature spec="subsystem.vertx.vertx-options-file">
-            <param name="vertx-options-file" value="clustered" />
+        <feature spec="subsystem.vertx.vertx-option-file">
+            <param name="vertx-option-file" value="clustered" />
             <param name="path" value="default-vertx-options.json" />
         </feature>
     </feature>

@@ -1,9 +1,15 @@
 <?xml version="1.0" ?>
 <layer-spec xmlns="urn:jboss:galleon:layer-spec:1.0" name="vertx">
     <dependencies>
-        <layer name="undertow" />
+        <layer name="cdi"/>
         <layer name="naming"/>
     </dependencies>
 
     <feature-group name="standalone-vertx"/>
+
+    <packages>
+        <package name="org.wildfly.extension.vertx" />
+        <package name="default-vertx-options.json" />
+    </packages>
+
 </layer-spec>

@@ -3,9 +3,8 @@
 <config xmlns="urn:jboss:galleon:config:1.0" name="standalone-vertx-mini.xml" model="standalone">
     <feature-group name="standalone-minimalistic"/>
     <layers>
-        <include name="cdi" />
+        <include name="ejb-lite" />
         <include name="jaxrs-server" />
-        <include name="ejb-http-invoker" />
         <include name="vertx" />
     </layers>
 

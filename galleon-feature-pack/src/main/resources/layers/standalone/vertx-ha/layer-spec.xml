@@ -1,12 +1,20 @@
 <?xml version="1.0" ?>
 <layer-spec xmlns="urn:jboss:galleon:layer-spec:1.0" name="vertx-ha">
     <dependencies>
-        <layer name="undertow" />
+        <layer name="cdi"/>
         <layer name="naming"/>
     </dependencies>
 
-    <feature-group name="standalone-vertx-ha"/>
+    <feature-group name="private-interface"/>
     <feature-group name="vertx-jgroups-sockets"/>
     <feature-group name="vertx-jgroups-stack"/>
-
+    <feature-group name="standalone-vertx-ha"/>
+    <packages>
+        <package name="org.wildfly.extension.vertx" />
+        <package name="default-vertx-options.json" />
+        <package name="io.vertx.infinispan" />
+        <package name="org.wildfly.clustering.jgroups.spi" />
+        <package name="org.infinispan" />
+        <package name="org.jgroups" />
+    </packages>
 </layer-spec>

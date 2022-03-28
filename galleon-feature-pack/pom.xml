@@ -52,11 +52,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-galleon-pack</artifactId>
-            <type>zip</type>
-        </dependency>
-        <dependency>
             <groupId>org.wildfly.galleon-plugins</groupId>
             <artifactId>wildfly-galleon-plugins</artifactId>
             <scope>provided</scope>

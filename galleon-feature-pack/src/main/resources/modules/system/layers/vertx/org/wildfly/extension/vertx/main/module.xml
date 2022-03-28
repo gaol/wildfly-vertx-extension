@@ -34,14 +34,14 @@
         <module name="org.jboss.as.server"/>
         <module name="org.wildfly.security.manager" />
         <module name="org.jboss.weld.core"/>
-        <module name="org.jboss.as.weld.common" optional="true"/>
+        <module name="org.jboss.as.weld.common" />
+        <module name="org.slf4j"/>
 
-        <module name="io.vertx.core" export="true" services="import" />
-        <module name="org.wildfly.clustering.jgroups.spi" optional="true" />
+        <module name="io.vertx.core" export="true" />
+        <module name="org.wildfly.clustering.jgroups.spi" optional="true" export="true" />
         <module name="io.vertx.infinispan" optional="true" export="true" services="import" />
         <module name="org.infinispan" optional="true" />
         <module name="org.jgroups" optional="true" />
         <module name="io.vertx.ext.modules" optional="true" export="true" />
-        <module name="org.slf4j" optional="true"/>
     </dependencies>
 </module>

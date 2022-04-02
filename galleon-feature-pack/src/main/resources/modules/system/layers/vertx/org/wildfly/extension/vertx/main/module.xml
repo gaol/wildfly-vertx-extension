@@ -38,10 +38,9 @@
         <module name="org.slf4j"/>
 
         <module name="io.vertx.core" export="true" />
-        <module name="org.wildfly.clustering.jgroups.spi" optional="true" export="true" />
         <module name="io.vertx.infinispan" optional="true" export="true" services="import" />
-        <module name="org.infinispan" optional="true" />
-        <module name="org.jgroups" optional="true" />
-        <module name="io.vertx.ext.modules" optional="true" export="true" />
+
+        <module name="io.vertx.client" optional="true" export="true" />
+        <module name="io.vertx.auth" optional="true" export="true" />
     </dependencies>
 </module>

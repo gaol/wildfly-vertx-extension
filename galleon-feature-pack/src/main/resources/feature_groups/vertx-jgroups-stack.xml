@@ -44,7 +44,7 @@
         <feature spec="subsystem.jgroups.channel">
             <param name="channel" value="vertx"/>
             <param name="stack" value="tcp-vertx"/>
-            <param name="cluster" value="vertx-cluster"/>
+            <param name="cluster" value="ISPN"/>
         </feature>
     </feature>
 </feature-group-spec>

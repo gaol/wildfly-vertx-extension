@@ -38,10 +38,11 @@
         <module name="java.logging"/>
         <module name="javax.transaction.api" />
         <module name="io.vertx.core"/>
-        <module name="org.wildfly.clustering.jgroups.spi" />
-        <module name="org.infinispan" />
-        <module name="org.infinispan.commons" />
-        <module name="org.infinispan.protostream" />
+        <module name="org.wildfly.clustering.jgroups.spi" export="true"/>
+        <module name="org.infinispan" export="true" services="import" />
+        <module name="org.infinispan.commons" export="true" services="export"/>
+        <module name="org.infinispan.protostream" export="true" services="import"/>
+        <module name="org.infinispan.client.hotrod" export="true" services="import"/>
         <module name="org.jgroups" />
         <module name="org.jboss.logging" />
         <module name="org.slf4j" />

@@ -37,4 +37,10 @@
         <jboss.home>${jboss.dist}</jboss.home>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.infinispan.protostream</groupId>
+            <artifactId>protostream</artifactId>
+        </dependency>
+    </dependencies>
 </project>

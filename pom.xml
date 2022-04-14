@@ -31,12 +31,12 @@
 
     <properties>
         <!-- WildFly versions -->
-        <version.wildfly>25.0.1.Final</version.wildfly>
-        <version.org.wildfly.core>17.0.3.Final</version.org.wildfly.core>
-        <version.org.wildfly.common>1.5.2.Final</version.org.wildfly.common>
+        <version.wildfly>26.0.1.Final</version.wildfly>
+        <version.org.wildfly.core>18.0.4.Final</version.org.wildfly.core>
+        <version.org.wildfly.common>1.5.4.Final</version.org.wildfly.common>
         <version.infinispan>12.1.7.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
-        <version.vertx>4.2.4</version.vertx>
+        <version.vertx>4.2.6</version.vertx>
         <version.junit>4.13.1</version.junit>
         <version.testcontainer>1.16.0</version.testcontainer>
 

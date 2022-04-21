@@ -42,7 +42,9 @@
         <module name="io.vertx.core" export="true" />
         <module name="io.vertx.infinispan" optional="true" export="true" services="export" />
 
+        <module name="io.vertx.web" optional="true" export="true" />
         <module name="io.vertx.client" optional="true" export="true" />
         <module name="io.vertx.auth" optional="true" export="true" />
+        <module name="io.vertx.config" optional="true" export="true" />
     </dependencies>
 </module>

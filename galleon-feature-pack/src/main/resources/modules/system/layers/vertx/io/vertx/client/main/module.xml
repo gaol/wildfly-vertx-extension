@@ -29,5 +29,7 @@
 
     <dependencies>
         <module name="io.vertx.client.redis" optional="true" export="true"/>
+        <module name="io.vertx.web.client" export="true" services="export" />
+        <module name="io.vertx.client.consul" optional="true" export="true" />
     </dependencies>
 </module>

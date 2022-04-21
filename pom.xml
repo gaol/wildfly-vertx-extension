@@ -37,8 +37,15 @@
         <version.infinispan>12.1.7.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.2.6</version.vertx>
+        <version.netty>4.1.74.Final</version.netty>
         <version.junit>4.13.1</version.junit>
         <version.testcontainer>1.16.0</version.testcontainer>
+        <version.jsch>0.1.55</version.jsch>
+        <version.jzlib>1.1.3</version.jzlib>
+        <version.typesafe>1.4.1</version.typesafe>
+        <version.curator>2.13.0</version.curator>
+        <version.zookeeper>3.4.14</version.zookeeper>
+        <version.jackson-dataformat-yaml>2.12.3</version.jackson-dataformat-yaml>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <module.name>org.wildfly.extension.vertx</module.name>
@@ -121,6 +128,66 @@
                 <version>${version.vertx}</version>
             </dependency>
             <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-common</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-buffer</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-transport</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-handler-proxy</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-dns</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-haproxy</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-codec-http2</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-resolver-dns</artifactId>
+                <version>${version.netty}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-multimap</artifactId>
                 <version>${version.infinispan}</version>
@@ -134,6 +201,36 @@
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-clustered-counter</artifactId>
                 <version>${version.infinispan}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>${version.jsch}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jzlib</artifactId>
+                <version>${version.jzlib}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.typesafe</groupId>
+                <artifactId>config</artifactId>
+                <version>${version.typesafe}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${version.curator}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${version.zookeeper}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${version.jackson-dataformat-yaml}</version>
             </dependency>
 
             <!-- Project own artifacts dependencies -->

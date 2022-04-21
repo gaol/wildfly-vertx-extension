@@ -46,6 +46,7 @@
     <modules>
         <module>async-servlet</module>
         <module>ejb</module>
+        <module>verticle</module>
     </modules>
 
 </project>

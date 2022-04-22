@@ -49,7 +49,7 @@ public class VertxConfigTestCase {
       .addAsWebInfResource(new StringAsset("{\n" +
         "  \"deployments\": [\n" +
         "    {\n" +
-        "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.components.config.VertxConfigTestCase$BasicVertxConfigVerticle\"\n" +
+        "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.components.config.VertxConfigTestCase$BasicVertxConfigFromFileVerticle\"\n" +
         "    }\n" +
         "  ]\n" +
         "}"), "vertx-deployment.json")

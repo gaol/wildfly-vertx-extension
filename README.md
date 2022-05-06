@@ -14,8 +14,8 @@ In case of clustering vertx instance, this extension uses [vertx-infinispan](htt
 
 ## Requirements to build
 
-* Java 1.8+
-* Maven 3.2.3+
+* Java 11+
+* Maven 3.2.5+
 
 ## Build the extension
 

@@ -30,6 +30,10 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- Require Java 11 -->
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+
         <!-- WildFly versions -->
         <version.wildfly>26.0.1.Final</version.wildfly>
         <version.org.wildfly.core>18.0.4.Final</version.org.wildfly.core>

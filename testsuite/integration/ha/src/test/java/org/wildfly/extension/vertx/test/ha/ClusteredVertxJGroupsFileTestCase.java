@@ -24,6 +24,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.impl.VertxBuilder;
 import io.vertx.ext.cluster.infinispan.InfinispanClusterManager;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.arquillian.api.ServerSetup;
@@ -72,6 +73,7 @@ import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.remo
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
+@RunAsClient
 @ServerSetup(ClusteredVertxJGroupsFileTestCase.ClusteredTestSetupTask.class)
 public class ClusteredVertxJGroupsFileTestCase {
 
@@ -146,8 +148,7 @@ public class ClusteredVertxJGroupsFileTestCase {
   public static Archive<?> deployment() throws Exception {
     return ShrinkWrap.create(WebArchive.class, "test-send-and-check-jgroups-stack-file.war")
       .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-      .addClasses(ClusteredVertxJGroupsFileTestCase.class, SendMessageAndCheckServlet.class)
-      .addPackage(HttpRequest.class.getPackage());
+      .addClasses(ClusteredVertxJGroupsFileTestCase.class, SendMessageAndCheckServlet.class);
   }
 
   @WebServlet(value = "/sendAndCheck", asyncSupported = true)

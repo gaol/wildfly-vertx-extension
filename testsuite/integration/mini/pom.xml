@@ -41,6 +41,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>wildfly-vertx-feature-pack</artifactId>
+            <type>pom</type>
         </dependency>
         <!-- Auth -->
         <dependency>

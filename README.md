@@ -130,3 +130,5 @@ in case of clustered Vertx, you need layer of `vertx-ha`, you need to specify th
 galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx-ha --config=standalone-ha.xml
 ```
+
+> NOTE: To have `galleon.sh` work, please check the [Galleon Provisioning Guide](https://docs.wildfly.org/21/Galleon_Guide.html#download-and-installation-of-the-galleon-command-line-tool) on how to download and install the Gallon CLI tool.  

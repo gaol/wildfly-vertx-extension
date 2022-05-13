@@ -97,7 +97,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
 
         <!-- If containers based tests are mandatory to run -->
-        <container.tests.mandatory>true</container.tests.mandatory>
+        <container.tests.mandatory>false</container.tests.mandatory>
 
     </properties>
 

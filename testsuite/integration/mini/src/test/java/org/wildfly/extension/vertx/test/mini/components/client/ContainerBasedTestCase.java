@@ -38,6 +38,11 @@ public abstract class ContainerBasedTestCase {
         if (Boolean.getBoolean("container.tests.mandatory")) {
             return true;
         }
-        return DockerClientFactory.instance().isDockerAvailable();
+        try {
+            return DockerClientFactory.instance().isDockerAvailable();
+        } catch (Exception e) {
+            //ignored
+            return false;
+        }
     }
 }

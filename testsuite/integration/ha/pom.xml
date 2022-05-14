@@ -50,7 +50,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions combine.children="append">
                     <execution>
-                        <id>ts.surefire.clustering.ha-infinispan-server</id>
+                        <id>default-test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>test</goal>

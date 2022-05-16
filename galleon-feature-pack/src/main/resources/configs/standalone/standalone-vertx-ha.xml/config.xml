@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-
-<config xmlns="urn:jboss:galleon:config:1.0" name="standalone-vertx-ha.xml" model="standalone">
-    <feature-group name="standalone-ha"/>
-    <layers>
-        <include name="vertx-ha" />
-    </layers>
-
-</config>

@@ -1,0 +1,352 @@
+## The vertx subsystem configuration
+
+There is a `default` Vert.x instance created in each standalone configuration by default.
+
+After server starts, in a JBoss CLI console, you can see the default vertx resource like:
+
+.Read Default Vertx Resource
+[source, bash]
+----
+[lgao@lins-p1 wildfly-vertx-extention]$ build/target/wildfly-vertx-build-${version}/bin/jboss-cli.sh -c
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "alias" => ["vertx"],
+        "clustered" => false,
+        "forked-channel" => false,
+        "jgroups-channel" => undefined,
+        "jgroups-stack-file" => undefined,
+        "jndi-name" => "java:/vertx/default",
+        "option-name" => undefined
+    }
+}
+----
+
+Each Vert.x instance has a global unique name in WildFly server which is `default` in this case, it has the following attributes:
+
+* `alias`    -    The Vert.x instance alias name
+** This is a string array which will be used in the CDI injection point, like: `@Inject Vertx vertx` will have the Vert.x instance injected which has alias: `vertx`.
+** The alias names are global unique as well.
+* `clustered`    -    Flag that if it is a clustered Vert.x instance.
+** Defaults to `false`
+** When it is set to `true`, either `jgroups-channel` or `jgroups-stack-file` should be specified, otherwise, the default https://vertx.io/docs/apidocs/io/vertx/ext/cluster/infinispan/InfinispanClusterManager.html/[InfinispanClusterManager] will be used.
+* `forked-channel`    -    Flag if the forked channel needs to be used
+** It is used only when `clustered` is `true` and `jgroups-channel` is specified.
+** Technically, when it is set to `true`, the `JGroupsRequirement.CHANNEL_FACTORY` from WildFly clustering JGroups SPI is used for the JChannel creation, while it is set to `false`(default), the `JGroupsRequirement.CHANNEL_SOURCE` is used for the JChannel creation.
+* `jgroups-channel`    -    The JGroups Channel which is used for JChannel creation
+** It is used only when `clustered` is `true`.
+** It comes from resources under `/subsystem=jgroups/channel=XX`.
+* `jgroups-stack-file`    -    The JGroups stack file used to compose the JGroups cluster
+** It is used only when `clustered` is `true`.
+** It is either an absolute file starts with `/` or a file relatives to `${jboss.server.config.dir}`
+* `jndi-name`    -    The JNDI name which is bound to the naming subsystem.
+** It is `java:/vertx/ + <Vertx Name>` if not specified.
+** The Vert.x instance can only be looked up in local JVM.
+* `option-name`    -    The option name used to create the Vert.x instance
+** The default `VertxOptions` instance is used to create the Vert.x instance if this is not set.
+** It comes from resources either in `/subsystem=vertx/vertx-option=XX` or in `/subsystem=vertx/vertx-option-file=XX`.
+
+> NOTE: when both `jgroups-channel` and `jgroups-stack-file` are specified, there will be an exception thrown out.
+
+### Create a new Vert.x instance
+
+The simplest way to define a Vert.x instance is:
+
+.Create a new Vert.x Instance
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=v1:add()
+{"outcome" => "success"}
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=v1:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "alias" => undefined,
+        "clustered" => false,
+        "forked-channel" => false,
+        "jgroups-channel" => undefined,
+        "jgroups-stack-file" => undefined,
+        "jndi-name" => "java:/vertx/v1",
+        "option-name" => undefined
+    }
+}
+
+----
+
+When the JBoss CLI above completes, a new Vert.x instance is created within WildFly server with name `v1` and JNDI: `java:vertx/v1`.
+
+You can refer to an option to customize the `VertxOptions` which is used to create the Vert.x instance, but you need to create the option first.
+
+#### Create an option for Vert.x
+
+You have 2 options to create a `VertxOptions` instance, one is to create the option by specifying a JSON file path, the other is to create the option by specifying each attribute using WildFly management model.
+
+##### Create VertxOptions using a JSON file
+
+Using the following command in JBoss CLI to create a VertxOptions by specifying a JSON file path:
+
+.Create VertxOptions by a JSON file
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx-option-file=vof:add(path=default-vertx-options.json)
+{"outcome" => "success"}
+----
+
+Here the path of `default-vertx-options.json` is expected at `${jboss.server.config.dir}`. After it completes, you can refer to `vof` in the command:
+
+.Create Vertx by referring to an option
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=v2:add(option-name=vof)
+{"outcome" => "success"}
+----
+
+to create the Vert.x instance.
+
+> NOTE: The `path` of the JSON file is either an absolute file starts with `/` or a file relatives to `${jboss.server.config.dir}`.
+
+> NOTE: The format of the JSON file follows what https://vertx.io/docs/apidocs/io/vertx/core/VertxOptions.html#VertxOptions-io.vertx.core.json.JsonObject-[VertxOptions(JsonObject json)] requires.
+
+##### Create an option with attributes
+
+You can create a `VertxOptions` by specifying each attribute as well.
+
+Let's take a look at what an option resource normally has:
+
+.Typical VertxOptions resource
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx-option=vo:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "address-resolver-option" => "aro",
+        "blocked-thread-check-interval" => undefined,
+        "blocked-thread-check-interval-unit" => undefined,
+        "classpath-resolving-enabled" => undefined,
+        "disable-tccl" => undefined,
+        "event-loop-pool-size" => undefined,
+        "eventbus-option" => "ebo",
+        "file-cache-enabled" => undefined,
+        "ha-enabled" => undefined,
+        "ha-group" => undefined,
+        "internal-blocking-pool-size" => undefined,
+        "max-eventloop-execute-time" => undefined,
+        "max-eventloop-execute-time-unit" => undefined,
+        "max-worker-execute-time" => undefined,
+        "max-worker-execute-time-unit" => undefined,
+        "prefer-native-transport" => undefined,
+        "quorum-size" => undefined,
+        "warning-exception-time" => undefined,
+        "warning-exception-time-unit" => undefined,
+        "worker-pool-size" => undefined
+    }
+}
+----
+
+All attributes except for `address-resolver-option` and `eventbus-option` are primitive types.
+
+* The `address-resolver-option` refers to what `/subsystem=vertx/address-resolver-option=aro` defines:
+
+.AddressResolverOptions defintion:
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/address-resolver-option=aro:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "cache-max-time-to-live" => undefined,
+        "cache-min-time-to-live" => undefined,
+        "cache-negative-time-to-live" => undefined,
+        "hosts-path" => undefined,
+        "hosts-value" => undefined,
+        "max-queries" => 50,
+        "n-dots" => undefined,
+        "opt-resource-enabled" => undefined,
+        "query-time-out" => undefined,
+        "rd-flag" => undefined,
+        "rotate-servers" => undefined,
+        "round-robin-inet-address" => undefined,
+        "search-domains" => undefined,
+        "servers" => undefined
+    }
+}
+----
+
+* The `eventbus-option` refers to what `/subsystem=vertx/eventbus-option=ebo` defines:
+
+.EventBusOptions definition:
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/eventbus-option=ebo:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "accept-backlog" => undefined,
+        "client-auth" => undefined,
+        "cluster-node-metadata" => undefined,
+        "cluster-ping-interval" => undefined,
+        "cluster-ping-reply-interval" => undefined,
+        "cluster-public-host" => undefined,
+        "cluster-public-port" => undefined,
+        "connect-timeout" => undefined,
+        "crl-paths" => undefined,
+        "crl-values" => undefined,
+        "enabled-cipher-suites" => undefined,
+        "enabled-secure-transport-protocols" => undefined,
+        "host" => undefined,
+        "idle-timeout" => undefined,
+        "idle-timeout-unit" => undefined,
+        "key-cert-option" => undefined,
+        "log-activity" => undefined,
+        "openssl-session-cache-enabled" => undefined,
+        "port" => undefined,
+        "read-idle-timeout" => undefined,
+        "receive-buffer-size" => undefined,
+        "reconnect-attempts" => undefined,
+        "reconnect-interval" => undefined,
+        "reuse-address" => undefined,
+        "reuse-port" => undefined,
+        "send-buffer-size" => undefined,
+        "so-linger" => 200,
+        "ssl" => undefined,
+        "ssl-engine-type" => undefined,
+        "ssl-hand-shake-timeout" => undefined,
+        "ssl-hand-shake-timeout-unit" => undefined,
+        "tcp-cork" => undefined,
+        "tcp-fast-open" => undefined,
+        "tcp-keep-alive" => undefined,
+        "tcp-no-delay" => undefined,
+        "tcp-quick-ack" => undefined,
+        "traffic-class" => undefined,
+        "trust-all" => undefined,
+        "trust-option" => undefined,
+        "use-alpn" => undefined,
+        "write-idle-timeout" => undefined
+    }
+}
+----
+
+
+> NOTE: There are sub options used to create the `EventBusOptions`, including `key-store-option`, `pem-key-cert-option`, `pem-trust-option`, `cluster-node-metadata`, please use the corresponding `:read-resource-description()` operation for each attribute description.
+
+
+#### Create a clustered Vert.x instance
+
+You need to specify `clustered=true` to create a clustered Vert.x instance, and you need to start the server with `vertx-ha` available, basically with `standalone-vertx*-ha.xml` configurations.
+
+You have 2 options to set up the clustering configuration, one is to specify the JGroups stack file, the other is to specify the `jgroups-channel` from `jgroups` subsystem to compose the JGroups cluster.
+
+##### Using a JGroups stack file
+
+You can create a clustered Vert.x instance by specifying the JGroups stack file with the following command:
+
+.Create clustered Vert.x instance using a JGroups stack file
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=v3:add(clustered=true,jgroups-stack-file=jgroups-stack.xml)
+{"outcome" => "success"}
+----
+
+The above command suppose there is a `jgroups-stack.xml` file existing at `${jboss.server.config.dir}`.
+
+> NOTE: The content inside the JGroups stack file should be consistent with the remote Vert.x instance to be able to compose a cluster. Please refer to http://www.jgroups.org/manual4/ on the detail configuration of the stack.
+
+##### Using a channel from jgroups subsystem
+
+Please use the following commands to create a JGroups channel for clustered Vert.x instance, which matches what default Vert.x Infinispan cluster ships:
+
+.Configure JGroups channel for Vert.x
+[source, bash]
+----
+batch
+/socket-binding-group=standard-sockets/socket-binding=jgroups-vertx:add(port=7800)
+/socket-binding-group=standard-sockets/socket-binding=jgroups-vertx-mping:add(interface=private, multicast-port=46655, multicast-address=228.6.7.8
+/socket-binding-group=standard-sockets/socket-binding=jgroups-vertx-tcp-fd:add(interface=private, port=57800)
+
+/subsystem=jgroups/stack=tcp-vertx:add()
+/subsystem=jgroups/stack=tcp-vertx/transport=TCP:add(socket-binding=jgroups-vertx)
+/subsystem=jgroups/stack=tcp-vertx/protocol=MPING:add(socket-binding=jgroups-vertx-mping)
+/subsystem=jgroups/stack=tcp-vertx/protocol=MERGE3:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=FD_SOCK:add(socket-binding=jgroups-vertx-tcp-fd)
+/subsystem=jgroups/stack=tcp-vertx/protocol=FD_ALL:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=VERIFY_SUSPECT:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=pbcast.NAKACK2:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=UNICAST3:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=pbcast.STABLE:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=pbcast.GMS:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=MFC:add()
+/subsystem=jgroups/stack=tcp-vertx/protocol=FRAG3:add()
+/subsystem=jgroups/channel=vertx:add(stack=tcp-vertx, cluster=ISPN)
+run-batch
+:reload
+----
+
+Because the `default` Vert.x instance shipped in the `ha` configuration has the same setup as what the above commands achieve, remove it and create it again with the option defined above:
+
+.Create Vert.x instance with JGroups channel specified
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:remove()
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9990 /] :reload
+{
+    "outcome" => "success",
+    "result" => undefined
+}
+
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:add(clustered=true, jgroups-channel=vertx)
+{"outcome" => "success"}
+----
+
+Now you have created a clustered Vert.x instance with JGroups channel set up from `jgroups` subsystem.
+
+> NOTE: Remember to specify `-Djgroups.bind.address=127.0.0.1` in your another Vert.x instance to be able to compose the cluster.
+
+### Update to the Vert.x instance
+
+You can update the Vert.x using the `write-attribute` operation:
+
+[source, bash]
+----
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:write-attribute(name=jndi-name,value=java:/vertx/v1)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9990 /] :reload
+{
+    "outcome" => "success",
+    "result" => undefined
+}
+
+[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
+{
+    "outcome" => "success",
+    "result" => {
+        "alias" => ["vertx"],
+        "clustered" => false,
+        "forked-channel" => false,
+        "jgroups-channel" => undefined,
+        "jgroups-stack-file" => undefined,
+        "jndi-name" => "java:/vertx/v1",
+        "option-name" => undefined
+    }
+}
+----
+
+> NOTE: Any update to the Vert.x instance requires `reload-required`.
+
+

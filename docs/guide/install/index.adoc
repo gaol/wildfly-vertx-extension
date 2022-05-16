@@ -1,0 +1,45 @@
+## How to install to an existing WildFly server
+
+If you have an existing WildFly server already, you have 2 options to have this extension installed, one is to install the whole feature pack, the other is to install part of the feature pack.
+
+### Install the whole feature pack
+
+.Install feature pack to existing server
+[source,bash]
+----
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+
+galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version}
+----
+
+after it completes, the `vertx` subsystem and the required bits are downloaded and installed to the existing server with an additional layer called `vertx` created in `<SERVER_DIR>/modules/system/layers/`.
+
+### Install part of the feature pack
+
+The feature pack has 2 Galleon layers produced:
+
+* `vertx`
+* `vertx-ha`
+
+You can specify one of them to install to an existing server, similar as above, run:
+
+.Install part of the feature pack to existing server
+[source,bash]
+----
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+
+galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version} --layers=vertx
+----
+
+this will update the default configuration `standalone.xml` instead of producing new configurations, and it will download necessary bits.
+
+in case of clustered Vertx, you need layer of `vertx-ha`, and you need to specify the ha configuration to update:
+
+[source,bash]
+----
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+
+galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version} --layers=vertx-ha --config=standalone-ha.xml
+----
+
+> NOTE: To have `galleon.sh` script work, please check the https://docs.wildfly.org/21/Galleon_Guide.html#download-and-installation-of-the-galleon-command-line-tool[Galleon Provisioning Guide] on how to download and install the Gallon CLI tool.

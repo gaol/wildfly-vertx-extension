@@ -1,0 +1,51 @@
+## Build the extension
+
+This extension uses `Maven` as the build tool.
+
+Requirements to build the extension are:
+
+* JDK 11+
+* Maven 3.2.5+
+
+To build the extension, simply run the following command:
+
+.Build command
+[source,bash]
+----
+mvn clean install
+----
+
+When the command finishes, it produces 2 server distributions and 1 https://docs.wildfly.org/galleon/[Galleon] feature pack:
+
+* A Thin server
+** It locates at `build/target/wildfly-vertx-build-{project-version}/`
+** The thin server contains all configurations and JBoss module files(`module.xml` ) which define the Maven artifact without having the jar files.
+* Full Server
+** It locates at `dist/target/wildfly-vertx-build-{project-version}/`
+** The full server contains everything including jar files
+* A Galloen feature pack
+** It locates at `galleon-feature-pack/target/wildfly-vertx-feature-pack-{project-version}.zip`
+** This feature pack can be installed to an existing WildFly server.
+
+Both produced servers have `4` standalone configurations:
+
+* `standalone-vertx-mini.xml`
+** This is the minimal setup to have vertx subsystem added and `jaxrs-server` layer added.
+* `standalone-vertx.xml`
+** This is the setup with vertx subsystem added compared to standard standalone.xml in WildFly server
+* `standalone-vertx-ha.xml`
+** This is the setup with vertx subsystem added compared to standard standalone-ha.xml in WildFly server
+** The default vertx in this setup is a clustered vertx with default configuration.
+* `standalone-vertx-full-ha.xml`
+** This is the setup with vertx subsystem added compared to standard standalone-full-ha.xml in WildFly server
+** The default vertx in this setup is a clustered vertx with default configuration.
+
+### Start the server
+
+You can start the servers using the same way how WildFly server gets started:
+
+.Start Server
+[source,bash]
+----
+$SERVER_HOME/bin/standalone.sh -c standalone-vertx-mini.xml
+----

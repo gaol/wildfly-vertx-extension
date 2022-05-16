@@ -1,0 +1,31 @@
+= WildFly Vertx Extension Documentation
+Lin Gao
+:revnumber: {version}
+:revdate: {localdate}
+:toc: left
+:toclevels: 4
+:icons: font
+:imagesdir: images
+:linkattrs:
+:sectnums:
+:sectanchors:
+:sectlinks:
+
+:project-version: {version}
+
+
+(C) 2022 The original authors.
+
+
+include::overview/index.adoc[]
+
+include::build/index.adoc[]
+
+include::install/index.adoc[]
+
+include::config/index.adoc[]
+
+include::use_in_app/index.adoc[]
+
+include::verticle/index.adoc[]
+

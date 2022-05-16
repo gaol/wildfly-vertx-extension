@@ -309,7 +309,6 @@
         <module>build</module>
         <module>dist</module>
         <module>testsuite</module>
-        <module>examples</module>
     </modules>
 
     <repositories>
@@ -420,6 +419,18 @@
             <properties>
                 <surefire.jpda.args>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</surefire.jpda.args>
             </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>examples</module>
+                <module>docs</module>
+            </modules>
         </profile>
     </profiles>
 </project>

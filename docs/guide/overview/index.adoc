@@ -1,0 +1,17 @@
+## Overview
+
+This is the Vertx extension for https://www.wildfly.org/[WildFly Application Server].
+
+https://vertx.io/[Eclipse Vert.x] is a toolkit to build reactive applications on the JVM, integrating it adds more reactive power to WildFly.
+
+It allows you to define Vertx instances using WildFly management model, these instances are managed by WildFly server. They can be accessed using JNDI lookup or CDI injection in your enterprise or web applications.
+
+You can access Vertx core APIs and some components APIs in your applications.
+
+You can package the Vert.x verticle implementation in the application, deploy it to WildFly server with a deployment descriptor, the server will do the deployment accordingly.
+
+In case of clustering vertx instances, this extension uses https://github.com/vert-x3/vertx-infinispan/[vertx-infinispan] as the cluster manager to be able to talk with remote Vertx instances. You can specify the necessary JGroups settings for Vertx either using standard WildFly management model or specifying a JGroups stack file.
+
+The built distribution of this extension is a full WildFly server with above capabilities, it produces only standalone configurations, domain mode is not supported currently.
+
+It has a Galleon feature pack produced which can be installed to an existing WildFly server as well. You can install the full feature pack or layers of the feature pack it provides to the server.

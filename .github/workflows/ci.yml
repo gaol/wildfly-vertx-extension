@@ -21,4 +21,4 @@ jobs:
           distribution: 'adopt'
           java-version: ${{ matrix.jdk }}
       - name: Run Build with -Prelease
-        run: mvn -q clean install -Prelease -DtestLogToFile=false -Djdk.io.File.enableADS=true
+        run: mvn -q clean install -Prelease -DtestLogToFile=false "-Djdk.io.File.enableADS=true"

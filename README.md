@@ -1,5 +1,9 @@
 # wildfly-vertx-extension
 
+[![CI Tests](https://github.com/gaol/wildfly-vertx-extension/actions/workflows/ci.yml/badge.svg)](https://github.com/gaol/wildfly-vertx-extension/actions/workflows/ci.yml)
+
+[![Doc Site Generator](https://github.com/gaol/wildfly-vertx-extension/actions/workflows/docs-ci.yml/badge.svg)](https://github.com/gaol/wildfly-vertx-extension/actions/workflows/docs-ci.yml)
+
 This is the Vertx extension for [WildFly Application Server](https://www.wildfly.org/).
 
 [Eclipse Vert.x](https://vertx.io/) is a toolkit to build reactive applications on the JVM, integrating it adds more reactive power to WildFly.

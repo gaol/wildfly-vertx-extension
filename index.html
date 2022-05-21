@@ -444,7 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Lin Gao</span><br>
 <span id="revnumber">version 1.0.0-SNAPSHOT,</span>
-<span id="revdate">2022-05-16</span>
+<span id="revdate">2022-05-21</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -511,25 +511,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>This is the Vertx extension for <a href="https://www.wildfly.org/">WildFly Application Server</a>.</p>
 </div>
 <div class="paragraph">
-<p><a href="https://vertx.io/">Eclipse Vert.x</a> is a toolkit to build reactive applications on the JVM, integrating it adds more reactive power to WildFly.</p>
+<p><a href="https://vertx.io/">Eclipse Vert.x</a> is a toolkit to build reactive applications on the JVM. Integrating it adds more reactive power to WildFly.</p>
 </div>
 <div class="paragraph">
-<p>It allows you to define Vertx instances using WildFly management model, these instances are managed by WildFly server. They can be accessed using JNDI lookup or CDI injection in your enterprise or web applications.</p>
+<p>It allows you to define Vert.x instances using WildFly&#8217;s management model. These instances are managed by the WildFly server. They can be accessed using JNDI lookup or CDI injection in your enterprise or web applications.</p>
 </div>
 <div class="paragraph">
-<p>You can access Vertx core APIs and some components APIs in your applications.</p>
+<p>You can access the Vert.x core APIs and some component APIs in your applications.</p>
 </div>
 <div class="paragraph">
-<p>You can package the Vert.x verticle implementation in the application, deploy it to WildFly server with a deployment descriptor, the server will do the deployment accordingly.</p>
+<p>You can package the Vert.x verticle implementation in the application, and deploy it to a WildFly server with a deployment descriptor. The server will do the deployment accordingly.</p>
 </div>
 <div class="paragraph">
-<p>In case of clustering vertx instances, this extension uses <a href="https://github.com/vert-x3/vertx-infinispan/">vertx-infinispan</a> as the cluster manager to be able to talk with remote Vertx instances. You can specify the necessary JGroups settings for Vertx either using standard WildFly management model or specifying a JGroups stack file.</p>
+<p>In case of clustering Vert.x instances, this extension uses <a href="https://github.com/vert-x3/vertx-infinispan/">vertx-infinispan</a> as the cluster manager to be able to talk with remote Vert.x instances. You can specify the necessary JGroups settings for Vert.x, either using the standard WildFly management model, or specifying a JGroups stack file.</p>
 </div>
 <div class="paragraph">
-<p>The built distribution of this extension is a full WildFly server with above capabilities, it produces only standalone configurations, domain mode is not supported currently.</p>
+<p>The generated distribution of this extension is a full WildFly server with above capabilities. The build produces only standalone configurations. Domain mode is not supported currently.</p>
 </div>
 <div class="paragraph">
-<p>It has a Galleon feature pack produced which can be installed to an existing WildFly server as well. You can install the full feature pack or layers of the feature pack it provides to the server.</p>
+<p>It also produces a Galleon feature pack, which can be installed to an existing WildFly server. You can install either the full feature pack, or layers of the feature pack.</p>
 </div>
 </div>
 </div>
@@ -562,45 +562,45 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>When the command finishes, it produces 2 server distributions and 1 <a href="https://docs.wildfly.org/galleon/">Galleon</a> feature pack:</p>
+<p>When the command finishes, it will have produced two server distributions and a <a href="https://docs.wildfly.org/galleon/">Galleon</a> feature pack:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>A Thin server</p>
+<p>Thin server</p>
 <div class="ulist">
 <ul>
 <li>
-<p>It locates at <code>build/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code></p>
+<p>Located at <code>build/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code>.</p>
 </li>
 <li>
-<p>The thin server contains all configurations and JBoss module files(<code>module.xml</code> ) which define the Maven artifact without having the jar files.</p>
+<p>The thin server contains all configurations and JBoss module files (<code>module.xml</code>) which define the Maven artifact, without the jar files.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Full Server</p>
+<p>Full server</p>
 <div class="ulist">
 <ul>
 <li>
-<p>It locates at <code>dist/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code></p>
+<p>Located at <code>dist/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code>.</p>
 </li>
 <li>
-<p>The full server contains everything including jar files</p>
+<p>The full server contains everything including jar files.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>A Galloen feature pack</p>
+<p>Galleon feature pack</p>
 <div class="ulist">
 <ul>
 <li>
-<p>It locates at <code>galleon-feature-pack/target/wildfly-vertx-feature-pack-1.0.0-SNAPSHOT.zip</code></p>
+<p>Located at <code>galleon-feature-pack/target/wildfly-vertx-feature-pack-1.0.0-SNAPSHOT.zip</code>.</p>
 </li>
 <li>
-<p>This feature pack can be installed to an existing WildFly server.</p>
+<p>This feature pack can be installed in an existing WildFly server.</p>
 </li>
 </ul>
 </div>
@@ -617,7 +617,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the minimal setup to have vertx subsystem added and <code>jaxrs-server</code> layer added.</p>
+<p>This is a minimal setup, with just the Vert.x subsystem and a <code>jaxrs-server</code> layer added.</p>
 </li>
 </ul>
 </div>
@@ -627,7 +627,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the setup with vertx subsystem added compared to standard standalone.xml in WildFly server</p>
+<p>This is the setup with the Vert.x subsystem added to the default standalone.xml in WildFly server.</p>
 </li>
 </ul>
 </div>
@@ -637,10 +637,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the setup with vertx subsystem added compared to standard standalone-ha.xml in WildFly server</p>
+<p>This is the setup with the Vert.x subsystem added to the default standalone-ha.xml in WildFly server.</p>
 </li>
 <li>
-<p>The default vertx in this setup is a clustered vertx with default configuration.</p>
+<p>The default Vert.x in this setup is a clustered Vert.x with default configuration.</p>
 </li>
 </ul>
 </div>
@@ -650,10 +650,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the setup with vertx subsystem added compared to standard standalone-full-ha.xml in WildFly server</p>
+<p>This is the setup with the Vert.x subsystem added to the default standalone-full-ha.xml in WildFly server.</p>
 </li>
 <li>
-<p>The default vertx in this setup is a clustered vertx with default configuration.</p>
+<p>The default Vert.x in this setup is a clustered Vert.x with default configuration.</p>
 </li>
 </ul>
 </div>
@@ -663,7 +663,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_start_the_server"><a class="anchor" href="#_start_the_server"></a><a class="link" href="#_start_the_server">2.1. Start the server</a></h3>
 <div class="paragraph">
-<p>You can start the servers using the same way how WildFly server gets started:</p>
+<p>You can start the server as usual, specifying the desired configuration file:</p>
 </div>
 <div class="listingblock">
 <div class="title">Start Server</div>
@@ -1533,7 +1533,7 @@ public class EchoService {
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0-SNAPSHOT<br>
-Last updated 2022-05-16 20:00:22 +0800
+Last updated 2022-05-21 13:00:55 UTC
 </div>
 </div>
 </body>

@@ -11,7 +11,7 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         jdk: [11, 17]
     runs-on: ${{ matrix.os }}
     steps:
@@ -21,4 +21,4 @@ jobs:
           distribution: 'adopt'
           java-version: ${{ matrix.jdk }}
       - name: Run Build with -Prelease
-        run: mvn -q clean install -Prelease -DtestLogToFile=false "-Dextra.server.jvm.args=-Djdk.io.File.enableADS=true"
+        run: mvn -q clean install -fae -B -Prelease -DtestLogToFile=false "-Dextra.server.jvm.args=-Djdk.io.File.enableADS=true"

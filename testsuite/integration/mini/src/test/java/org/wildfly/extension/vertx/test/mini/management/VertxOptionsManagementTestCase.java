@@ -31,6 +31,7 @@ import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vert
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -367,22 +368,27 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
 
+    // using a platform dependent directory to cover Windows path
+    private String absolutePathInTempDir(String path) {
+        return System.getProperty("java.io.tmpdir") + File.separator + path;
+    }
+
     @Test
     public void testPemKeyCertOptions() throws IOException {
         final String pekKeyCertOptionName = "pemKeyCert";
         ModelNode operation = pemKeyCertOptionBase(pekKeyCertOptionName, "add");
-        operation.get(ATTR_PEM_KEY_CERT_KEY_PATH).add("a.key").add("/b.key");
-        operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add("/c.cert").add("d.cert");
+        operation.get(ATTR_PEM_KEY_CERT_KEY_PATH).add("a.key").add(absolutePathInTempDir("b.key"));
+        operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add(absolutePathInTempDir("c.cert")).add("d.cert");
         executeOperation(managementClient, operation);
         ModelNode response = executeOperation(managementClient, pemKeyCertOptionBase(pekKeyCertOptionName, "read-resource"));
         ModelNode result = response.get(RESULT);
         Assert.assertNotNull(result);
         List<String> keyPaths = result.get(ATTR_PEM_KEY_CERT_KEY_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(keyPaths.contains("a.key"));
-        Assert.assertTrue(keyPaths.contains("/b.key"));
+        Assert.assertTrue(keyPaths.contains(absolutePathInTempDir("b.key")));
         List<String> certPaths = result.get(ATTR_PEM_KEY_CERT_CERT_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(certPaths.contains("d.cert"));
-        Assert.assertTrue(certPaths.contains("/c.cert"));
+        Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
 
         final String eventBusOptionName = "eo";
         operation = eventBusOptionBase(eventBusOptionName, "add");
@@ -399,10 +405,10 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         final String serverConfigDir = ManagementClientUtils.serverConfigDir(managementClient);
         keyPaths = keyCertOptions.getKeyPaths();
         Assert.assertTrue(keyPaths.contains(serverConfigDir + File.separator + "a.key"));
-        Assert.assertTrue(keyPaths.contains("/b.key"));
+        Assert.assertTrue(keyPaths.contains(absolutePathInTempDir("b.key")));
         certPaths = keyCertOptions.getCertPaths();
         Assert.assertTrue(certPaths.contains(serverConfigDir + File.separator + "d.cert"));
-        Assert.assertTrue(certPaths.contains("/c.cert"));
+        Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
 
         // clear resources
         executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
@@ -417,14 +423,14 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
     public void testPemTrustOptions() throws IOException {
         final String pemTrustOptionName = "pemTrust";
         ModelNode operation = pemTrustOptionBase(pemTrustOptionName, "add");
-        operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add("/c.cert").add("d.cert");
+        operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add(absolutePathInTempDir("c.cert")).add("d.cert");
         executeOperation(managementClient, operation);
         ModelNode response = executeOperation(managementClient, pemTrustOptionBase(pemTrustOptionName, "read-resource"));
         ModelNode result = response.get(RESULT);
         Assert.assertNotNull(result);
         List<String> certPaths = result.get(ATTR_PEM_KEY_CERT_CERT_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(certPaths.contains("d.cert"));
-        Assert.assertTrue(certPaths.contains("/c.cert"));
+        Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
 
         final String eventBusOptionName = "eo";
         operation = eventBusOptionBase(eventBusOptionName, "add");
@@ -441,7 +447,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         final String serverConfigDir = ManagementClientUtils.serverConfigDir(managementClient);
         certPaths = pemTrustOptions.getCertPaths();
         Assert.assertTrue(certPaths.contains(serverConfigDir + File.separator + "d.cert"));
-        Assert.assertTrue(certPaths.contains("/c.cert"));
+        Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
 
         // clear resources
         executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));

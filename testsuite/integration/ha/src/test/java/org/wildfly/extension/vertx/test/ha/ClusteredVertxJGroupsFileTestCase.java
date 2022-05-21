@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
@@ -109,7 +110,7 @@ public class ClusteredVertxJGroupsFileTestCase {
       // setup vertx with jgroups-stack-file=test-jgroups-stack.xml
       ModelNode addVertxOperation = addVertxOperation(CLUSTERED_VERTX_NAME);
       addVertxOperation.get("clustered").set(true);
-      addVertxOperation.get("jgroups-stack-file").set(getClass().getClassLoader().getResource(JGROUPS_FILE_LOCATION).getFile());
+      addVertxOperation.get("jgroups-stack-file").set(Paths.get(getClass().getClassLoader().getResource(JGROUPS_FILE_LOCATION).toURI()).toString());
       executeOperation(managementClient, addVertxOperation);
 
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());

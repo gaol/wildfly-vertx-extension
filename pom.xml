@@ -41,7 +41,7 @@
         <version.infinispan>12.1.7.Final</version.infinispan>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
         <version.vertx>4.2.6</version.vertx>
-        <version.netty>4.1.74.Final</version.netty>
+        <version.netty>4.1.77.Final</version.netty>
         <version.junit>4.13.1</version.junit>
         <version.testcontainer>1.16.0</version.testcontainer>
         <version.jsch>0.1.55</version.jsch>

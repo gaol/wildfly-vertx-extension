@@ -30,21 +30,22 @@ import javax.inject.Inject;
  *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
-@Path("/echo")
+@Path("/sayhi")
 public class ServiceEndpoint {
 
     @Inject
-    private EchoService echoService;
+    private SayHiService sayHiService;
 
     @GET
     @Path("{name}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response sayHi(@PathParam("name") String name) {
         try {
-            String message = echoService.echo(name).get();
+            String message = sayHiService.sayHi(name).get();
             return Response.ok(message).build();
         } catch (Exception e) {
             return Response.status(500).build();
         }
     }
+
 }

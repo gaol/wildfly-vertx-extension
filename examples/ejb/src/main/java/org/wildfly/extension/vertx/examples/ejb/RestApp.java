@@ -20,6 +20,6 @@ package org.wildfly.extension.vertx.examples.ejb;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("rest")
+@ApplicationPath("api")
 public class RestApp extends Application {
 }

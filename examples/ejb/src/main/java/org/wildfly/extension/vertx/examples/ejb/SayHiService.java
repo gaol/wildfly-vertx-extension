@@ -24,11 +24,10 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 @Stateless
-public class EchoService {
+public class SayHiService {
     @Resource(name = "java:/vertx/default")
     private Vertx vertx;
 
@@ -37,8 +36,8 @@ public class EchoService {
     @PostConstruct
     void setUpConsumer() {
         consumer = vertx.eventBus()
-                .<String>localConsumer("echo")
-                .handler(msg -> msg.reply(msg.body()));
+                .<String>consumer("sayhi")
+                .handler(msg -> msg.reply("Hi " + msg.body()));
     }
 
     @PreDestroy
@@ -49,8 +48,12 @@ public class EchoService {
     }
 
     @Asynchronous
-    public Future<String> echo(String message) {
-        return (CompletableFuture<String>)vertx.eventBus().request("echo", message).map(msg -> msg.body().toString()).toCompletionStage();
+    public Future<String> sayHi(String name) {
+        return vertx.eventBus()
+          .request("sayhi", name)
+          .map(msg -> msg.body().toString())
+          .toCompletionStage()
+          .toCompletableFuture();
     }
 
 }

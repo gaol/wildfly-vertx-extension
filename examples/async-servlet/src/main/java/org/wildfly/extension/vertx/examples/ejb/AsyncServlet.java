@@ -19,7 +19,7 @@ package org.wildfly.extension.vertx.examples.ejb;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 
-import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,10 +34,10 @@ import java.io.PrintWriter;
  *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
-@WebServlet(value = "/async", asyncSupported = true)
+@WebServlet(value = "/echo", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Inject
     private Vertx vertx;
 
     private MessageConsumer<String> consumer;
@@ -45,7 +45,7 @@ public class AsyncServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         consumer = vertx.eventBus()
-                .<String>localConsumer("echo")
+                .<String>consumer("echo")
                 .handler(msg -> msg.reply(msg.body()));
     }
 
@@ -58,23 +58,18 @@ public class AsyncServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String message = req.getParameter("message") == null || req.getParameter("message").length() == 0 ? "Ni Hao" : req.getParameter("message");
+        String message = req.getParameter("message") == null ? "Hello" : req.getParameter("message");
         final AsyncContext asyncContext = req.startAsync();
-        vertx.eventBus()
-                .request("echo", "Hello from Servlet: " + message)
-                .toCompletionStage()
-                .whenComplete((m, e) -> {
-                    try (PrintWriter writer = asyncContext.getResponse().getWriter()) {
-                        if (e != null) {
-                            writer.print(e.getMessage());
-                        } else {
-                            writer.print("" + m.body());
-                        }
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    } finally {
-                        asyncContext.complete();
+        PrintWriter writer = resp.getWriter();
+          vertx.eventBus()
+                .request("echo", message)
+                .onComplete(r -> {
+                    if (r.succeeded()) {
+                        writer.print("" + r.result().body());
+                    } else {
+                        writer.print(r.cause().getMessage());
                     }
+                    asyncContext.complete();
                 });
     }
 }

@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertx.core.buffer.Buffer;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.as.arquillian.api.ContainerResource;
@@ -207,6 +208,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         operation.get(ATTR_EVENTBUS_SSL).set(false);
         operation.get(ATTR_EVENTBUS_SSL_HAND_SHAKE_TIMEOUT).set(5000);
         operation.get(ATTR_EVENTBUS_CRL_PATHS).add("path1").add("path2");
+        operation.get(ATTR_EVENTBUS_CRL_VALUES).add("aaa").add("bbb");
         operation.get(ATTR_EVENTBUS_USE_ALPN).set(false);
         operation.get(ATTR_EVENTBUS_TCP_FAST_OPEN).set(true);
         operation.get(ATTR_EVENTBUS_TCP_CORK).set(true);
@@ -247,6 +249,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         List<String> list = result.get(ATTR_EVENTBUS_CRL_PATHS).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(list.contains("path1"));
         Assert.assertTrue(list.contains("path2"));
+        list = result.get(ATTR_EVENTBUS_CRL_VALUES).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
+        Assert.assertTrue(list.contains("aaa"));
+        Assert.assertTrue(list.contains("bbb"));
         Assert.assertFalse(result.get(ATTR_EVENTBUS_USE_ALPN).asBoolean());
         Assert.assertTrue(result.get(ATTR_EVENTBUS_TCP_FAST_OPEN).asBoolean());
         Assert.assertTrue(result.get(ATTR_EVENTBUS_TCP_CORK).asBoolean());
@@ -288,6 +293,8 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals(5000L, eventBusOptions.getSslHandshakeTimeout());
         Assert.assertTrue(eventBusOptions.getCrlPaths().contains("path1"));
         Assert.assertTrue(eventBusOptions.getCrlPaths().contains("path2"));
+        Assert.assertTrue(eventBusOptions.getCrlValues().contains(Buffer.buffer("aaa")));
+        Assert.assertTrue(eventBusOptions.getCrlValues().contains(Buffer.buffer("bbb")));
         Assert.assertFalse(eventBusOptions.isUseAlpn());
         Assert.assertTrue(eventBusOptions.isTcpFastOpen());
         Assert.assertTrue(eventBusOptions.isTcpCork());
@@ -378,7 +385,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         final String pekKeyCertOptionName = "pemKeyCert";
         ModelNode operation = pemKeyCertOptionBase(pekKeyCertOptionName, "add");
         operation.get(ATTR_PEM_KEY_CERT_KEY_PATH).add("a.key").add(absolutePathInTempDir("b.key"));
+        operation.get(ATTR_PEM_KEY_CERT_KEY_VALUE).add("aaa").add("bbb");
         operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add(absolutePathInTempDir("c.cert")).add("d.cert");
+        operation.get(ATTR_PEM_KEY_CERT_CERT_VALUE).add("ccc").add("ddd");
         executeOperation(managementClient, operation);
         ModelNode response = executeOperation(managementClient, pemKeyCertOptionBase(pekKeyCertOptionName, "read-resource"));
         ModelNode result = response.get(RESULT);
@@ -386,9 +395,15 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         List<String> keyPaths = result.get(ATTR_PEM_KEY_CERT_KEY_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(keyPaths.contains("a.key"));
         Assert.assertTrue(keyPaths.contains(absolutePathInTempDir("b.key")));
+        List<String> keyValues = result.get(ATTR_PEM_KEY_CERT_KEY_VALUE).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
+        Assert.assertTrue(keyValues.contains("aaa"));
+        Assert.assertTrue(keyValues.contains("bbb"));
         List<String> certPaths = result.get(ATTR_PEM_KEY_CERT_CERT_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(certPaths.contains("d.cert"));
         Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
+        List<String> certValues = result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
+        Assert.assertTrue(certValues.contains("ccc"));
+        Assert.assertTrue(certValues.contains("ddd"));
 
         final String eventBusOptionName = "eo";
         operation = eventBusOptionBase(eventBusOptionName, "add");
@@ -406,9 +421,15 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         keyPaths = keyCertOptions.getKeyPaths();
         Assert.assertTrue(keyPaths.contains(serverConfigDir + File.separator + "a.key"));
         Assert.assertTrue(keyPaths.contains(absolutePathInTempDir("b.key")));
+        keyValues = keyCertOptions.getKeyValues().stream().map(Buffer::toString).collect(Collectors.toList());
+        Assert.assertTrue(keyValues.contains("aaa"));
+        Assert.assertTrue(keyValues.contains("bbb"));
         certPaths = keyCertOptions.getCertPaths();
         Assert.assertTrue(certPaths.contains(serverConfigDir + File.separator + "d.cert"));
         Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
+        certValues = keyCertOptions.getCertValues().stream().map(Buffer::toString).collect(Collectors.toList());
+        Assert.assertTrue(certValues.contains("ccc"));
+        Assert.assertTrue(certValues.contains("ddd"));
 
         // clear resources
         executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
@@ -424,6 +445,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         final String pemTrustOptionName = "pemTrust";
         ModelNode operation = pemTrustOptionBase(pemTrustOptionName, "add");
         operation.get(ATTR_PEM_KEY_CERT_CERT_PATH).add(absolutePathInTempDir("c.cert")).add("d.cert");
+        operation.get(ATTR_PEM_KEY_CERT_CERT_VALUE).add("aaa").add("bbb");
         executeOperation(managementClient, operation);
         ModelNode response = executeOperation(managementClient, pemTrustOptionBase(pemTrustOptionName, "read-resource"));
         ModelNode result = response.get(RESULT);
@@ -431,6 +453,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         List<String> certPaths = result.get(ATTR_PEM_KEY_CERT_CERT_PATH).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
         Assert.assertTrue(certPaths.contains("d.cert"));
         Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
+        List<String> certValues = result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).asList().stream().map(ModelNode::asString).collect(Collectors.toList());
+        Assert.assertTrue(certValues.contains("aaa"));
+        Assert.assertTrue(certValues.contains("bbb"));
 
         final String eventBusOptionName = "eo";
         operation = eventBusOptionBase(eventBusOptionName, "add");
@@ -448,6 +473,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         certPaths = pemTrustOptions.getCertPaths();
         Assert.assertTrue(certPaths.contains(serverConfigDir + File.separator + "d.cert"));
         Assert.assertTrue(certPaths.contains(absolutePathInTempDir("c.cert")));
+        certValues = pemTrustOptions.getCertValues().stream().map(Buffer::toString).collect(Collectors.toList());
+        Assert.assertTrue(certValues.contains("aaa"));
+        Assert.assertTrue(certValues.contains("bbb"));
 
         // clear resources
         executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));

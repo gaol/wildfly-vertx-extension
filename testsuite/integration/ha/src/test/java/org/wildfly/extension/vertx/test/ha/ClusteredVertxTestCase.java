@@ -33,18 +33,15 @@ import javax.servlet.http.HttpServletResponse;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.as.arquillian.api.ServerSetup;
-import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.test.integration.common.HttpRequest;
-import org.jboss.as.test.shared.SnapshotRestoreSetupTask;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,39 +61,10 @@ import io.vertx.ext.cluster.infinispan.InfinispanClusterManager;
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
-@ServerSetup(ClusteredVertxTestCase.ClusteredTestSetupTask.class)
-@Ignore("sometime it fails, will check later")
+@RunAsClient
 public class ClusteredVertxTestCase {
 
-  public static class ClusteredTestSetupTask extends SnapshotRestoreSetupTask {
-    private Vertx clusteredVertx;
-
-    @Override
-    public void doSetup(ManagementClient managementClient, String containerId) throws Exception {
-      InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
-      Promise<Vertx> promise = Promise.promise();
-      VertxOptions vertxOptions = new VertxOptions();
-      InfinispanClusterManager clusterManager = new InfinispanClusterManager();
-      vertxOptions.setClusterManager(clusterManager);
-      new VertxBuilder(vertxOptions)
-        // default InfinispanClusterManager
-        .clusterManager(clusterManager)
-        .init()
-        .clusteredVertx(promise);
-      promise.future().flatMap(v -> {
-        clusteredVertx = v;
-        Promise<Void> p = Promise.promise();
-        clusteredVertx.eventBus().<String>consumer("inbox")
-          .handler(msg -> msg.reply("Got your message: " + msg.body())).completionHandler(p);
-        return p.future();
-      }).toCompletionStage().toCompletableFuture().get();
-    }
-
-    @Override
-    public void nonManagementCleanUp() throws Exception {
-      clusteredVertx.close().toCompletionStage().toCompletableFuture().get();
-    }
-  }
+  private Vertx clusteredVertx;
 
   @ArquillianResource
   private URL url;
@@ -105,8 +73,7 @@ public class ClusteredVertxTestCase {
   public static Archive<?> deployment() throws Exception {
     return ShrinkWrap.create(WebArchive.class, "test-send-and-check.war")
       .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-      .addClasses(ClusteredVertxTestCase.class, SendMessageAndCheckServlet.class)
-      .addPackage(HttpRequest.class.getPackage());
+      .addClasses(ClusteredVertxTestCase.class, SendMessageAndCheckServlet.class);
   }
 
   @WebServlet(value = "/sendAndCheck", asyncSupported = true)
@@ -145,9 +112,28 @@ public class ClusteredVertxTestCase {
 
   @Test
   public void testEchoAsyncServlet() throws Exception {
+    System.setProperty("jgroups.bind.address", "127.0.0.1");
+    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
+    Promise<Vertx> promise = Promise.promise();
+    VertxOptions vertxOptions = new VertxOptions();
+    InfinispanClusterManager clusterManager = new InfinispanClusterManager();
+    vertxOptions.setClusterManager(clusterManager);
+    new VertxBuilder(vertxOptions)
+      // default InfinispanClusterManager
+      .clusterManager(clusterManager)
+      .init()
+      .clusteredVertx(promise);
+    promise.future().flatMap(v -> {
+      clusteredVertx = v;
+      Promise<Void> p = Promise.promise();
+      clusteredVertx.eventBus().<String>consumer("inbox")
+        .handler(msg -> msg.reply("Got your message: " + msg.body())).completionHandler(p);
+      return p.future();
+    }).toCompletionStage().toCompletableFuture().get();
     String message = "Please check and respond";
     String res = HttpRequest.get( url.toExternalForm() + "sendAndCheck?message=" + URLEncoder.encode(message, "UTF-8"), 4, TimeUnit.SECONDS);
     Assert.assertEquals("OK", res);
+    clusteredVertx.close().toCompletionStage().toCompletableFuture().get();
   }
 
 }

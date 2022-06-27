@@ -19,9 +19,11 @@ package org.wildfly.extension.vertx.test.shared;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CORE_SERVICE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INCLUDE_RUNTIME;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RELOAD_REQUIRED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
@@ -204,6 +206,14 @@ public final class ManagementClientUtils {
         operation.get(INCLUDE_RUNTIME).set(true);
         ModelNode result = executeOperation(managementClient, operation).get(RESULT);
         return result.get("config-dir").asString();
+    }
+
+    public static boolean isReloadRequired(final ManagementClient managementClient) throws IOException {
+        ModelNode operation = new ModelNode();
+        operation.get(OP).set("read-attribute");
+        operation.get(NAME).set("server-state");
+        ModelNode result = executeOperation(managementClient, operation).get(RESULT);
+        return result.asString().equals(RELOAD_REQUIRED);
     }
 
     public static ModelNode executeOperation(final ManagementClient managementClient, final ModelNode operation)

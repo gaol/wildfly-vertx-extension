@@ -231,6 +231,8 @@ All attributes except for `address-resolver-option` and `eventbus-option` are pr
 
 > NOTE: There are sub options used to create the `EventBusOptions`, including `key-store-option`, `pem-key-cert-option`, `pem-trust-option`, `cluster-node-metadata`, please use the corresponding `:read-resource-description()` operation for each attribute description.
 
+> NOTE: Any update to the options won't require reload unless the option is referenced by a Vertx instance.
+
 
 #### Create a clustered Vert.x instance
 

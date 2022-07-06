@@ -17,10 +17,13 @@
 
 package org.wildfly.extension.vertx.test.mini.components.client;
 
+import static org.junit.Assume.assumeTrue;
+
 import org.junit.BeforeClass;
 import org.testcontainers.DockerClientFactory;
 
-import static org.junit.Assume.assumeTrue;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Container based tests.
@@ -45,4 +48,11 @@ public abstract class ContainerBasedTestCase {
             return false;
         }
     }
+
+    protected abstract String getContainerConnStr();
+
+    protected String getServiceConnStrEncoded() {
+        return URLEncoder.encode(getContainerConnStr(), StandardCharsets.UTF_8);
+    }
+
 }

@@ -16,26 +16,23 @@
  */
 package org.wildfly.extension.vertx.test.mini.components.client;
 
-import io.vertx.core.json.JsonObject;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.as.arquillian.api.ServerSetup;
-import org.jboss.as.arquillian.api.ServerSetupTask;
-import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.GenericContainer;
 
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import io.vertx.core.json.JsonObject;
 
 /**
  * Test Redis client to interact with redis server.
@@ -43,45 +40,33 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
-@ServerSetup(RedisClientTestCase.RedisContainerSetup.class)
 @RunAsClient
 public class RedisClientTestCase extends ContainerBasedTestCase {
 
-    static GenericContainer<?> redis;
+    public final static int REDIS_PORT = 6379;
 
-    public static class RedisContainerSetup implements ServerSetupTask {
-
-        @Override
-        public void setup(ManagementClient managementClient, String s) throws Exception {
-            redis = new GenericContainer<>("docker.io/library/redis:6.0.6")
-                    .withExposedPorts(6379);
-            redis.start();
-        }
-
-        @Override
-        public void tearDown(ManagementClient managementClient, String s) throws Exception {
-            redis.stop();
-        }
-    }
+    @ClassRule
+    public static ContainerBaseRule rule = new ContainerBaseRule("docker.io/library/redis:6.0.6", REDIS_PORT);
 
     @ArquillianResource
     private URL url;
 
     @Deployment
     public static Archive<?> deployment() {
-        WebArchive web = ShrinkWrap.create(WebArchive.class, "test-redis.war")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "vertx-deployment.json")
+        return ShrinkWrap.create(WebArchive.class, "test-redis.war")
                 .addPackage(RedisClientTestCase.class.getPackage())
                 .addClasses(RedisMessageServlet.class);
-        return web;
+    }
+
+    protected String getContainerConnStr() {
+        return "redis://" + rule.getContainerIPAddress() + ":" + rule.getMappedPort();
     }
 
     @Test
     public void testRedisMessage() throws Exception {
         String message = "hello";
-        String res = HttpRequest.get( url.toExternalForm() + "test-redis?message=" + message +
-                "&host=" + redis.getContainerIpAddress() +
-                "&port=" + redis.getFirstMappedPort(), 10, TimeUnit.SECONDS);
+        String res = HttpRequest.get( url.toExternalForm() + "test-redis?message=" + message
+          + "&connStr=" + getServiceConnStrEncoded(), 10, TimeUnit.SECONDS);
         Assert.assertNotNull(res);
         JsonObject resp = new JsonObject(res);
         Assert.assertNull(resp.getValue("error"));

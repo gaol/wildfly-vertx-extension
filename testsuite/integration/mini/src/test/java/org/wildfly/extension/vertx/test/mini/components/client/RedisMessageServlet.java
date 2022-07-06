@@ -16,36 +16,27 @@
  */
 package org.wildfly.extension.vertx.test.mini.components.client;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.annotation.Resource;
+import javax.servlet.AsyncContext;
+import javax.servlet.annotation.WebServlet;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.Command;
 import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.Request;
 
-import javax.annotation.Resource;
-import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 @WebServlet(value = "/test-redis", asyncSupported = true)
-public class RedisMessageServlet extends HttpServlet {
+public class RedisMessageServlet extends AbstractAsyncServlet {
 
     @Resource(name = "java:/vertx/default")
     private Vertx vertx;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final AsyncContext asyncContext = req.startAsync();
-        resp.setContentType("application/json");
-        String host = req.getParameter("host");
-        int port = Integer.parseInt(req.getParameter("port"));
-        String connStr = "redis://" + host + ":" + port;
-        String message = req.getParameter("message");
+    protected void doExecute(AsyncContext asyncContext, String connStr, String message) {
         final Redis redis = Redis.createClient(vertx, connStr);
         redis.send(Request.cmd(Command.ECHO).arg(message)).onComplete(result -> {
             JsonObject respContent = new JsonObject();
@@ -54,6 +45,7 @@ public class RedisMessageServlet extends HttpServlet {
             } else {
                 respContent.put("error", result.cause().getMessage());
             }
+            asyncContext.getResponse().setContentType("application/json");
             try (PrintWriter writer = asyncContext.getResponse().getWriter()) {
                 writer.print(respContent);
             } catch (IOException ioException) {
@@ -64,5 +56,4 @@ public class RedisMessageServlet extends HttpServlet {
             }
         });
     }
-
 }

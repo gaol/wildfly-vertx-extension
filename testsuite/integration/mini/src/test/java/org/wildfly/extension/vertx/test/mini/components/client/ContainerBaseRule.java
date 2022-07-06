@@ -16,7 +16,6 @@
  */
 package org.wildfly.extension.vertx.test.mini.components.client;
 
-import com.github.dockerjava.api.model.Bind;
 import org.junit.rules.ExternalResource;
 import org.testcontainers.containers.GenericContainer;
 
@@ -43,9 +42,6 @@ public class ContainerBaseRule extends ExternalResource {
   @Override
   protected void before() throws Throwable {
     updateContainerBeforeStart(this.container);
-    for (Bind b : container.getBinds()) {
-      System.out.println("BBB:" + b.toString());
-    }
     container.start();
   }
 

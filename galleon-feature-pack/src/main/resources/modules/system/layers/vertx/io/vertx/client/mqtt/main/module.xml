@@ -22,17 +22,19 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.9" name="io.vertx.client">
+<module xmlns="urn:jboss:module:1.9" name="io.vertx.client.mqtt">
     <properties>
         <property name="jboss.api" value="private"/>
     </properties>
 
+    <resources>
+        <artifact name="${io.vertx:vertx-mqtt}"/>
+    </resources>
+
     <dependencies>
-        <module name="io.vertx.client.redis" optional="true" export="true"/>
-        <module name="io.vertx.web.client" export="true" services="export" />
-        <module name="io.vertx.client.consul" optional="true" export="true" />
-        <module name="io.vertx.client.sql" optional="true" export="true" />
-        <module name="io.vertx.client.mongo" optional="true" export="true" />
-        <module name="io.vertx.client.mqtt" optional="true" export="true" />
+        <module name="java.logging"/>
+        <module name="io.vertx.core" />
+        <module name="org.slf4j" />
+        <module name="io.netty" />
     </dependencies>
 </module>

@@ -21,6 +21,7 @@
         <artifact name="${io.netty:netty-codec}"/>
         <artifact name="${io.netty:netty-codec-dns}"/>
         <artifact name="${io.netty:netty-codec-haproxy}"/>
+        <artifact name="${io.netty:netty-codec-mqtt}"/>
         <artifact name="${io.netty:netty-codec-http}"/>
         <artifact name="${io.netty:netty-codec-http2}"/>
         <artifact name="${io.netty:netty-codec-socks}"/>

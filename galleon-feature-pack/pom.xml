@@ -253,6 +253,16 @@
             <artifactId>mongodb-driver-core</artifactId>
         </dependency>
 
+        <!-- vertx-mqtt-client-->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-mqtt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-mqtt</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

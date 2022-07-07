@@ -41,13 +41,17 @@ public class ContainerBaseRule extends ExternalResource {
 
   @Override
   protected void before() throws Throwable {
-    updateContainerBeforeStart(this.container);
-    container.start();
+    if (ContainerBasedTestCase.isContainerOK()) {
+      updateContainerBeforeStart(this.container);
+      container.start();
+    }
   }
 
   @Override
   protected void after() {
-    container.stop();
+    if (ContainerBasedTestCase.isContainerOK()) {
+      container.stop();
+    }
   }
 
   public String getContainerIPAddress() {

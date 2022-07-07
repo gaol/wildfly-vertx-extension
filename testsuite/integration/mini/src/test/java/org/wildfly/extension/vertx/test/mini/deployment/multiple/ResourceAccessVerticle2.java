@@ -3,14 +3,14 @@ package org.wildfly.extension.vertx.test.mini.deployment.multiple;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.MessageConsumer;
 
-public class ResourceAccessVerticle extends AbstractVerticle {
+public class ResourceAccessVerticle2 extends AbstractVerticle {
 
     private MessageConsumer<String> consumer;
 
     @Override
     public void start() throws Exception {
         consumer = vertx.eventBus()
-                .<String>localConsumer("res-access")
+                .<String>localConsumer("res-access-2")
                 .handler(msg -> {
                     vertx.fileSystem().readFile(msg.body()).onComplete(result -> {
                         if (result.succeeded()) {

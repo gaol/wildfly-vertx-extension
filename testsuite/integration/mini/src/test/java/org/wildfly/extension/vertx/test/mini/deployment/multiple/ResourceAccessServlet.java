@@ -16,7 +16,8 @@
  */
 package org.wildfly.extension.vertx.test.mini.deployment.multiple;
 
-import io.vertx.core.Vertx;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.annotation.Resource;
 import javax.servlet.AsyncContext;
@@ -25,8 +26,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import io.vertx.core.Vertx;
 
 /**
  * A servlet that uses Vert.x filesystem API to read resources from bundle.
@@ -46,8 +47,9 @@ public class ResourceAccessServlet extends HttpServlet {
         if (res == null || res.length() == 0) {
             res = "config.json";
         }
+        String addr = req.getParameter("addr");
         final AsyncContext asyncContext = req.startAsync();
-        vertx.eventBus().<String>request("res-access", res)
+        vertx.eventBus().<String>request(addr, res)
                 .onComplete(result -> {
                     if (result.succeeded()) {
                         try (PrintWriter writer = asyncContext.getResponse().getWriter()) {

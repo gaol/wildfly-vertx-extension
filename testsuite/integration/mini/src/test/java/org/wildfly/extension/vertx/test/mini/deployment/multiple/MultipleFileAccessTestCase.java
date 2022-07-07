@@ -17,7 +17,8 @@
 
 package org.wildfly.extension.vertx.test.mini.deployment.multiple;
 
-import io.vertx.core.json.JsonObject;
+import java.net.URL;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -36,7 +37,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.net.URL;
+import io.vertx.core.json.JsonObject;
 
 /**
  * When same Vertx instance is used for multiple deployments
@@ -55,26 +56,32 @@ public class MultipleFileAccessTestCase {
     @OperateOnDeployment("test-res2")
     private URL res2URL;
 
-    private static URL packageResURL(String res) {
-        String path = MultipleFileAccessTestCase.class.getPackage().getName().replace(".", "/") + "/" + res;
-        return MultipleFileAccessTestCase.class.getClassLoader().getResource(path);
-    }
-
     @Deployment(name = "test-res1")
     public static Archive<?> deployment1() {
-        WebArchive web = ShrinkWrap.create(WebArchive.class, "test-res1.war")
-                .addAsWebInfResource(packageResURL("vertx-deployment.json"), "vertx-deployment.json")
+        return ShrinkWrap.create(WebArchive.class, "test-res1.war")
+                .addAsWebInfResource(new StringAsset("{\n" +
+                  "  \"deployments\": [\n" +
+                  "    {\n" +
+                  "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.ResourceAccessVerticle1\"\n" +
+                  "    }\n" +
+                  "  ]\n" +
+                  "}"), "vertx-deployment.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res1\"}"), "config.json")
-                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle.class);
-        return web;
+                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle1.class);
     }
 
     @Deployment(name = "test-res2")
     public static Archive<?> deployment2() {
         WebArchive web = ShrinkWrap.create(WebArchive.class, "test-res2.war")
-                .addAsWebInfResource(packageResURL("vertx-deployment.json"), "vertx-deployment.json")
+              .addAsWebInfResource(new StringAsset("{\n" +
+                "  \"deployments\": [\n" +
+                "    {\n" +
+                "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.ResourceAccessVerticle2\"\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}"), "vertx-deployment.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res2\"}"), "config.json")
-                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle.class);
+                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle2.class);
         return web;
     }
 
@@ -82,12 +89,12 @@ public class MultipleFileAccessTestCase {
     @OperateOnDeployment("test-res2")
     public void testFileAccessInMultipleDeployments() throws Exception {
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            HttpResponse res1Resp = client.execute(new HttpGet(res1URL.toString() + "resource-access?res=config.json"));
+            HttpResponse res1Resp = client.execute(new HttpGet(res1URL.toString() + "resource-access?addr=res-access-1&res=config.json"));
             Assert.assertEquals(200, res1Resp.getStatusLine().getStatusCode());
             JsonObject configRes1 = new JsonObject(EntityUtils.toString(res1Resp.getEntity()));
             Assert.assertEquals("test-res1", configRes1.getString("name"));
 
-            HttpResponse res2Resp = client.execute(new HttpGet(res2URL.toString() + "resource-access?res=config.json"));
+            HttpResponse res2Resp = client.execute(new HttpGet(res2URL.toString() + "resource-access?addr=res-access-2&res=config.json"));
             Assert.assertEquals(200, res2Resp.getStatusLine().getStatusCode());
             JsonObject configRes2 = new JsonObject(EntityUtils.toString(res2Resp.getEntity()));
             Assert.assertEquals("test-res2", configRes2.getString("name"));

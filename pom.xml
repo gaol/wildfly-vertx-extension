@@ -50,6 +50,7 @@
         <version.curator>2.13.0</version.curator>
         <version.zookeeper>3.4.14</version.zookeeper>
         <version.jackson-dataformat-yaml>2.12.3</version.jackson-dataformat-yaml>
+        <version.mongo>4.1.2</version.mongo>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <module.name>org.wildfly.extension.vertx</module.name>
@@ -244,6 +245,21 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${version.jackson-dataformat-yaml}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-reactivestreams</artifactId>
+                <version>${version.mongo}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-core</artifactId>
+                <version>${version.mongo}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>bson</artifactId>
+                <version>${version.mongo}</version>
             </dependency>
 
             <!-- Project own artifacts dependencies -->

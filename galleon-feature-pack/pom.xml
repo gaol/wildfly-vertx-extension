@@ -263,6 +263,11 @@
             <artifactId>netty-codec-mqtt</artifactId>
         </dependency>
 
+        <!-- health check -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-health-check</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

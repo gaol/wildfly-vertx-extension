@@ -275,6 +275,11 @@
             <artifactId>vertx-tcp-eventbus-bridge</artifactId>
         </dependency>
 
+        <!-- vertx-service-proxy -->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-service-proxy</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

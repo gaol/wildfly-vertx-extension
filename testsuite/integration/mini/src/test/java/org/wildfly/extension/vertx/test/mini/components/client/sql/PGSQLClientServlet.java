@@ -19,9 +19,9 @@ package org.wildfly.extension.vertx.test.mini.components.client.sql;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.inject.Inject;
-import javax.servlet.AsyncContext;
-import javax.servlet.annotation.WebServlet;
+import jakarta.inject.Inject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.WebServlet;
 
 import io.vertx.pgclient.PgConnection;
 import org.wildfly.extension.vertx.test.mini.components.client.AbstractAsyncServlet;
@@ -29,7 +29,6 @@ import org.wildfly.extension.vertx.test.mini.components.client.AbstractAsyncServ
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.mysqlclient.MySQLConnection;
 
 @WebServlet(value = "/test-pgsql", asyncSupported = true)
 public class PGSQLClientServlet extends AbstractAsyncServlet {
@@ -48,6 +47,7 @@ public class PGSQLClientServlet extends AbstractAsyncServlet {
                   result.result().forEach(row -> jsonArray.add(row.toJson()));
                   respContent.put("response", jsonArray);
               } else {
+                result.cause().printStackTrace();
                   respContent.put("error", result.cause().getMessage());
               }
               asyncContext.getResponse().setContentType("application/json");

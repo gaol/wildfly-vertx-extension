@@ -18,9 +18,9 @@ package org.wildfly.extension.vertx.test.mini.injection;
 
 import io.vertx.core.Vertx;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
 
 @Stateless
 public class InjectionEJB {

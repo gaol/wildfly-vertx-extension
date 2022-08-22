@@ -19,9 +19,9 @@ package org.wildfly.extension.vertx.test.mini.components.client;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.annotation.Resource;
-import javax.servlet.AsyncContext;
-import javax.servlet.annotation.WebServlet;
+import jakarta.annotation.Resource;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.WebServlet;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;

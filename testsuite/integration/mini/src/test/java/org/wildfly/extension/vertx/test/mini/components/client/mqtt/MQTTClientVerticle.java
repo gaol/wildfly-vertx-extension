@@ -42,14 +42,27 @@ public class MQTTClientVerticle extends AbstractVerticle {
             String host = body.getString("host");
             int port = body.getInteger("port");
             String message = body.getString("message");
-            client.publishHandler(m -> {
-                msg.reply(m.payload());
-                client.disconnect();
-            });
-            client.connect(port, host)
-              .flatMap(i -> client.subscribe(TOPIC, 1))
-              .flatMap(i -> client.publish(TOPIC,
-                    Buffer.buffer(message), MqttQoS.AT_LEAST_ONCE, false, false));
+            System.out.println("Get message::: host= " + host + ", port: " + port + ", message: " + message);
+//            client.publishHandler(m -> {
+//                System.out.println("\n =========  \n, Got payload:: " + m.payload());
+//                msg.reply(m.payload());
+//                client.disconnect();
+//            });
+            client.pingResponseHandler(m -> {
+                System.out.println("\n =========  \n, Got payload:: ");
+                msg.reply(Buffer.buffer("got it!!"));
+                  client.disconnect().onComplete(r -> {
+                    if (r.succeeded()) {
+                        System.out.println("good");
+                    } else {
+                        r.cause().printStackTrace();
+                    }
+                });
+            }).connect(port, host)
+//              .flatMap(i -> client.subscribe(TOPIC, 1))
+//              .flatMap(i -> client.publish(TOPIC,
+//                    Buffer.buffer(message), MqttQoS.AT_LEAST_ONCE, false, false));
+            ;
         });
     }
 

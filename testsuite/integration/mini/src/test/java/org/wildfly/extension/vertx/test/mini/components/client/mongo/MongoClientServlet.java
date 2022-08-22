@@ -19,9 +19,9 @@ package org.wildfly.extension.vertx.test.mini.components.client.mongo;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.inject.Inject;
-import javax.servlet.AsyncContext;
-import javax.servlet.annotation.WebServlet;
+import jakarta.inject.Inject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.wildfly.extension.vertx.test.mini.components.client.AbstractAsyncServlet;
 

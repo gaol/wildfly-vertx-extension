@@ -17,10 +17,15 @@
     </resources>
 
     <dependencies>
-        <module name="java.logging"/>
         <module name="java.naming"/>
-        <module name="wildflyee.api" />
-        <module name="javax.transaction.api" />
+        <module name="javax.annotation.api"/>
+        <module name="jakarta.enterprise.api"/>
+        <module name="javax.enterprise.concurrent.api"/>
+        <module name="javax.inject.api"/>
+        <module name="javax.interceptor.api"/>
+        <module name="javax.servlet.api"/>
+        <module name="javax.ws.rs.api"/>
+
         <module name="org.jboss.staxmapper"/>
         <module name="org.jboss.jandex"/>
         <module name="org.jboss.modules"/>
@@ -36,7 +41,14 @@
         <module name="org.jboss.weld.core"/>
         <module name="org.jboss.as.weld.common" />
         <!-- the io.netty module is only require to initialize Netty's InternalLoggingFactory -->
-        <module name="io.netty" />
+        <module name="io.netty.netty-buffer"/>
+        <module name="io.netty.netty-transport"/>
+        <module name="io.netty.netty-handler"/>
+        <module name="io.netty.netty-codec"/>
+        <module name="io.netty.netty-resolver"/>
+        <module name="io.netty.netty-common"/>
+        <module name="io.netty.netty-transport-native-epoll"/>
+        <module name="io.netty.netty-transport-native-kqueue"/>
         <module name="org.slf4j"/>
 
         <module name="io.vertx.core" export="true" />

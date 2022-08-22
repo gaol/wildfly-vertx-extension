@@ -14,22 +14,11 @@
 
 <build xmlns="urn:wildfly:feature-pack-build:3.1" producer="org.wildfly.extension.vertx:wildfly-vertx-feature-pack">
     <dependencies>
+        <dependency group-id="org.wildfly" artifact-id="wildfly-galleon-pack">
+            <name>org.wildfly:wildfly-galleon-pack</name>
+        </dependency>
         <dependency group-id="org.wildfly" artifact-id="wildfly-ee-galleon-pack">
             <name>org.wildfly:wildfly-ee-galleon-pack</name>
-            <packages inherit="false">
-                <include name="docs"/>
-                <exclude name="docs.examples" />
-                <include name="appclient"/>
-                <include name="bin"/>
-                <include name="product.conf"/>
-            </packages>
-            <default-configs inherit="false">
-                <exclude name="standalone.xml" model="standalone"/>
-                <exclude name="standalone-ha.xml" model="standalone"/>
-                <exclude name="standalone-full.xml" model="standalone"/>
-                <exclude name="standalone-full-ha.xml" model="standalone"/>
-                <exclude name="standalone-load-balancer.xml" model="standalone"/>
-            </default-configs>
         </dependency>
     </dependencies>
     <default-packages>
@@ -39,13 +28,6 @@
         <package name="docs.examples"/>
         <package name="default-vertx-options.json"/>
     </default-packages>
-    <package-schemas>
-        <group name="org.jboss.as"/>
-        <group name="org.jboss.metadata"/>
-        <group name="org.wildfly"/>
-        <group name="org.wildfly.core"/>
-        <group name="org.wildfly.security"/>
-    </package-schemas>
 
     <config name="standalone-vertx.xml" model="standalone"/>
     <config name="standalone-vertx-ha.xml" model="standalone"/>

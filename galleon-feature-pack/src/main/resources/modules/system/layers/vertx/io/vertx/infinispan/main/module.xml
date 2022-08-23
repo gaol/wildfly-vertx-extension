@@ -36,13 +36,14 @@
 
     <dependencies>
         <module name="java.logging"/>
-        <module name="javax.transaction.api" />
+        <module name="jakarta.transaction.api" />
+        <module name="internal.javax.transaction.api"/>
         <module name="io.vertx.core"/>
+        <module name="org.infinispan" services="export" export="true" />
         <module name="org.wildfly.clustering.jgroups.spi" export="true"/>
-        <module name="org.infinispan" export="true" services="import" />
-        <module name="org.infinispan.commons" export="true" services="export"/>
-        <module name="org.infinispan.protostream" export="true" services="import"/>
-        <module name="org.infinispan.client.hotrod" export="true" services="import"/>
+        <module name="org.infinispan.commons" export="true"/>
+        <module name="org.infinispan.protostream" export="true"/>
+        <module name="org.infinispan.client.hotrod" export="true"/>
         <module name="org.jgroups" />
         <module name="org.jboss.logging" />
         <module name="org.slf4j" />

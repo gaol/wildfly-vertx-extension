@@ -73,9 +73,6 @@
               <sourceDocumentName>index.adoc</sourceDocumentName>
               <backend>html</backend>
               <doctype>book</doctype>
-              <attributes>
-                <version>${project.version}</version>
-              </attributes>
             </configuration>
           </execution>
         </executions>

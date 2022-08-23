@@ -7,7 +7,7 @@ If you have an existing WildFly server already, you have 2 options to have this 
 .Install feature pack to existing server
 [source,bash]
 ----
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version}
 ----
@@ -26,7 +26,7 @@ You can specify one of them to install to an existing server, similar as above, 
 .Install part of the feature pack to existing server
 [source,bash]
 ----
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version} --layers=vertx
 ----
@@ -37,7 +37,7 @@ in case of clustered Vertx, you need layer of `vertx-ha`, and you need to specif
 
 [source,bash]
 ----
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version} --layers=vertx-ha --config=standalone-ha.xml
 ----

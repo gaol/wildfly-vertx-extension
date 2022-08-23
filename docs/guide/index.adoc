@@ -13,7 +13,6 @@ Lin Gao
 
 :project-version: {version}
 
-
 (C) 2022 The original authors.
 
 

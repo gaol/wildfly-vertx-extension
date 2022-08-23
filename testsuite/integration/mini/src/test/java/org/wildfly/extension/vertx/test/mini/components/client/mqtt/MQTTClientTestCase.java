@@ -33,7 +33,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.vertx.test.mini.components.client.ContainerBaseRule;
@@ -46,7 +45,6 @@ import io.vertx.core.json.JsonObject;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@Ignore
 public class MQTTClientTestCase extends ContainerBasedTestCase {
 
   @ArquillianResource

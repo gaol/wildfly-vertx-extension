@@ -39,7 +39,7 @@
         <module name="io.netty.netty-transport"/>
         <module name="io.netty.netty-handler"/>
         <module name="io.netty.netty-codec"/>
-        <module name="io.netty.netty-codec-mqtt"/>
+        <module name="io.netty.netty-codec-mqtt" export="true"/>
         <module name="io.netty.netty-resolver"/>
         <module name="io.netty.netty-common"/>
         <module name="io.netty.netty-transport-native-epoll"/>

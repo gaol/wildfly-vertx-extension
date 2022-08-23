@@ -19,11 +19,11 @@ package org.wildfly.extension.vertx.examples.ejb;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
-import javax.ejb.Asynchronous;
-import javax.ejb.Stateless;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.Stateless;
 import java.util.concurrent.Future;
 
 @Stateless

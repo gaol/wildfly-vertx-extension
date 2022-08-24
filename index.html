@@ -443,8 +443,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>WildFly Vertx Extension Documentation</h1>
 <div class="details">
 <span id="author" class="author">Lin Gao</span><br>
-<span id="revnumber">version 1.0.0-SNAPSHOT,</span>
-<span id="revdate">2022-06-27</span>
+<span id="revnumber">version {version},</span>
+<span id="revdate">2022-08-24</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -571,7 +571,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Located at <code>build/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code>.</p>
+<p>Located at <code>build/target/wildfly-vertx-build-{version}/</code>.</p>
 </li>
 <li>
 <p>The thin server contains all configurations and JBoss module files (<code>module.xml</code>) which define the Maven artifact, without the jar files.</p>
@@ -584,7 +584,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Located at <code>dist/target/wildfly-vertx-build-1.0.0-SNAPSHOT/</code>.</p>
+<p>Located at <code>dist/target/wildfly-vertx-build-{version}/</code>.</p>
 </li>
 <li>
 <p>The full server contains everything including jar files.</p>
@@ -597,7 +597,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Located at <code>galleon-feature-pack/target/wildfly-vertx-feature-pack-1.0.0-SNAPSHOT.zip</code>.</p>
+<p>Located at <code>galleon-feature-pack/target/wildfly-vertx-feature-pack-{version}.zip</code>.</p>
 </li>
 <li>
 <p>This feature pack can be installed in an existing WildFly server.</p>
@@ -685,7 +685,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">Install feature pack to existing server</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Alpha4"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT</code></pre>
 </div>
@@ -715,7 +715,7 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 <div class="listingblock">
 <div class="title">Install part of the feature pack to existing server</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Alpha4"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx</code></pre>
 </div>
@@ -728,7 +728,7 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#26.0.1.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Alpha4"
 
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx-ha --config=standalone-ha.xml</code></pre>
 </div>
@@ -1548,8 +1548,8 @@ public class EchoService {
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0.0-SNAPSHOT<br>
-Last updated 2022-06-27 06:32:11 UTC
+Version {version}<br>
+Last updated 2022-08-24 02:01:58 UTC
 </div>
 </div>
 </body>

@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - docs/**
 jobs:
   Build-Docs:
     name: Generate doc site

@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>35</version>
+        <version>39</version>
     </parent>
 
     <groupId>org.wildfly.extension.vertx</groupId>
@@ -35,14 +35,14 @@
         <maven.compiler.source>11</maven.compiler.source>
 
         <!-- WildFly versions -->
-        <version.wildfly>27.0.0.Alpha4</version.wildfly>
-        <version.org.wildfly.core>19.0.0.Beta15</version.org.wildfly.core>
+        <version.wildfly>27.0.0.Final</version.wildfly>
+        <version.org.wildfly.core>19.0.0.Final</version.org.wildfly.core>
         <version.org.wildfly.common>1.6.0.Final</version.org.wildfly.common>
-        <version.infinispan>13.0.10.Final</version.infinispan>
-        <version.vertx>4.3.1</version.vertx>
-        <version.netty>4.1.77.Final</version.netty>
+        <version.org.infinispan>14.0.3.Final</version.org.infinispan>
+        <version.vertx>4.3.4</version.vertx>
+        <version.io.netty>4.1.84.Final</version.io.netty>
+        <version.org.wildfly.arquillian>5.0.0.Alpha3</version.org.wildfly.arquillian>
 
-        <version.wildfly.arquillian>5.0.0.Alpha3</version.wildfly.arquillian>
         <version.junit>4.13.1</version.junit>
         <version.testcontainer>1.16.0</version.testcontainer>
         <version.jsch>0.1.55</version.jsch>
@@ -76,8 +76,8 @@
 
         <surefire.redirect.tofile>true</surefire.redirect.tofile>
         <surefire.enable.assert>true</surefire.enable.assert>
-        <version.org.jboss.galleon>4.2.8.Final</version.org.jboss.galleon>
-        <version.org.wildfly.galleon.plugin>5.2.6.Final</version.org.wildfly.galleon.plugin>
+        <version.org.jboss.galleon>5.0.5.Final</version.org.jboss.galleon>
+        <version.org.wildfly.galleon.plugin>6.2.0.Final</version.org.wildfly.galleon.plugin>
 
         <!-- Galleon -->
         <galleon.fork.embedded>true</galleon.fork.embedded>
@@ -144,83 +144,28 @@
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
-                <artifactId>netty-common</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-buffer</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-transport</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-handler</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-handler-proxy</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-dns</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
                 <artifactId>netty-codec-mqtt</artifactId>
-                <version>${version.netty}</version>
+                <version>${version.io.netty}</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-haproxy</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-http2</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver</artifactId>
-                <version>${version.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-resolver-dns</artifactId>
-                <version>${version.netty}</version>
+                <version>${version.io.netty}</version>
             </dependency>
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-multimap</artifactId>
-                <version>${version.infinispan}</version>
+                <version>${version.org.infinispan}</version>
             </dependency>
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-clustered-lock</artifactId>
-                <version>${version.infinispan}</version>
+                <version>${version.org.infinispan}</version>
             </dependency>
             <dependency>
                 <groupId>org.infinispan</groupId>
                 <artifactId>infinispan-clustered-counter</artifactId>
-                <version>${version.infinispan}</version>
+                <version>${version.org.infinispan}</version>
             </dependency>
             <dependency>
                 <groupId>com.jcraft</groupId>

@@ -53,6 +53,7 @@
 
         <module name="io.vertx.core" export="true" />
         <module name="io.vertx.infinispan" optional="true" export="true" services="export" />
+        <module name="org.wildfly.clustering.jgroups.spi" optional="true" />
 
         <module name="io.vertx.web" optional="true" export="true" />
         <module name="io.vertx.client" optional="true" export="true" />

@@ -59,5 +59,6 @@
         <module name="io.vertx.client" optional="true" export="true" />
         <module name="io.vertx.auth" optional="true" export="true" />
         <module name="io.vertx.config" optional="true" export="true" />
+        <module name="io.vertx.rx2" optional="true" export="true" />
     </dependencies>
 </module>

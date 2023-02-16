@@ -16,20 +16,20 @@
  */
 package org.wildfly.extension.vertx.test.shared.ejb;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.eventbus.MessageConsumer;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.annotation.Resource;
-import jakarta.ejb.Asynchronous;
-import jakarta.ejb.Stateless;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.MessageConsumer;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.Stateless;
+import jakarta.inject.Inject;
+
 @Stateless
 public class EchoService {
-    @Resource(name = "java:/vertx/default")
+    @Inject
     private Vertx vertx;
 
     private MessageConsumer<String> consumer;

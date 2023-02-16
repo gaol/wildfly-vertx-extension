@@ -16,13 +16,19 @@
  */
 package org.wildfly.extension.vertx.test.ha;
 
-import io.netty.util.internal.logging.InternalLoggerFactory;
-import io.netty.util.internal.logging.JdkLoggerFactory;
-import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
-import io.vertx.core.impl.VertxBuilder;
-import io.vertx.ext.cluster.infinispan.InfinispanClusterManager;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.executeOperation;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -30,7 +36,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.test.integration.common.HttpRequest;
-import org.jboss.as.test.integration.management.util.ServerReload;
 import org.jboss.as.test.shared.SnapshotRestoreSetupTask;
 import org.jboss.dmr.ModelNode;
 import org.jboss.shrinkwrap.api.Archive;
@@ -42,7 +47,15 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.wildfly.extension.vertx.test.shared.AbstractMgtTestBase;
 
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
+import io.vertx.core.impl.VertxBuilder;
+import io.vertx.ext.cluster.infinispan.InfinispanClusterManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
@@ -50,20 +63,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
-
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addVertxOperation;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.executeOperation;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.removeVertxOperation;
+import org.wildfly.extension.vertx.test.shared.ManagementClientUtils;
 
 /**
  * This is a test covering the case that messages flowing in the event bus between 2 Vertx instances.
@@ -76,12 +76,10 @@ import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.remo
 @RunWith(Arquillian.class)
 @RunAsClient
 @ServerSetup(ClusteredVertxJGroupsFileTestCase.ClusteredTestSetupTask.class)
-public class ClusteredVertxJGroupsFileTestCase {
+public class ClusteredVertxJGroupsFileTestCase extends AbstractMgtTestBase {
 
   @ClassRule
   public static TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-  private static final String CLUSTERED_VERTX_NAME = "clusterVertx";
 
   public static class ClusteredTestSetupTask extends SnapshotRestoreSetupTask {
     private Vertx clusteredVertx;
@@ -93,9 +91,6 @@ public class ClusteredVertxJGroupsFileTestCase {
     @Override
     public void doSetup(ManagementClient managementClient, String containerId) throws Exception {
       tmpFileLoc = temporaryFolder.newFolder().getAbsolutePath();
-      // remove the default vertx instance
-      executeOperation(managementClient, removeVertxOperation("default"));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
 
       System.setProperty("vertx.jgroups.config", JGROUPS_FILE_LOCATION);
       System.setProperty(JGROUPS_FILE_PING_LOCATION, tmpFileLoc);
@@ -108,12 +103,7 @@ public class ClusteredVertxJGroupsFileTestCase {
       executeOperation(managementClient, operation);
 
       // setup vertx with jgroups-stack-file=test-jgroups-stack.xml
-      ModelNode addVertxOperation = addVertxOperation(CLUSTERED_VERTX_NAME);
-      addVertxOperation.get("clustered").set(true);
-      addVertxOperation.get("jgroups-stack-file").set(Paths.get(getClass().getClassLoader().getResource(JGROUPS_FILE_LOCATION).toURI()).toString());
-      executeOperation(managementClient, addVertxOperation);
-
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
+      updateVertx(managementClient, true, Paths.get(getClass().getClassLoader().getResource(JGROUPS_FILE_LOCATION).toURI()).toString());
 
       InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
       Promise<Vertx> promise = Promise.promise();
@@ -149,7 +139,8 @@ public class ClusteredVertxJGroupsFileTestCase {
   public static Archive<?> deployment() throws Exception {
     return ShrinkWrap.create(WebArchive.class, "test-send-and-check-jgroups-stack-file.war")
       .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-      .addClasses(ClusteredVertxJGroupsFileTestCase.class, SendMessageAndCheckServlet.class);
+      .addClasses(AbstractMgtTestBase.class, ManagementClientUtils.class,
+        ClusteredVertxJGroupsFileTestCase.class, SendMessageAndCheckServlet.class);
   }
 
   @WebServlet(value = "/sendAndCheck", asyncSupported = true)

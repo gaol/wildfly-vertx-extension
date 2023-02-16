@@ -26,6 +26,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -54,6 +55,7 @@ public class RedisClientTestCase extends ContainerBasedTestCase {
     @Deployment
     public static Archive<?> deployment() {
         return ShrinkWrap.create(WebArchive.class, "test-redis.war")
+          .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addPackage(RedisClientTestCase.class.getPackage())
                 .addClasses(RedisMessageServlet.class);
     }

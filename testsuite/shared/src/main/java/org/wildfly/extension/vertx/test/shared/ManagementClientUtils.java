@@ -16,7 +16,6 @@
  */
 package org.wildfly.extension.vertx.test.shared;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.ADD;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CORE_SERVICE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
@@ -24,7 +23,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.READ_RESOURCE_OPERATION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RELOAD_REQUIRED;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOVE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
 
@@ -32,6 +30,7 @@ import java.io.IOException;
 
 import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.controller.client.helpers.ClientConstants;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.dmr.ModelNode;
 import org.wildfly.extension.vertx.VertxConstants;
 
@@ -49,14 +48,13 @@ public final class ManagementClientUtils {
     }
 
     /**
-     * Returns the vertx address, like: /subsystem=vertx/vertx=xxx
+     * Returns the vertx address, /subsystem=vertx/service=vertx
      *
-     * @param name the vertx name
      * @return the management address of the specified Vertx
      */
-    public static ModelNode vertxPath(String name) {
+    public static ModelNode vertxAddress() {
         ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX).add(VertxConstants.ELEMENT_VERTX, name);
+        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX).add(VertxConstants.VERTX_SERVICE, VertxConstants.ELEMENT_VERTX);
         address.protect();
         return address;
     }
@@ -67,14 +65,14 @@ public final class ManagementClientUtils {
      * @param optionName the option name
      * @return the management address of the specified vertx-option
      */
-    public static ModelNode vertxOptionPath(String optionName) {
+    public static ModelNode vertxOptionAddress(String optionName) {
         ModelNode address = new ModelNode();
         address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX).add(VertxConstants.ELEMENT_VERTX_OPTION, optionName);
         address.protect();
         return address;
     }
 
-    public static ModelNode addressResolverOptionBase(String addressOptionName, String operationName) {
+    public static ModelNode addressResolverOperation(String addressOptionName, String operationName) {
         ModelNode address = new ModelNode();
         address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
           .add(VertxConstants.ELEMENT_VERTX_OPTION_ADDRESS_RESOLVER, addressOptionName);
@@ -85,7 +83,7 @@ public final class ManagementClientUtils {
         return operation;
     }
 
-    public static ModelNode eventBusOptionBase(String eventBusName, String operationName) {
+    public static ModelNode eventBusOperation(String eventBusName, String operationName) {
         ModelNode address = new ModelNode();
         address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
           .add(VertxConstants.ELEMENT_VERTX_EVENTBUS, eventBusName);
@@ -107,8 +105,8 @@ public final class ManagementClientUtils {
         return operation;
     }
 
-    public static ModelNode vertxOptionOperationBase(String optionName, String operationName) {
-        final ModelNode address = vertxOptionPath(optionName);
+    public static ModelNode vertxOptionOperation(String optionName, String operationName) {
+        final ModelNode address = vertxOptionAddress(optionName);
         final ModelNode operation = new ModelNode();
         operation.get(OP).set(operationName);
         operation.get(OP_ADDR).set(address);
@@ -149,7 +147,7 @@ public final class ManagementClientUtils {
     }
 
     public static VertxOptions readVertxOptions(final ManagementClient managementClient, String optionName) throws IOException {
-        ModelNode result = executeOperation(managementClient, vertxOptionOperationBase(optionName, "show-info")).get(RESULT);
+        ModelNode result = executeOperation(managementClient, vertxOptionOperation(optionName, "show-info")).get(RESULT);
         JsonObject json = new JsonObject(result.toJSONString(true));
         if (json.containsKey("eventBusOptions")) {
             JsonObject eventBusOption = json.getJsonObject("eventBusOptions");
@@ -160,8 +158,8 @@ public final class ManagementClientUtils {
         return new VertxOptions(json);
     }
 
-    public static ModelNode vertxOperationBase(String name, String operationName) {
-        final ModelNode address = vertxPath(name);
+    public static ModelNode vertxOperation(String operationName) {
+        final ModelNode address = vertxAddress();
         final ModelNode operation = new ModelNode();
         operation.get(OP).set(operationName);
         operation.get(OP_ADDR).set(address);
@@ -169,31 +167,14 @@ public final class ManagementClientUtils {
     }
 
     public static ModelNode readVertxOptionOperation(String optionName) {
-        final ModelNode operation = vertxOptionOperationBase(optionName, READ_RESOURCE_OPERATION);
+        final ModelNode operation = vertxOptionOperation(optionName, READ_RESOURCE_OPERATION);
         operation.get(INCLUDE_RUNTIME).set(true);
         return operation;
     }
 
-    public static ModelNode readVertxOperation(String name) {
-        final ModelNode operation = vertxOperationBase(name, READ_RESOURCE_OPERATION);
+    public static ModelNode readVertxOperation() {
+        final ModelNode operation = vertxOperation(READ_RESOURCE_OPERATION);
         operation.get(INCLUDE_RUNTIME).set(true);
-        return operation;
-    }
-
-    public static ModelNode addVertxOperation(String name) {
-        return vertxOperationBase(name, ADD);
-    }
-
-    public static ModelNode removeVertxOperation(String name) {
-        return vertxOperationBase(name, REMOVE);
-    }
-
-    public static ModelNode listVertxOperation() {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, "vertx");
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set("list-vertx");
-        operation.get(OP_ADDR).set(address);
         return operation;
     }
 

@@ -16,22 +16,22 @@
  */
 package org.wildfly.extension.vertx.test.mini.deployment;
 
-import io.vertx.core.Vertx;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import jakarta.annotation.Resource;
+import io.vertx.core.Vertx;
+import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(value = "/test", asyncSupported = true)
 public class TestServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Inject
     private Vertx vertx;
 
     @Override

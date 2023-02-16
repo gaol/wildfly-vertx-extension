@@ -25,13 +25,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.wildfly.extension.vertx.VertxConstants;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet(value = "/test", asyncSupported = true)
 public class TestServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(lookup = VertxConstants.VERTX_JNDI_NAME)
     private Vertx vertx;
 
     @Override

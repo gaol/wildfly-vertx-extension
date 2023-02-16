@@ -47,7 +47,7 @@ public class PGSQLClientServlet extends AbstractAsyncServlet {
                   result.result().forEach(row -> jsonArray.add(row.toJson()));
                   respContent.put("response", jsonArray);
               } else {
-                result.cause().printStackTrace();
+                  result.cause().printStackTrace();
                   respContent.put("error", result.cause().getMessage());
               }
               asyncContext.getResponse().setContentType("application/json");

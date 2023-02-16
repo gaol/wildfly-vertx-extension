@@ -19,20 +19,19 @@ package org.wildfly.extension.vertx.test.mini.components.client;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import jakarta.annotation.Resource;
-import jakarta.servlet.AsyncContext;
-import jakarta.servlet.annotation.WebServlet;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.redis.client.Command;
 import io.vertx.redis.client.Redis;
 import io.vertx.redis.client.Request;
+import jakarta.inject.Inject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.WebServlet;
 
 @WebServlet(value = "/test-redis", asyncSupported = true)
 public class RedisMessageServlet extends AbstractAsyncServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Inject
     private Vertx vertx;
 
     @Override

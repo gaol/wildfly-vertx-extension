@@ -1,32 +1,14 @@
 ## Vertx used in application
 
-After you created Vert.x instance, you can use it in your applications.
+You can use the Vert.x instance in your applications.
 
-Vert.x instance is the key to all Vert.x applications, every function and capability comes from the Vert.x instance, so having the Vert.x instance injected in the application codes is important.
+Vert.x instance is the key to all Vert.x applications, each function and capability comes from the Vert.x instance, so having the Vert.x instance injected in the application codes is important.
+
+This extension provides 2 ways to access the Vert.x instance.
 
 ### Access the Vert.x instance using JNDI lookup
 
-Suppose you have a Vert.x instance created:
-
-.Default Vert.x Instance
-[source, bash]
-----
-[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
-{
-    "outcome" => "success",
-    "result" => {
-        "alias" => ["vertx"],
-        "clustered" => false,
-        "forked-channel" => false,
-        "jgroups-channel" => undefined,
-        "jgroups-stack-file" => undefined,
-        "jndi-name" => "java:/vertx/default",
-        "option-name" => undefined
-    }
-}
-----
-
-you can access the Vert.x using the `@Resource` annotation like:
+you can access the Vert.x using the `@Resource(lookup = "java:/jboss/vertx/default")` annotation like:
 
 .Access Vert.x using JNDI lookup
 [source, java]
@@ -34,7 +16,7 @@ you can access the Vert.x using the `@Resource` annotation like:
 @WebServlet(value = "/async", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(name = "java:/jboss/vertx/default")
     private Vertx vertx;
 
         @Override
@@ -46,12 +28,10 @@ public class AsyncServlet extends HttpServlet {
 }
 ----
 
-> WARNING: Do not call `vertx.close();` in application code which will affect usage in other places, there is a plan to restrict the usage in next releases to have better lifecycle management.
-
 
 ### Access the Vert.x instance using CDI
 
-The other way to use the Vert.x instance in the application is to use `@Inject Vertx vertx` annotation. When the CDI is activated(a `beans.xml` file), the Vert.x instance will be injected. The instance which has the same `name` or `alias` as the field name(injection point) will be chosen.
+The other way to use the Vert.x instance in the application is to use `@Inject Vertx vertx` annotation. When the CDI is activated(via a `beans.xml` file bundled in the deployment archive), the Vert.x instance will be injected.
 
 .Access Vert.x instance using CDI
 [source, java]
@@ -70,6 +50,3 @@ public class EchoService {
 
 }
 ----
-
-
-

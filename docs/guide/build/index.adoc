@@ -30,11 +30,11 @@ When the command finishes, it will have produced two server distributions and a 
 Both produced servers have `4` standalone configurations:
 
 * `standalone-vertx-mini.xml`
-** This is a minimal setup, with just the Vert.x subsystem and a `jaxrs-server` layer added.
+** This is a minimal setup based on the https://github.com/wildfly/wildfly/blob/27.0.0.Final/ee-feature-pack/galleon-content/src/main/resources/feature_groups/standalone-minimalistic.xml[standalone-minimalistic] https://docs.wildfly.org/galleon/#_feature_groups[galleon feature group] with the Vert.x subsystem and few extra layers added.
 * `standalone-vertx.xml`
-** This is the setup with the Vert.x subsystem added to the default standalone.xml in WildFly server.
+** This is the setup with the Vert.x subsystem added to the default `standalone.xml` in WildFly server.
 * `standalone-vertx-ha.xml`
-** This is the setup with the Vert.x subsystem added to the default standalone-ha.xml in WildFly server.
+** This is the setup with the Vert.x subsystem added to the default `standalone-ha.xml` in WildFly server.
 ** The default Vert.x in this setup is a clustered Vert.x with default configuration.
 * `standalone-vertx-full-ha.xml`
 ** This is the setup with the Vert.x subsystem added to the default standalone-full-ha.xml in WildFly server.
@@ -42,7 +42,7 @@ Both produced servers have `4` standalone configurations:
 
 ### Start the server
 
-You can start the server as usual, specifying the desired configuration file:
+You can start the server like you do for normal WildFly server by specifying the desired configuration file:
 
 .Start Server
 [source,bash]

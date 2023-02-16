@@ -2,7 +2,7 @@
 
 With this extension integrated, you can deploy the Vert.x verticle implementation to the WildFly server by specifying a deployment descriptor.
 
-The availability of the deployment descriptor activates a `DeploymentUnitProcessor` to check the existing Vert.x instances inside the WildFly server, and select the one specified in the deployment descriptor.
+The availability of the deployment descriptor makes it a `vertx deployment`, which means that users can access Vert.x instance in their applications.
 
 A typical war deployment structure which contains a verticle implementation is:
 
@@ -31,14 +31,13 @@ The content of the deployment descriptor(`WEB-INF/vertx-deployment.json`) is:
 {
   "deployments": [
     {
-      "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle",
-      "vertx": "default"
+      "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle"
     }
   ]
 }
 ----
 
-when it is deployed, the `TestVerticle` will be deployed to the Vert.x instance with name: `default` using the default `DeploymentOptions` too.
+when the war is deployed, the `TestVerticle` will be deployed to the Vert.x instance using the default `DeploymentOptions`.
 
 These deployed verticles inside the Vert.x instance will be un-deployed when the deployment gets un-deployed from WildFly server.
 
@@ -56,7 +55,6 @@ A full example of `vertx-deployment.json` is:
   "deployments": [
     {
       "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle",
-      "vertx": "default",
       "deploy-options": {}
     }
   ]
@@ -66,10 +64,7 @@ A full example of `vertx-deployment.json` is:
 * `ver`    -    The version of the deployment descriptor, it is `1`, and it can be skipped now.
 * `deployments`    -    An array of the deployments, each of which is a json structure.
 ** `verticle-class`    -    The FQCN of the verticle class which will be deployed.
-** `vertx`    -    The vertx name which the verticle should be deployed to.
-*** Defaults to `default` if not specified.
 ** `deploy-options`    -    The `DeploymentOptions` which is used to do the deployment.
 *** The format of the content matches what https://vertx.io/docs/apidocs/io/vertx/core/DeploymentOptions.html#DeploymentOptions-io.vertx.core.json.JsonObject-[new DeploymentOptions(JsonObject)] constructor requires.
 *** Default `DeploymentOptions` is used if not specified.
-*** The `ModuleClassLoader` of current deployment will be used for deploying the Verticle.
 

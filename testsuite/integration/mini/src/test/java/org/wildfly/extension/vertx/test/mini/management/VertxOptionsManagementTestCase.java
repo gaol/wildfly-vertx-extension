@@ -18,20 +18,19 @@ package org.wildfly.extension.vertx.test.mini.management;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.PROPERTIES;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addressResolverOptionBase;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addressResolverOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.clusterNodeMetaOptionBase;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.eventBusOptionBase;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.eventBusOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.executeOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.keyStoreOptionBase;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.pemKeyCertOptionBase;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.pemTrustOptionBase;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.readVertxOptionOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.readVertxOptions;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vertxOptionOperationBase;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vertxOptionOperation;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +72,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
     @Test
     public void testAddVertxOption() throws IOException {
         final String vertxOptionName = "vo";
-        ModelNode operation = vertxOptionOperationBase(vertxOptionName, "add");
+        ModelNode operation = vertxOptionOperation(vertxOptionName, "add");
         operation.get(ATTR_EVENTLOOP_POOL_SIZE).set(10);
         operation.get(ATTR_WORKER_POOL_SIZE).set(20);
         operation.get(ATTR_INTERNAL_BLOCKING_POOL_SIZE).set(50);
@@ -113,14 +112,14 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals(80L, vertxOptions.getWarningExceptionTime());
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
 
     @Test
     public void testAddressResolverOption() throws IOException {
         final String addressResolverName = "aro";
-        ModelNode operation = addressResolverOptionBase(addressResolverName, "add");
+        ModelNode operation = addressResolverOperation(addressResolverName, "add");
         operation.get(ATTR_HOSTS_PATH).set("local-path");
         operation.get(ATTR_SERVERS).add("localhost").add("127.0.0.1");
         operation.get(ATTR_OPT_RES_ENABLED).set(true);
@@ -136,7 +135,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         operation.get(ATTR_ROUND_ROBIN_INET_ADDRESS).set(true);
         executeOperation(managementClient, operation);
 
-        ModelNode response = executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "read-resource"));
+        ModelNode response = executeOperation(managementClient, addressResolverOperation(addressResolverName, "read-resource"));
         ModelNode result = response.get(RESULT);
         Assert.assertNotNull(result);
         Assert.assertEquals("local-path", result.get(ATTR_HOSTS_PATH).asString());
@@ -160,7 +159,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(result.get(ATTR_ROUND_ROBIN_INET_ADDRESS).asBoolean());
 
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_OPTION_ADDRESS_RESOLVER).set(addressResolverName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -183,16 +182,16 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(addressResolverOptions.isRoundRobinInetAddress());
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "remove"));
+        executeOperation(managementClient, addressResolverOperation(addressResolverName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
 
     @Test
     public void testEventBusOption() throws IOException {
         final String eventBusOptionName = "eo";
-        ModelNode operation = eventBusOptionBase(eventBusOptionName, "add");
+        ModelNode operation = eventBusOperation(eventBusOptionName, "add");
         operation.get(ATTR_EVENTBUS_SEND_BUFFER_SIZE).set(1024);
         operation.get(ATTR_EVENTBUS_RECEIVE_BUFFER_SIZE).set(1024);
         operation.get(ATTR_EVENTBUS_TRAFFIC_CLASS).set(1);
@@ -229,7 +228,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
 
         executeOperation(managementClient, operation);
 
-        ModelNode response = executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "read-resource"));
+        ModelNode response = executeOperation(managementClient, eventBusOperation(eventBusOptionName, "read-resource"));
         ModelNode result = response.get(RESULT);
         Assert.assertNotNull(result);
         Assert.assertEquals(1024, result.get(ATTR_EVENTBUS_SEND_BUFFER_SIZE).asInt());
@@ -271,7 +270,7 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(result.get(ATTR_EVENTBUS_TRUST_ALL).asBoolean());
 
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_EVENTBUS).set(eventBusOptionName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -314,9 +313,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(eventBusOptions.isTrustAll());
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "remove"));
+        executeOperation(managementClient, eventBusOperation(eventBusOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
 
@@ -341,13 +340,13 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals("alias-secret", result.get(ATTR_KEYSTORE_ALIAS_PASSWORD).asString());
 
         final String eventBusOptionName = "eo";
-        operation = eventBusOptionBase(eventBusOptionName, "add");
+        operation = eventBusOperation(eventBusOptionName, "add");
         operation.get(ATTR_EVENTBUS_KEY_CERT_OPTION).set(keyStoreOptionName);
         operation.get(ATTR_EVENTBUS_TRUST_OPTION).set(keyStoreOptionName);
         executeOperation(managementClient, operation);
 
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_EVENTBUS).set(eventBusOptionName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -367,9 +366,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals(serverConfigDir + File.separator + "k1.keystore", trustOptions.getPath());
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "remove"));
+        executeOperation(managementClient, eventBusOperation(eventBusOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
         executeOperation(managementClient, keyStoreOptionBase(keyStoreOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
@@ -406,11 +405,11 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(certValues.contains("ddd"));
 
         final String eventBusOptionName = "eo";
-        operation = eventBusOptionBase(eventBusOptionName, "add");
+        operation = eventBusOperation(eventBusOptionName, "add");
         operation.get(ATTR_EVENTBUS_KEY_CERT_OPTION).set(pekKeyCertOptionName);
         executeOperation(managementClient, operation);
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_EVENTBUS).set(eventBusOptionName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -432,9 +431,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(certValues.contains("ddd"));
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "remove"));
+        executeOperation(managementClient, eventBusOperation(eventBusOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
         executeOperation(managementClient, pemKeyCertOptionBase(pekKeyCertOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
@@ -458,11 +457,11 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(certValues.contains("bbb"));
 
         final String eventBusOptionName = "eo";
-        operation = eventBusOptionBase(eventBusOptionName, "add");
+        operation = eventBusOperation(eventBusOptionName, "add");
         operation.get(ATTR_EVENTBUS_TRUST_OPTION).set(pemTrustOptionName);
         executeOperation(managementClient, operation);
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_EVENTBUS).set(eventBusOptionName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -478,9 +477,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(certValues.contains("bbb"));
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "remove"));
+        executeOperation(managementClient, eventBusOperation(eventBusOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
         executeOperation(managementClient, pemTrustOptionBase(pemTrustOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
@@ -500,11 +499,11 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertTrue(properties.stream().anyMatch(p -> p.getName().equals("keyB") && p.getValue().asString().equals("valueB")));
 
         final String eventBusOptionName = "eo";
-        operation = eventBusOptionBase(eventBusOptionName, "add");
+        operation = eventBusOperation(eventBusOptionName, "add");
         operation.get(ATTR_EVENTBUS_CLUSTER_NODE_METADATA).set(clusterNodeMeta);
         executeOperation(managementClient, operation);
         final String optionName = "vo";
-        ModelNode addVertxOption = vertxOptionOperationBase(optionName, "add");
+        ModelNode addVertxOption = vertxOptionOperation(optionName, "add");
         addVertxOption.get(ELEMENT_VERTX_EVENTBUS).set(eventBusOptionName);
         executeOperation(managementClient, addVertxOption);
         VertxOptions vertxOptions = readVertxOptions(managementClient, optionName);
@@ -515,9 +514,9 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals("valueB", jsonObject.getString("keyB"));
 
         // clear resources
-        executeOperation(managementClient, vertxOptionOperationBase(optionName, "remove"));
+        executeOperation(managementClient, vertxOptionOperation(optionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-        executeOperation(managementClient, eventBusOptionBase(eventBusOptionName, "remove"));
+        executeOperation(managementClient, eventBusOperation(eventBusOptionName, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
         executeOperation(managementClient, clusterNodeMetaOptionBase(clusterNodeMeta, "remove"));
         ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());

@@ -22,6 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +49,8 @@ public class AsyncEjbTestCase {
     @Deployment
     public static WebArchive createDeployment() {
         final WebArchive war = ShrinkWrap.create(WebArchive.class, "async-ejb-basic.war");
-        war.addClasses(EchoService.class, RestApp.class, ServiceEndpoint.class);
+        war.addClasses(EchoService.class, RestApp.class, ServiceEndpoint.class)
+          .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return war;
     }
 

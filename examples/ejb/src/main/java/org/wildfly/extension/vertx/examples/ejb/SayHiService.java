@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
 
 @Stateless
 public class SayHiService {
-    @Resource(name = "java:/vertx/default")
+    @Resource(lookup = "java:/jboss/vertx/default")
     private Vertx vertx;
 
     private MessageConsumer<String> consumer;

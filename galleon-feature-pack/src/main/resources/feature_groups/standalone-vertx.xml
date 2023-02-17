@@ -2,9 +2,7 @@
 <feature-group-spec name="standalone-vertx" xmlns="urn:jboss:galleon:feature-group:1.0">
 
     <feature spec="subsystem.vertx">
-        <feature spec="subsystem.vertx.vertx">
-            <param name="vertx" value="default" />
-            <param name="alias" value="[vertx]" />
+        <feature spec="subsystem.vertx.service.vertx">
         </feature>
     </feature>
 

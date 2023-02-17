@@ -16,9 +16,13 @@
  */
 package org.wildfly.extension.vertx.test.mini.injection;
 
-import io.vertx.core.Vertx;
-import org.junit.Assert;
+import java.io.IOException;
+import java.io.PrintWriter;
 
+import org.junit.Assert;
+import org.wildfly.extension.vertx.VertxConstants;
+
+import io.vertx.core.Vertx;
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
@@ -27,13 +31,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(value = "/injection", asyncSupported = true)
 public class InjectionTestServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(lookup = VertxConstants.VERTX_JNDI_NAME)
     private Vertx vertxFromJNDI;
 
     @Inject

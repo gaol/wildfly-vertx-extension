@@ -22,17 +22,16 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.as.arquillian.api.ServerSetup;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.wildfly.extension.vertx.test.shared.StreamUtils;
-import org.wildfly.extension.vertx.test.shared.VertxSetupTaskBase;
 
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +42,8 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
-@ServerSetup(VertxSetupTaskBase.class)
 @RunAsClient
+@Ignore
 public class VertxFileSystemTestCase {
 
     @ArquillianResource

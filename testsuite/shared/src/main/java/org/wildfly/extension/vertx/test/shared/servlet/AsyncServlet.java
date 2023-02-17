@@ -19,7 +19,7 @@ package org.wildfly.extension.vertx.test.shared.servlet;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 
-import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -37,7 +37,7 @@ import java.io.PrintWriter;
 @WebServlet(value = "/async", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Inject
     private Vertx vertx;
 
     private MessageConsumer<String> consumer;

@@ -16,11 +16,14 @@
  */
 package org.wildfly.extension.vertx.test.mini.deployment;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import org.wildfly.extension.vertx.test.shared.StreamUtils;
+
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import org.wildfly.extension.vertx.test.shared.StreamUtils;
-
 import jakarta.annotation.Resource;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
@@ -28,8 +31,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * A servlet that uses Vert.x filesystem API to read resources from bundle.
@@ -39,7 +40,7 @@ import java.io.PrintWriter;
 @WebServlet(value = "/file-access", asyncSupported = true)
 public class FileAccessServelt extends HttpServlet {
 
-    @Resource(name = "java:/vertx/vertx-test")
+    @Resource(name = "java:/jboss/vertx/default")
     private Vertx vertx;
 
     @Override
@@ -56,6 +57,7 @@ public class FileAccessServelt extends HttpServlet {
         }).onComplete(result -> {
             if (result.failed()) {
                 json.put("error", result.cause().getMessage());
+                result.cause().printStackTrace();
             }
             try (PrintWriter writer = asyncContext.getResponse().getWriter()) {
                 writer.print(json);

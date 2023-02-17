@@ -27,11 +27,12 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.wildfly.extension.vertx.VertxConstants;
 
 @Path("/injection")
 public class InjectionEndPoint {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(lookup = VertxConstants.VERTX_JNDI_NAME)
     private Vertx vertxFromJNDI;
 
     @Inject

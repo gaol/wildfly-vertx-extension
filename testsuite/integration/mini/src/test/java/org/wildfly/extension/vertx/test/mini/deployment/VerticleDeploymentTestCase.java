@@ -24,6 +24,7 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +50,7 @@ public class VerticleDeploymentTestCase {
     public static Archive<?> deployment() {
         return ShrinkWrap.create(WebArchive.class, "test-verticle.war")
                 .addAsWebInfResource("vertx-deployment.json")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(TestServlet.class, TestVerticle.class);
     }
 

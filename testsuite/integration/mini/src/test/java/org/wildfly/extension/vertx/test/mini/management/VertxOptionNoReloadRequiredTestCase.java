@@ -19,50 +19,56 @@ package org.wildfly.extension.vertx.test.mini.management;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.VALUE;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addVertxOperation;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addressResolverOptionBase;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_EVENTBUS_CLUSTER_NODE_METADATA;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_EVENTBUS_KEY_CERT_OPTION;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_EVENTBUS_PORT;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_EVENTBUS_TRUST_OPTION;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_EVENTLOOP_POOL_SIZE;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_KEYSTORE_TYPE;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_KEYSTORE_VALUE;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_MAX_QUERIES;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_PEM_KEY_CERT_CERT_VALUE;
+import static org.wildfly.extension.vertx.VertxConstants.ATTR_PROPERTIES;
+import static org.wildfly.extension.vertx.VertxConstants.ELEMENT_VERTX_EVENTBUS;
+import static org.wildfly.extension.vertx.VertxConstants.ELEMENT_VERTX_OPTION_ADDRESS_RESOLVER;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.addressResolverOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.clusterNodeMetaOptionBase;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.eventBusOptionBase;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.eventBusOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.executeOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.isReloadRequired;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.keyStoreOptionBase;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.pemKeyCertOptionBase;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.pemTrustOptionBase;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.readVertxOperation;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.readVertxOptionOperation;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.removeVertxOperation;
-import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vertxOptionOperationBase;
-
-import java.io.IOException;
+import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vertxOptionOperation;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.as.arquillian.api.ContainerResource;
-import org.jboss.as.arquillian.container.ManagementClient;
 import org.jboss.as.test.integration.management.util.ServerReload;
 import org.jboss.dmr.ModelNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.wildfly.extension.vertx.VertxConstants;
+import org.wildfly.extension.vertx.test.shared.AbstractMgtTestBase;
 
 /**
+ * You can define many vertx options without having it referenced by the vertx instance, at that time, any changes to
+ * the option should not lead to server restart state, once the changes belong to an option that is used by the vertx
+ * instance, the change will lead to server restart state.
+ *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
-
-  @ContainerResource
-  private ManagementClient managementClient;
+public class VertxOptionNoReloadRequiredTestCase extends AbstractMgtTestBase {
 
   @Test
-  public void testVertxOption() throws IOException {
+  public void testVertxOption() throws Exception {
     // adds a vertx option,
     // update to it or delete it won't lead to reload required status
     // refer the vertx option in a vertx instance, update it again, it should lead to reload required status
     final String vertxOptionName = "vo";
-    ModelNode operation = vertxOptionOperationBase(vertxOptionName, "add");
+    ModelNode operation = vertxOptionOperation(vertxOptionName, "add");
     executeOperation(managementClient, operation);
     ModelNode response = executeOperation(managementClient, readVertxOptionOperation(vertxOptionName));
     ModelNode result = response.get(RESULT);
@@ -70,11 +76,11 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // remove it won't lead to reload required
-    executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
+    executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // now add it back
-    operation = vertxOptionOperationBase(vertxOptionName, "add");
+    operation = vertxOptionOperation(vertxOptionName, "add");
     operation.get(ATTR_EVENTLOOP_POOL_SIZE).set(10);
     executeOperation(managementClient, operation);
     response = executeOperation(managementClient, readVertxOptionOperation(vertxOptionName));
@@ -82,7 +88,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertNotNull(result);
     Assert.assertEquals(10, result.get(ATTR_EVENTLOOP_POOL_SIZE).asInt());
 
-    operation = vertxOptionOperationBase(vertxOptionName, "write-attribute");
+    operation = vertxOptionOperation(vertxOptionName, "write-attribute");
     operation.get(NAME).set(ATTR_EVENTLOOP_POOL_SIZE);
     operation.get(VALUE).set(20);
     executeOperation(managementClient, operation);
@@ -93,16 +99,12 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     result = response.get(RESULT);
     Assert.assertEquals(20, result.get(ATTR_EVENTLOOP_POOL_SIZE).asInt());
 
-    // refer it to the default vertx
-    final String vertxName = "vertx-name-test";
+    // refer it to vertx instance
     try {
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
+      setVertxOption(vertxOptionName);
 
       // now update the option again
-      operation = vertxOptionOperationBase(vertxOptionName, "write-attribute");
+      operation = vertxOptionOperation(vertxOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_EVENTLOOP_POOL_SIZE);
       operation.get(VALUE).set(30);
       executeOperation(managementClient, operation);
@@ -110,156 +112,145 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       // now the update needs reload
       Assert.assertTrue(isReloadRequired(managementClient));
 
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
+      reload();
       response = executeOperation(managementClient, readVertxOptionOperation(vertxOptionName));
       result = response.get(RESULT);
       Assert.assertEquals(30, result.get(ATTR_EVENTLOOP_POOL_SIZE).asInt());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      reload();
     }
   }
 
   @Test
-  public void testAddressResolverOption() throws IOException {
+  public void testAddressResolverOption() throws Exception {
     // adds address-resolver-option
     final String addressResolverName = "aro";
-    ModelNode operation = addressResolverOptionBase(addressResolverName, "add");
+    ModelNode operation = addressResolverOperation(addressResolverName, "add");
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // remove it, status is still the same
-    executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "remove"));
+    executeOperation(managementClient, addressResolverOperation(addressResolverName, "remove"));
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // add it back
-    operation = addressResolverOptionBase(addressResolverName, "add");
+    operation = addressResolverOperation(addressResolverName, "add");
     operation.get(ATTR_MAX_QUERIES).set(10);
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
-    ModelNode response = executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "read-resource"));
+    ModelNode response = executeOperation(managementClient, addressResolverOperation(addressResolverName, "read-resource"));
     ModelNode result = response.get(RESULT);
     Assert.assertNotNull(result);
     Assert.assertEquals(10, result.get(ATTR_MAX_QUERIES).asInt());
 
-    operation = addressResolverOptionBase(addressResolverName, "write-attribute");
+    operation = addressResolverOperation(addressResolverName, "write-attribute");
     operation.get(NAME).set(ATTR_MAX_QUERIES);
     operation.get(VALUE).set(15);
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // create a vertx option with this address-resolver-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     try {
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_OPTION_ADDRESS_RESOLVER).set(addressResolverName);
       executeOperation(managementClient, operation);
-      operation = addressResolverOptionBase(addressResolverName, "write-attribute");
+      operation = addressResolverOperation(addressResolverName, "write-attribute");
       operation.get(NAME).set(ATTR_MAX_QUERIES);
       operation.get(VALUE).set(20);
       executeOperation(managementClient, operation);
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
+      setVertxOption(vertxOptionName);
 
-      operation = addressResolverOptionBase(addressResolverName, "write-attribute");
+      operation = addressResolverOperation(addressResolverName, "write-attribute");
       operation.get(NAME).set(ATTR_MAX_QUERIES);
       operation.get(VALUE).set(25);
       executeOperation(managementClient, operation);
       // now, it is reload required
       Assert.assertTrue(isReloadRequired(managementClient));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      response = executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "read-resource"));
+      response = executeOperation(managementClient, addressResolverOperation(addressResolverName, "read-resource"));
       result = response.get(RESULT);
       Assert.assertNotNull(result);
       Assert.assertEquals(25, result.get(ATTR_MAX_QUERIES).asInt());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, addressResolverOptionBase(addressResolverName, "remove"));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, addressResolverOperation(addressResolverName, "remove"));
+      reload();
     }
   }
 
   @Test
-  public void testEventBusOption() throws IOException {
+  public void testEventBusOption() throws Exception {
     // adds eventbus-option
     final String eventbusOptionName = "ebo";
-    ModelNode operation = eventBusOptionBase(eventbusOptionName, "add");
+    ModelNode operation = eventBusOperation(eventbusOptionName, "add");
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // remove it, status is still the same
-    executeOperation(managementClient, eventBusOptionBase(eventbusOptionName, "remove"));
+    executeOperation(managementClient, eventBusOperation(eventbusOptionName, "remove"));
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // add it back
-    operation = eventBusOptionBase(eventbusOptionName, "add");
+    operation = eventBusOperation(eventbusOptionName, "add");
     operation.get(ATTR_EVENTBUS_PORT).set(8888);
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
-    ModelNode response = executeOperation(managementClient, eventBusOptionBase(eventbusOptionName, "read-resource"));
+    ModelNode response = executeOperation(managementClient, eventBusOperation(eventbusOptionName, "read-resource"));
     ModelNode result = response.get(RESULT);
     Assert.assertNotNull(result);
     Assert.assertEquals(8888, result.get(ATTR_EVENTBUS_PORT).asInt());
 
-    operation = eventBusOptionBase(eventbusOptionName, "write-attribute");
+    operation = eventBusOperation(eventbusOptionName, "write-attribute");
     operation.get(NAME).set(ATTR_EVENTBUS_PORT);
     operation.get(VALUE).set(9999);
     executeOperation(managementClient, operation);
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // create a vertx option with this eventbus-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     try {
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_EVENTBUS).set(eventbusOptionName);
       executeOperation(managementClient, operation);
-      operation = eventBusOptionBase(eventbusOptionName, "write-attribute");
+      operation = eventBusOperation(eventbusOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_EVENTBUS_PORT);
       operation.get(VALUE).set(6666);
       executeOperation(managementClient, operation);
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
+      setVertxOption(vertxOptionName);
 
-      operation = eventBusOptionBase(eventbusOptionName, "write-attribute");
+      operation = eventBusOperation(eventbusOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_EVENTBUS_PORT);
       operation.get(VALUE).set(8080);
       executeOperation(managementClient, operation);
       // now, it is needs reload
       Assert.assertTrue(isReloadRequired(managementClient));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      response = executeOperation(managementClient, eventBusOptionBase(eventbusOptionName, "read-resource"));
+      response = executeOperation(managementClient, eventBusOperation(eventbusOptionName, "read-resource"));
       result = response.get(RESULT);
       Assert.assertNotNull(result);
       Assert.assertEquals(8080, result.get(ATTR_EVENTBUS_PORT).asInt());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, eventBusOptionBase(eventbusOptionName, "remove"));
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, eventBusOperation(eventbusOptionName, "remove"));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
   }
 
   @Test
-  public void testKeyStoreOption() throws IOException {
+  public void testKeyStoreOption() throws Exception {
     // adds key-store-option
     final String keyStoreOptionName = "kso";
     ModelNode operation = keyStoreOptionBase(keyStoreOptionName, "add");
@@ -291,16 +282,15 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // create a vertx option with this eventbus-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     final String eventBusName = "ebo";
     try {
       // add an eventbus-option with this option
-      operation = eventBusOptionBase(eventBusName, "add");
+      operation = eventBusOperation(eventBusName, "add");
       operation.get(ATTR_EVENTBUS_KEY_CERT_OPTION).set(keyStoreOptionName);
       executeOperation(managementClient, operation);
       // add a vertx-option with the eventbus-option
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_EVENTBUS).set(eventBusName);
       executeOperation(managementClient, operation);
       // now try to update the attribute
@@ -311,10 +301,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
+      setVertxOption(vertxOptionName);
 
       operation = keyStoreOptionBase(keyStoreOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_KEYSTORE_VALUE);
@@ -329,17 +316,16 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       Assert.assertNotNull(result);
       Assert.assertEquals("dummy-key-store-value-4", result.get(ATTR_KEYSTORE_VALUE).asString());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, eventBusOptionBase(eventBusName, "remove"));
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, eventBusOperation(eventBusName, "remove"));
       executeOperation(managementClient, keyStoreOptionBase(keyStoreOptionName, "remove"));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
   }
 
   @Test
-    public void testPemKeyCertOption() throws IOException {
+    public void testPemKeyCertOption() throws Exception {
     // adds pem-key-cert-option
     final String pemKeyCertOptionName = "pkcon";
     ModelNode operation = pemKeyCertOptionBase(pemKeyCertOptionName, "add");
@@ -373,16 +359,15 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertEquals("dummy-cert-value-1", result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).get(0).asString());
 
     // create a vertx option with this eventbus-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     final String eventBusName = "ebo";
     try {
       // add an eventbus-option with this option
-      operation = eventBusOptionBase(eventBusName, "add");
+      operation = eventBusOperation(eventBusName, "add");
       operation.get(ATTR_EVENTBUS_KEY_CERT_OPTION).set(pemKeyCertOptionName);
       executeOperation(managementClient, operation);
       // add a vertx-option with the eventbus-option
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_EVENTBUS).set(eventBusName);
       executeOperation(managementClient, operation);
       // now try to update the attribute
@@ -393,11 +378,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
-      response = executeOperation(managementClient, readVertxOperation(vertxName));
+      setVertxOption(vertxOptionName);
 
       operation = pemKeyCertOptionBase(pemKeyCertOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_PEM_KEY_CERT_CERT_VALUE + "[0]");
@@ -412,10 +393,9 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       Assert.assertNotNull(result);
       Assert.assertEquals("dummy-cert-value-3", result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).get(0).asString());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, eventBusOptionBase(eventBusName, "remove"));
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, eventBusOperation(eventBusName, "remove"));
       executeOperation(managementClient, pemKeyCertOptionBase(pemKeyCertOptionName, "remove"));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
@@ -423,7 +403,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
 
 
   @Test
-  public void testPemTrustOption() throws IOException {
+  public void testPemTrustOption() throws Exception {
     // adds pem-trust-option
     final String pemTrustOptionName = "pkcon";
     ModelNode operation = pemTrustOptionBase(pemTrustOptionName, "add");
@@ -457,16 +437,15 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertEquals("dummy-cert-value-1", result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).get(0).asString());
 
     // create a vertx option with this eventbus-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     final String eventBusName = "ebo";
     try {
       // add an eventbus-option with this option
-      operation = eventBusOptionBase(eventBusName, "add");
+      operation = eventBusOperation(eventBusName, "add");
       operation.get(ATTR_EVENTBUS_TRUST_OPTION).set(pemTrustOptionName);
       executeOperation(managementClient, operation);
       // add a vertx-option with the eventbus-option
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_EVENTBUS).set(eventBusName);
       executeOperation(managementClient, operation);
       // now try to update the attribute
@@ -477,11 +456,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
-      response = executeOperation(managementClient, readVertxOperation(vertxName));
+      setVertxOption(vertxOptionName);
 
       operation = pemTrustOptionBase(pemTrustOptionName, "write-attribute");
       operation.get(NAME).set(ATTR_PEM_KEY_CERT_CERT_VALUE + "[0]");
@@ -496,17 +471,16 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       Assert.assertNotNull(result);
       Assert.assertEquals("dummy-cert-value-3", result.get(ATTR_PEM_KEY_CERT_CERT_VALUE).get(0).asString());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, eventBusOptionBase(eventBusName, "remove"));
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, eventBusOperation(eventBusName, "remove"));
       executeOperation(managementClient, pemTrustOptionBase(pemTrustOptionName, "remove"));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }
   }
 
   @Test
-  public void testClusterNodeMeta() throws IOException {
+  public void testClusterNodeMeta() throws Exception {
     // adds cluster-node-meta
     final String clusterNodeMeta = "cnm";
     ModelNode operation = clusterNodeMetaOptionBase(clusterNodeMeta, "add");
@@ -535,16 +509,15 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
     Assert.assertFalse(isReloadRequired(managementClient));
 
     // create a vertx option with this eventbus-option
-    final String vertxName = "vertx-name-test";
     final String vertxOptionName = "vo";
     final String eventBusName = "ebo";
     try {
       // add an eventbus-option with this option
-      operation = eventBusOptionBase(eventBusName, "add");
+      operation = eventBusOperation(eventBusName, "add");
       operation.get(ATTR_EVENTBUS_CLUSTER_NODE_METADATA).set(clusterNodeMeta);
       executeOperation(managementClient, operation);
       // add a vertx-option with the eventbus-option
-      operation = vertxOptionOperationBase(vertxOptionName, "add");
+      operation = vertxOptionOperation(vertxOptionName, "add");
       operation.get(ELEMENT_VERTX_EVENTBUS).set(eventBusName);
       executeOperation(managementClient, operation);
 
@@ -555,10 +528,7 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       // still no reload required
       Assert.assertFalse(isReloadRequired(managementClient));
 
-      operation = addVertxOperation(vertxName);
-      operation.get(ATTR_OPTION_NAME).set(vertxOptionName);
-      executeOperation(managementClient, operation);
-      Assert.assertFalse(isReloadRequired(managementClient));
+      setVertxOption(vertxOptionName);
 
       operation = clusterNodeMetaOptionBase(clusterNodeMeta, "write-attribute");
       operation.get(NAME).set(ATTR_PROPERTIES + ".node-name");
@@ -572,10 +542,9 @@ public class VertxOptionNoReloadRequiredTestCase implements VertxConstants {
       Assert.assertNotNull(result);
       Assert.assertEquals("vertx-cluster-1-node-4", result.get(ATTR_PROPERTIES).get("node-name").asString());
     } finally {
-      executeOperation(managementClient, removeVertxOperation(vertxName));
-      ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
-      executeOperation(managementClient, vertxOptionOperationBase(vertxOptionName, "remove"));
-      executeOperation(managementClient, eventBusOptionBase(eventBusName, "remove"));
+      unSetVertxOption();
+      executeOperation(managementClient, vertxOptionOperation(vertxOptionName, "remove"));
+      executeOperation(managementClient, eventBusOperation(eventBusName, "remove"));
       executeOperation(managementClient, clusterNodeMetaOptionBase(clusterNodeMeta, "remove"));
       ServerReload.executeReloadAndWaitForCompletion(managementClient.getControllerClient());
     }

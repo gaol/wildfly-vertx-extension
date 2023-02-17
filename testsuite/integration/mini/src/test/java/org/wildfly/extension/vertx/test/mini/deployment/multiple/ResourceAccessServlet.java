@@ -37,7 +37,7 @@ import io.vertx.core.Vertx;
 @WebServlet(value = "/resource-access", asyncSupported = true)
 public class ResourceAccessServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(name = "java:/jboss/vertx/default")
     private Vertx vertx;
 
     @Override

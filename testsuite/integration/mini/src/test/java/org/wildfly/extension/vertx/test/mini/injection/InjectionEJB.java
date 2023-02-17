@@ -21,11 +21,12 @@ import io.vertx.core.Vertx;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
+import org.wildfly.extension.vertx.VertxConstants;
 
 @Stateless
 public class InjectionEJB {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(lookup = VertxConstants.VERTX_JNDI_NAME)
     private Vertx vertxFromJNDI;
 
     @Inject

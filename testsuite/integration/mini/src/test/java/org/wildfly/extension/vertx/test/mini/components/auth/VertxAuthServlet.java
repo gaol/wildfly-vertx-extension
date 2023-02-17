@@ -25,6 +25,7 @@ import io.vertx.ext.auth.authorization.RoleBasedAuthorization;
 import io.vertx.ext.auth.authorization.WildcardPermissionBasedAuthorization;
 import io.vertx.ext.auth.properties.PropertyFileAuthentication;
 import io.vertx.ext.auth.properties.PropertyFileAuthorization;
+import org.wildfly.extension.vertx.VertxConstants;
 import org.wildfly.extension.vertx.test.shared.StreamUtils;
 
 import jakarta.annotation.Resource;
@@ -41,7 +42,7 @@ import java.util.Set;
 @WebServlet(value = "/testauth", asyncSupported = true)
 public class VertxAuthServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/vertx-test")
+    @Resource(lookup = VertxConstants.VERTX_JNDI_NAME)
     private Vertx vertx;
 
     private PropertyFileAuthentication authnProvider;
@@ -73,6 +74,7 @@ public class VertxAuthServlet extends HttpServlet {
                         JsonObject respContent = new JsonObject();
                         if (authz.failed()) {
                             respContent.put("error", authz.cause().getMessage());
+                            authz.cause().printStackTrace();
                         } else {
                             User user = Vertx.currentContext().getLocal("auth.user");
                             respContent.put("user", user.principal());

@@ -444,7 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Lin Gao</span><br>
 <span id="revnumber">version {version},</span>
-<span id="revdate">2023-01-30</span>
+<span id="revdate">2023-02-17</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -462,24 +462,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_the_vertx_subsystem_configuration">4. The vertx subsystem configuration</a>
-<ul class="sectlevel2">
-<li><a href="#_create_a_new_vert_x_instance">4.1. Create a new Vert.x instance</a>
 <ul class="sectlevel3">
-<li><a href="#_create_an_option_for_vert_x">4.1.1. Create an option for Vert.x</a>
+<li><a href="#_create_an_option_for_vert_x">4.1. Create an option for Vert.x</a>
 <ul class="sectlevel4">
 <li><a href="#_create_vertxoptions_using_a_json_file">Create VertxOptions using a JSON file</a></li>
 <li><a href="#_create_an_option_with_attributes">Create an option with attributes</a></li>
 </ul>
 </li>
-<li><a href="#_create_a_clustered_vert_x_instance">4.1.2. Create a clustered Vert.x instance</a>
+<li><a href="#_clustered_vert_x_instance">4.2. Clustered Vert.x instance</a>
 <ul class="sectlevel4">
 <li><a href="#_using_a_jgroups_stack_file">Using a JGroups stack file</a></li>
 <li><a href="#_using_a_channel_from_jgroups_subsystem">Using a channel from jgroups subsystem</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="#_update_to_the_vert_x_instance">4.2. Update to the Vert.x instance</a></li>
 </ul>
 </li>
 <li><a href="#_vertx_used_in_application">5. Vertx used in application</a>
@@ -514,7 +509,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><a href="https://vertx.io/">Eclipse Vert.x</a> is a toolkit to build reactive applications on the JVM. Integrating it adds more reactive power to WildFly.</p>
 </div>
 <div class="paragraph">
-<p>It allows you to define Vert.x instances using WildFly&#8217;s management model. These instances are managed by the WildFly server. They can be accessed using JNDI lookup or CDI injection in your enterprise or web applications.</p>
+<p>It allows you to define a Vert.x instance using WildFly&#8217;s management model. The Vert.x instance is managed by the WildFly server. It can be accessed using JNDI lookup or CDI injection in your enterprise or web applications.</p>
 </div>
 <div class="paragraph">
 <p>You can access the Vert.x core APIs and some component APIs in your applications.</p>
@@ -523,13 +518,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>You can package the Vert.x verticle implementation in the application, and deploy it to a WildFly server with a deployment descriptor. The server will do the deployment accordingly.</p>
 </div>
 <div class="paragraph">
-<p>In case of clustering Vert.x instances, this extension uses <a href="https://github.com/vert-x3/vertx-infinispan/">vertx-infinispan</a> as the cluster manager to be able to talk with remote Vert.x instances. You can specify the necessary JGroups settings for Vert.x, either using the standard WildFly management model, or specifying a JGroups stack file.</p>
+<p>In case of clustering Vert.x instance, this extension uses <a href="https://github.com/vert-x3/vertx-infinispan/">vertx-infinispan</a> as the cluster manager to be able to talk with remote Vert.x instances. You can specify the necessary JGroups settings for Vert.x, either using the standard WildFly management model, or specifying a JGroups stack file.</p>
 </div>
 <div class="paragraph">
-<p>The generated distribution of this extension is a full WildFly server with above capabilities. The build produces only standalone configurations. Domain mode is not supported currently.</p>
+<p>The generated distribution of this extension is a full WildFly server with above capabilities. The build produces only standalone configurations. Domain mode is not supported.</p>
 </div>
 <div class="paragraph">
 <p>It also produces a Galleon feature pack, which can be installed to an existing WildFly server. You can install either the full feature pack, or layers of the feature pack.</p>
+</div>
+<div class="paragraph">
+<p>The main goal of this extension is to explore a way for JakartaEE developers to benefit from some reactive utilities.</p>
 </div>
 </div>
 </div>
@@ -617,7 +615,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is a minimal setup, with just the Vert.x subsystem and a <code>jaxrs-server</code> layer added.</p>
+<p>This is a minimal setup based on the <a href="https://github.com/wildfly/wildfly/blob/27.0.0.Final/ee-feature-pack/galleon-content/src/main/resources/feature_groups/standalone-minimalistic.xml">standalone-minimalistic</a> <a href="https://docs.wildfly.org/galleon/#_feature_groups">galleon feature group</a> with the Vert.x subsystem and few extra layers added.</p>
 </li>
 </ul>
 </div>
@@ -627,7 +625,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the setup with the Vert.x subsystem added to the default standalone.xml in WildFly server.</p>
+<p>This is the setup with the Vert.x subsystem added to the default <code>standalone.xml</code> in WildFly server.</p>
 </li>
 </ul>
 </div>
@@ -637,7 +635,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>This is the setup with the Vert.x subsystem added to the default standalone-ha.xml in WildFly server.</p>
+<p>This is the setup with the Vert.x subsystem added to the default <code>standalone-ha.xml</code> in WildFly server.</p>
 </li>
 <li>
 <p>The default Vert.x in this setup is a clustered Vert.x with default configuration.</p>
@@ -663,7 +661,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_start_the_server"><a class="anchor" href="#_start_the_server"></a><a class="link" href="#_start_the_server">2.1. Start the server</a></h3>
 <div class="paragraph">
-<p>You can start the server as usual, specifying the desired configuration file:</p>
+<p>You can start the server like you do for normal WildFly server by specifying the desired configuration file:</p>
 </div>
 <div class="listingblock">
 <div class="title">Start Server</div>
@@ -685,8 +683,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">Install feature pack to existing server</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
 
+# This line installs the wildfly-vertx-feature-pack on top of local WildFly server:
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT</code></pre>
 </div>
 </div>
@@ -697,7 +697,7 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 <div class="sect2">
 <h3 id="_install_part_of_the_feature_pack"><a class="anchor" href="#_install_part_of_the_feature_pack"></a><a class="link" href="#_install_part_of_the_feature_pack">3.2. Install part of the feature pack</a></h3>
 <div class="paragraph">
-<p>The feature pack has 2 Galleon layers produced:</p>
+<p>The feature pack has 2 <a href="https://docs.wildfly.org/galleon/#_layers">Galleon layers</a> produced:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -715,8 +715,10 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 <div class="listingblock">
 <div class="title">Install part of the feature pack to existing server</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
 
+# This line installs the vertx layer only from wildfly-vertx-feature-pack.
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx</code></pre>
 </div>
 </div>
@@ -728,8 +730,10 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+<pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
 
+# This line installs the vertx-ha layer only from wildfly-vertx-feature-pack with config to standalone-ha.xml.
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx-ha --config=standalone-ha.xml</code></pre>
 </div>
 </div>
@@ -756,48 +760,32 @@ To have <code>galleon.sh</code> script work, please check the <a href="https://d
 <h2 id="_the_vertx_subsystem_configuration"><a class="anchor" href="#_the_vertx_subsystem_configuration"></a><a class="link" href="#_the_vertx_subsystem_configuration">4. The vertx subsystem configuration</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There is a <code>default</code> Vert.x instance created in each standalone configuration by default.</p>
+<p>There is a Vert.x instance created in each standalone configuration by default.</p>
 </div>
 <div class="paragraph">
-<p>After server starts, in a JBoss CLI console, you can see the default vertx resource like:</p>
+<p>After server starts, in a JBoss CLI console, you can see the Vert.x resource like:</p>
 </div>
 <div class="listingblock">
-<div class="title">Read Default Vertx Resource</div>
+<div class="title">Read Vertx Resource</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[lgao@lins-p1 wildfly-vertx-extention]$ build/target/wildfly-vertx-build-1.0.0-SNAPSHOT/bin/jboss-cli.sh -c
-[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
+<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/service=vertx:read-resource()
 {
     "outcome" =&gt; "success",
     "result" =&gt; {
-        "alias" =&gt; ["vertx"],
         "clustered" =&gt; false,
         "forked-channel" =&gt; false,
         "jgroups-channel" =&gt; undefined,
         "jgroups-stack-file" =&gt; undefined,
-        "jndi-name" =&gt; "java:/vertx/default",
         "option-name" =&gt; undefined
     }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each Vert.x instance has a global unique name in WildFly server which is <code>default</code> in this case, it has the following attributes:</p>
+<p>The Vert.x instance has the following attributes:</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p><code>alias</code>    -    The Vert.x instance alias name</p>
-<div class="ulist">
-<ul>
-<li>
-<p>This is a string array which will be used in the CDI injection point, like: <code>@Inject Vertx vertx</code> will have the Vert.x instance injected which has alias: <code>vertx</code>.</p>
-</li>
-<li>
-<p>The alias names are global unique as well.</p>
-</li>
-</ul>
-</div>
-</li>
 <li>
 <p><code>clustered</code>    -    Flag that if it is a clustered Vert.x instance.</p>
 <div class="ulist">
@@ -851,19 +839,6 @@ To have <code>galleon.sh</code> script work, please check the <a href="https://d
 </div>
 </li>
 <li>
-<p><code>jndi-name</code>    -    The JNDI name which is bound to the naming subsystem.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>It is <code>java:/vertx/ + &lt;Vertx Name&gt;</code> if not specified.</p>
-</li>
-<li>
-<p>The Vert.x instance can only be looked up in local JVM.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
 <p><code>option-name</code>    -    The option name used to create the Vert.x instance</p>
 <div class="ulist">
 <ul>
@@ -894,39 +869,8 @@ when both <code>jgroups-channel</code> and <code>jgroups-stack-file</code> are s
 </div>
 </blockquote>
 </div>
-<div class="sect2">
-<h3 id="_create_a_new_vert_x_instance"><a class="anchor" href="#_create_a_new_vert_x_instance"></a><a class="link" href="#_create_a_new_vert_x_instance">4.1. Create a new Vert.x instance</a></h3>
-<div class="paragraph">
-<p>The simplest way to define a Vert.x instance is:</p>
-</div>
-<div class="listingblock">
-<div class="title">Create a new Vert.x Instance</div>
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=v1:add()
-{"outcome" =&gt; "success"}
-[standalone@localhost:9990 /] /subsystem=vertx/vertx=v1:read-resource()
-{
-    "outcome" =&gt; "success",
-    "result" =&gt; {
-        "alias" =&gt; undefined,
-        "clustered" =&gt; false,
-        "forked-channel" =&gt; false,
-        "jgroups-channel" =&gt; undefined,
-        "jgroups-stack-file" =&gt; undefined,
-        "jndi-name" =&gt; "java:/vertx/v1",
-        "option-name" =&gt; undefined
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When the JBoss CLI above completes, a new Vert.x instance is created within WildFly server with name <code>v1</code> and JNDI: <code>java:vertx/v1</code>.</p>
-</div>
-<div class="paragraph">
-<p>You can refer to an option to customize the <code>VertxOptions</code> which is used to create the Vert.x instance, but you need to create the option first.</p>
-</div>
 <div class="sect3">
-<h4 id="_create_an_option_for_vert_x"><a class="anchor" href="#_create_an_option_for_vert_x"></a><a class="link" href="#_create_an_option_for_vert_x">4.1.1. Create an option for Vert.x</a></h4>
+<h4 id="_create_an_option_for_vert_x"><a class="anchor" href="#_create_an_option_for_vert_x"></a><a class="link" href="#_create_an_option_for_vert_x">4.1. Create an option for Vert.x</a></h4>
 <div class="paragraph">
 <p>You have 2 options to create a <code>VertxOptions</code> instance, one is to create the option by specifying a JSON file path, the other is to create the option by specifying each attribute using WildFly management model.</p>
 </div>
@@ -946,14 +890,17 @@ when both <code>jgroups-channel</code> and <code>jgroups-stack-file</code> are s
 <p>Here the path of <code>default-vertx-options.json</code> is expected at <code>${jboss.server.config.dir}</code>. After it completes, you can refer to <code>vof</code> in the command:</p>
 </div>
 <div class="listingblock">
-<div class="title">Create Vertx by referring to an option</div>
+<div class="title">Update Vertx to use a specific option name</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=v2:add(option-name=vof)
-{"outcome" =&gt; "success"}</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/service=vertx:write-attribute(name=option-name,value=vof)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>to create the Vert.x instance.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -964,7 +911,7 @@ when both <code>jgroups-channel</code> and <code>jgroups-stack-file</code> are s
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The <code>path</code> of the JSON file is either an absolute file starts with <code>/</code> or a file relatives to <code>${jboss.server.config.dir}</code>.
+You need to run <code>:reload</code> after updating any attribute of the Vert.x instance.
 </td>
 </tr>
 </table>
@@ -1038,7 +985,7 @@ The format of the JSON file follows what <a href="https://vertx.io/docs/apidocs/
 </ul>
 </div>
 <div class="listingblock">
-<div class="title">AddressResolverOptions defintion:</div>
+<div class="title">AddressResolverOptions definition:</div>
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/address-resolver-option=aro:read-resource()
 {
@@ -1146,7 +1093,7 @@ There are sub options used to create the <code>EventBusOptions</code>, including
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Any update to the options won&#8217;t require reload unless the option is referenced by a Vertx instance.
+Any update to the options won&#8217;t require reload unless the option is referenced by the Vertx instance.
 </td>
 </tr>
 </table>
@@ -1156,9 +1103,9 @@ Any update to the options won&#8217;t require reload unless the option is refere
 </div>
 </div>
 <div class="sect3">
-<h4 id="_create_a_clustered_vert_x_instance"><a class="anchor" href="#_create_a_clustered_vert_x_instance"></a><a class="link" href="#_create_a_clustered_vert_x_instance">4.1.2. Create a clustered Vert.x instance</a></h4>
+<h4 id="_clustered_vert_x_instance"><a class="anchor" href="#_clustered_vert_x_instance"></a><a class="link" href="#_clustered_vert_x_instance">4.2. Clustered Vert.x instance</a></h4>
 <div class="paragraph">
-<p>You need to specify <code>clustered=true</code> to create a clustered Vert.x instance, and you need to start the server with <code>vertx-ha</code> available, basically with <code>standalone-vertx*-ha.xml</code> configurations.</p>
+<p>You need to specify <code>clustered=true</code> to for a clustered Vert.x instance, and you need to start the server with <code>vertx-ha</code> available, basically with <code>standalone-vertx*-ha.xml</code> configurations.</p>
 </div>
 <div class="paragraph">
 <p>You have 2 options to set up the clustering configuration, one is to specify the JGroups stack file, the other is to specify the <code>jgroups-channel</code> from <code>jgroups</code> subsystem to compose the JGroups cluster.</p>
@@ -1166,13 +1113,19 @@ Any update to the options won&#8217;t require reload unless the option is refere
 <div class="sect4">
 <h5 id="_using_a_jgroups_stack_file"><a class="anchor" href="#_using_a_jgroups_stack_file"></a><a class="link" href="#_using_a_jgroups_stack_file">Using a JGroups stack file</a></h5>
 <div class="paragraph">
-<p>You can create a clustered Vert.x instance by specifying the JGroups stack file with the following command:</p>
+<p>You can update the clustered Vert.x instance by specifying the JGroups stack file with the following command:</p>
 </div>
 <div class="listingblock">
-<div class="title">Create clustered Vert.x instance using a JGroups stack file</div>
+<div class="title">Update Vert.x instance to use a JGroups stack file</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=v3:add(clustered=true,jgroups-stack-file=jgroups-stack.xml)
-{"outcome" =&gt; "success"}</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/service=vertx:write-attribute(name=jgroups-stack-file,value=jgroups-stack.xml)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1198,7 +1151,7 @@ The content inside the JGroups stack file should be consistent with the remote V
 <div class="sect4">
 <h5 id="_using_a_channel_from_jgroups_subsystem"><a class="anchor" href="#_using_a_channel_from_jgroups_subsystem"></a><a class="link" href="#_using_a_channel_from_jgroups_subsystem">Using a channel from jgroups subsystem</a></h5>
 <div class="paragraph">
-<p>Please use the following commands to create a JGroups channel for clustered Vert.x instance, which matches what default Vert.x Infinispan cluster ships:</p>
+<p>Please use the following commands to create a JGroups channel for the clustered Vert.x instance, which matches what default Vert.x Infinispan cluster ships:</p>
 </div>
 <div class="listingblock">
 <div class="title">Configure JGroups channel for Vert.x</div>
@@ -1227,12 +1180,12 @@ run-batch
 </div>
 </div>
 <div class="paragraph">
-<p>Because the <code>default</code> Vert.x instance shipped in the <code>ha</code> configuration has the same setup as what the above commands achieve, remove it and create it again with the option defined above:</p>
+<p>Now update the Vert.x instance to use the JGroups channel created above:</p>
 </div>
 <div class="listingblock">
-<div class="title">Create Vert.x instance with JGroups channel specified</div>
+<div class="title">Update Vert.x instance with JGroups channel specified</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:remove()
+<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/service=vertx:write-attribute(name=jgroups-channel,value=vertx)
 {
     "outcome" =&gt; "success",
     "response-headers" =&gt; {
@@ -1245,71 +1198,12 @@ run-batch
 {
     "outcome" =&gt; "success",
     "result" =&gt; undefined
-}
-
-[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:add(clustered=true, jgroups-channel=vertx)
-{"outcome" =&gt; "success"}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now you have created a clustered Vert.x instance with JGroups channel set up from <code>jgroups</code> subsystem.</p>
-</div>
-<div class="quoteblock">
-<blockquote>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Remember to specify <code>-Djgroups.bind.address=127.0.0.1</code> in your another Vert.x instance to be able to compose the cluster.
-</td>
-</tr>
-</table>
-</div>
-</blockquote>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_update_to_the_vert_x_instance"><a class="anchor" href="#_update_to_the_vert_x_instance"></a><a class="link" href="#_update_to_the_vert_x_instance">4.2. Update to the Vert.x instance</a></h3>
-<div class="paragraph">
-<p>You can update the Vert.x using the <code>write-attribute</code> operation:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:write-attribute(name=jndi-name,value=java:/vertx/v1)
-{
-    "outcome" =&gt; "success",
-    "response-headers" =&gt; {
-        "operation-requires-reload" =&gt; true,
-        "process-state" =&gt; "reload-required"
-    }
-}
-
-[standalone@localhost:9990 /] :reload
-{
-    "outcome" =&gt; "success",
-    "result" =&gt; undefined
-}
-
-[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
-{
-    "outcome" =&gt; "success",
-    "result" =&gt; {
-        "alias" =&gt; ["vertx"],
-        "clustered" =&gt; false,
-        "forked-channel" =&gt; false,
-        "jgroups-channel" =&gt; undefined,
-        "jgroups-stack-file" =&gt; undefined,
-        "jndi-name" =&gt; "java:/vertx/v1",
-        "option-name" =&gt; undefined
-    }
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Now you have updated the clustered Vert.x instance with JGroups channel set up from <code>jgroups</code> subsystem.</p>
+</div>
 <div class="quoteblock">
 <blockquote>
 <div class="admonitionblock note">
@@ -1319,12 +1213,13 @@ Remember to specify <code>-Djgroups.bind.address=127.0.0.1</code> in your anothe
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Any update to the Vert.x instance requires <code>reload-required</code>.
+Remember to specify <code>-Djgroups.bind.address=127.0.0.1</code> in your another Vert.x instance to be able to compose the cluster for local test.
 </td>
 </tr>
 </table>
 </div>
 </blockquote>
+</div>
 </div>
 </div>
 </div>
@@ -1333,36 +1228,18 @@ Any update to the Vert.x instance requires <code>reload-required</code>.
 <h2 id="_vertx_used_in_application"><a class="anchor" href="#_vertx_used_in_application"></a><a class="link" href="#_vertx_used_in_application">5. Vertx used in application</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After you created Vert.x instance, you can use it in your applications.</p>
+<p>You can use the Vert.x instance in your applications.</p>
 </div>
 <div class="paragraph">
-<p>Vert.x instance is the key to all Vert.x applications, every function and capability comes from the Vert.x instance, so having the Vert.x instance injected in the application codes is important.</p>
+<p>Vert.x instance is the key to all Vert.x applications, each function and capability comes from the Vert.x instance, so having the Vert.x instance injected in the application codes is important.</p>
+</div>
+<div class="paragraph">
+<p>This extension provides 2 ways to access the Vert.x instance.</p>
 </div>
 <div class="sect2">
 <h3 id="_access_the_vert_x_instance_using_jndi_lookup"><a class="anchor" href="#_access_the_vert_x_instance_using_jndi_lookup"></a><a class="link" href="#_access_the_vert_x_instance_using_jndi_lookup">5.1. Access the Vert.x instance using JNDI lookup</a></h3>
 <div class="paragraph">
-<p>Suppose you have a Vert.x instance created:</p>
-</div>
-<div class="listingblock">
-<div class="title">Default Vert.x Instance</div>
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">[standalone@localhost:9990 /] /subsystem=vertx/vertx=default:read-resource()
-{
-    "outcome" =&gt; "success",
-    "result" =&gt; {
-        "alias" =&gt; ["vertx"],
-        "clustered" =&gt; false,
-        "forked-channel" =&gt; false,
-        "jgroups-channel" =&gt; undefined,
-        "jgroups-stack-file" =&gt; undefined,
-        "jndi-name" =&gt; "java:/vertx/default",
-        "option-name" =&gt; undefined
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>you can access the Vert.x using the <code>@Resource</code> annotation like:</p>
+<p>you can access the Vert.x using the <code>@Resource(lookup = "java:/jboss/vertx/default")</code> annotation like:</p>
 </div>
 <div class="listingblock">
 <div class="title">Access Vert.x using JNDI lookup</div>
@@ -1370,7 +1247,7 @@ Any update to the Vert.x instance requires <code>reload-required</code>.
 <pre class="highlight"><code class="language-java" data-lang="java">@WebServlet(value = "/async", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
-    @Resource(name = "java:/vertx/default")
+    @Resource(name = "java:/jboss/vertx/default")
     private Vertx vertx;
 
         @Override
@@ -1382,27 +1259,11 @@ public class AsyncServlet extends HttpServlet {
 }</code></pre>
 </div>
 </div>
-<div class="quoteblock">
-<blockquote>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-Do not call <code>vertx.close();</code> in application code which will affect usage in other places, there is a plan to restrict the usage in next releases to have better lifecycle management.
-</td>
-</tr>
-</table>
-</div>
-</blockquote>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_access_the_vert_x_instance_using_cdi"><a class="anchor" href="#_access_the_vert_x_instance_using_cdi"></a><a class="link" href="#_access_the_vert_x_instance_using_cdi">5.2. Access the Vert.x instance using CDI</a></h3>
 <div class="paragraph">
-<p>The other way to use the Vert.x instance in the application is to use <code>@Inject Vertx vertx</code> annotation. When the CDI is activated(a <code>beans.xml</code> file), the Vert.x instance will be injected. The instance which has the same <code>name</code> or <code>alias</code> as the field name(injection point) will be chosen.</p>
+<p>The other way to use the Vert.x instance in the application is to use <code>@Inject Vertx vertx</code> annotation. When the CDI is activated(via a <code>beans.xml</code> file bundled in the deployment archive), the Vert.x instance will be injected.</p>
 </div>
 <div class="listingblock">
 <div class="title">Access Vert.x instance using CDI</div>
@@ -1432,7 +1293,7 @@ public class EchoService {
 <p>With this extension integrated, you can deploy the Vert.x verticle implementation to the WildFly server by specifying a deployment descriptor.</p>
 </div>
 <div class="paragraph">
-<p>The availability of the deployment descriptor activates a <code>DeploymentUnitProcessor</code> to check the existing Vert.x instances inside the WildFly server, and select the one specified in the deployment descriptor.</p>
+<p>The availability of the deployment descriptor makes it a <code>vertx deployment</code>, which means that users can access Vert.x instance in their applications.</p>
 </div>
 <div class="paragraph">
 <p>A typical war deployment structure which contains a verticle implementation is:</p>
@@ -1463,15 +1324,14 @@ public class EchoService {
 <pre class="highlight"><code class="language-json" data-lang="json">{
   "deployments": [
     {
-      "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle",
-      "vertx": "default"
+      "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle"
     }
   ]
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>when it is deployed, the <code>TestVerticle</code> will be deployed to the Vert.x instance with name: <code>default</code> using the default <code>DeploymentOptions</code> too.</p>
+<p>when the war is deployed, the <code>TestVerticle</code> will be deployed to the Vert.x instance using the default <code>DeploymentOptions</code>.</p>
 </div>
 <div class="paragraph">
 <p>These deployed verticles inside the Vert.x instance will be un-deployed when the deployment gets un-deployed from WildFly server.</p>
@@ -1492,7 +1352,6 @@ public class EchoService {
   "deployments": [
     {
       "verticle-class": "org.wildfly.extension.vertx.test.mini.deployment.TestVerticle",
-      "vertx": "default",
       "deploy-options": {}
     }
   ]
@@ -1512,16 +1371,6 @@ public class EchoService {
 <p><code>verticle-class</code>    -    The FQCN of the verticle class which will be deployed.</p>
 </li>
 <li>
-<p><code>vertx</code>    -    The vertx name which the verticle should be deployed to.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Defaults to <code>default</code> if not specified.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
 <p><code>deploy-options</code>    -    The <code>DeploymentOptions</code> which is used to do the deployment.</p>
 <div class="ulist">
 <ul>
@@ -1530,9 +1379,6 @@ public class EchoService {
 </li>
 <li>
 <p>Default <code>DeploymentOptions</code> is used if not specified.</p>
-</li>
-<li>
-<p>The <code>ModuleClassLoader</code> of current deployment will be used for deploying the Verticle.</p>
 </li>
 </ul>
 </div>
@@ -1549,7 +1395,7 @@ public class EchoService {
 <div id="footer">
 <div id="footer-text">
 Version {version}<br>
-Last updated 2023-01-30 14:49:18 UTC
+Last updated 2023-02-17 05:16:30 UTC
 </div>
 </div>
 </body>

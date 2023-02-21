@@ -17,7 +17,10 @@
 
 package org.wildfly.extension.vertx.test.mini.deployment;
 
-import io.vertx.core.json.JsonObject;
+import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -26,15 +29,20 @@ import org.jboss.as.test.integration.common.HttpRequest;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.extension.vertx.test.shared.AbstractEventBusConsumerVerticle;
 import org.wildfly.extension.vertx.test.shared.StreamUtils;
+import org.wildfly.extension.vertx.test.shared.servlet.AbstractVertxServlet;
 
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Test accessing resources inside of the deployment using vertx filesystem API.
@@ -43,19 +51,87 @@ import java.util.concurrent.TimeUnit;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-@Ignore
 public class VertxFileSystemTestCase {
 
     @ArquillianResource
     private URL url;
 
+    public static class FileAccessVerticle extends AbstractEventBusConsumerVerticle<String, JsonObject> {
+
+        @Override
+        protected Future<JsonObject> responseOf(String body) {
+            final JsonObject json = new JsonObject();
+            return vertx.fileSystem().readFile("geo.json").flatMap(buffer -> {
+                try {
+                    json.put("geo.json", new JsonObject(buffer));
+                    return vertx.fileSystem().readFile("assets/config.properties");
+                } catch (Exception e) {
+                    return Future.failedFuture(e);
+                }
+            }).flatMap(config -> {
+                try {
+                    json.put("config", StreamUtils.stringToProperties(config.toString()));
+                    return Future.succeededFuture(json);
+                } catch (Exception e) {
+                    return Future.failedFuture(e);
+                }
+            });
+        }
+
+        @Override
+        protected String address() {
+            return testAddress();
+        }
+
+    }
+
+    @WebServlet(urlPatterns = "/file-access", asyncSupported = true)
+    static class FileAccessServlet extends AbstractVertxServlet<String, JsonObject> {
+
+        @Override
+        protected String payload(HttpServletRequest httpRequest) throws IOException {
+            return "";
+        }
+
+        @Override
+        protected void sendResponse(HttpServletResponse httpResponse, String payload, JsonObject vertxResponse) throws IOException {
+            httpResponse.setContentType("application/json");
+            httpResponse.getWriter().write(vertxResponse.toString());
+        }
+
+        @Override
+        protected String address() {
+            return testAddress();
+        }
+
+        @Override
+        protected boolean resultRequired() {
+            return true;
+        }
+    }
+
+    private static String testAddress() {
+        return "file-access";
+    }
+
     @Deployment
     public static Archive<?> deployment() {
         WebArchive web = ShrinkWrap.create(WebArchive.class, "test-vertx-filesystem.war")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "vertx-deployment.json")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsWebInfResource(new StringAsset("{\n" +
+                    "  \"deployments\": [\n" +
+                    "    {\n" +
+                    "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.VertxFileSystemTestCase$FileAccessVerticle\"\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}"), "vertx-deployment.json")
                 .addAsResource("assets")
                 .addAsResource("geo.json")
-                .addClasses(FileAccessServelt.class, StreamUtils.class);
+                .addClasses(FileAccessServlet.class,
+                  FileAccessVerticle.class,
+                  AbstractEventBusConsumerVerticle.class,
+                  AbstractVertxServlet.class,
+                  StreamUtils.class);
         return web;
     }
 

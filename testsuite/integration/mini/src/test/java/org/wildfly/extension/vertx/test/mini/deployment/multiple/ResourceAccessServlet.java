@@ -61,6 +61,7 @@ public class ResourceAccessServlet extends HttpServlet {
                         }
                     } else {
                         try {
+                            result.cause().printStackTrace();
                             resp.sendError(500, result.cause().getMessage());
                         } catch (IOException ioException) {
                             ioException.printStackTrace();

@@ -81,7 +81,7 @@ public class MultipleFileAccessTestCase {
 
     @Deployment(name = "test-res1")
     public static Archive<?> deployment1() {
-        return ShrinkWrap.create(WebArchive.class, "test-res1.war")
+        WebArchive web = ShrinkWrap.create(WebArchive.class, "test-res1.war")
                 .addAsWebInfResource(new StringAsset("{\n" +
                   "  \"deployments\": [\n" +
                   "    {\n" +
@@ -91,6 +91,7 @@ public class MultipleFileAccessTestCase {
                   "}"), "vertx-deployment.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res1\"}"), "config.json")
                 .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle1.class, AbstractEventBusConsumerVerticle.class);
+        return web;
     }
 
     @Deployment(name = "test-res2")

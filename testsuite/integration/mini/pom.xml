@@ -87,4 +87,42 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/wildfly/extension/vertx/test/mini/multiresolving/**/*TestCase.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>multi-resolving-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>org/wildfly/extension/vertx/test/mini/multiresolving/**/*TestCase.java</include>
+                                <include>org/wildfly/extension/vertx/test/mini/deployment/multiple/**/*TestCase.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <server.jvm.args>-Dvertx.classloading.multiple=true</server.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

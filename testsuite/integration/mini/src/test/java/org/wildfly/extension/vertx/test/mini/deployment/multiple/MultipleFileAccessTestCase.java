@@ -36,7 +36,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.wildfly.extension.vertx.test.shared.AbstractEventBusConsumerVerticle;
 
+import io.vertx.core.Future;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -56,18 +59,39 @@ public class MultipleFileAccessTestCase {
     @OperateOnDeployment("test-res2")
     private URL res2URL;
 
+    public static class ResourceAccessVerticle1 extends AbstractEventBusConsumerVerticle<String, String> {
+        @Override
+        protected Future<String> responseOf(String body) {
+            return vertx.fileSystem().readFile(body).map(Buffer::toString);
+        }
+
+        @Override
+        protected String address() {
+            return "res-access-1";
+        }
+
+    }
+
+    public static class ResourceAccessVerticle2 extends ResourceAccessVerticle1 {
+        @Override
+        protected String address() {
+            return "res-access-2";
+        }
+    }
+
     @Deployment(name = "test-res1")
     public static Archive<?> deployment1() {
-        return ShrinkWrap.create(WebArchive.class, "test-res1.war")
+        WebArchive web = ShrinkWrap.create(WebArchive.class, "test-res1.war")
                 .addAsWebInfResource(new StringAsset("{\n" +
                   "  \"deployments\": [\n" +
                   "    {\n" +
-                  "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.ResourceAccessVerticle1\"\n" +
+                  "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.MultipleFileAccessTestCase$ResourceAccessVerticle1\"\n" +
                   "    }\n" +
                   "  ]\n" +
                   "}"), "vertx-deployment.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res1\"}"), "config.json")
-                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle1.class);
+                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle1.class, AbstractEventBusConsumerVerticle.class);
+        return web;
     }
 
     @Deployment(name = "test-res2")
@@ -76,12 +100,15 @@ public class MultipleFileAccessTestCase {
               .addAsWebInfResource(new StringAsset("{\n" +
                 "  \"deployments\": [\n" +
                 "    {\n" +
-                "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.ResourceAccessVerticle2\"\n" +
+                "      \"verticle-class\": \"org.wildfly.extension.vertx.test.mini.deployment.multiple.MultipleFileAccessTestCase$ResourceAccessVerticle2\"\n" +
                 "    }\n" +
                 "  ]\n" +
                 "}"), "vertx-deployment.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res2\"}"), "config.json")
-                .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle2.class);
+                .addClasses(ResourceAccessServlet.class,
+                  ResourceAccessVerticle1.class,
+                  ResourceAccessVerticle2.class,
+                  AbstractEventBusConsumerVerticle.class);
         return web;
     }
 

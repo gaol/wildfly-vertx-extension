@@ -78,7 +78,6 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         operation.get(ATTR_INTERNAL_BLOCKING_POOL_SIZE).set(50);
         operation.get(ATTR_HA_ENABLED).set(false);
         operation.get(ATTR_PREFER_NATIVE_TRANSPORT).set(true);
-        operation.get(ATTR_DISABLE_TCCL).set(true);
         operation.get(ATTR_BLOCKED_THREAD_CHECK_INTERVAL).set(50);
         operation.get(ATTR_MAX_EVENTLOOP_EXECUTE_TIME).set(60);
         operation.get(ATTR_MAX_WORKER_EXECUTE_TIME).set(70);
@@ -93,7 +92,6 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals(50, result.get(ATTR_INTERNAL_BLOCKING_POOL_SIZE).asInt());
         Assert.assertFalse(result.get(ATTR_HA_ENABLED).asBoolean());
         Assert.assertTrue(result.get(ATTR_PREFER_NATIVE_TRANSPORT).asBoolean());
-        Assert.assertTrue(result.get(ATTR_DISABLE_TCCL).asBoolean());
         Assert.assertEquals(50L, result.get(ATTR_BLOCKED_THREAD_CHECK_INTERVAL).asLong());
         Assert.assertEquals(60L, result.get(ATTR_MAX_EVENTLOOP_EXECUTE_TIME).asLong());
         Assert.assertEquals(70L, result.get(ATTR_MAX_WORKER_EXECUTE_TIME).asLong());
@@ -105,7 +103,6 @@ public class VertxOptionsManagementTestCase implements VertxConstants {
         Assert.assertEquals(50, vertxOptions.getInternalBlockingPoolSize());
         Assert.assertFalse(vertxOptions.isHAEnabled());
         Assert.assertTrue(vertxOptions.getPreferNativeTransport());
-        Assert.assertTrue(vertxOptions.getDisableTCCL());
         Assert.assertEquals(50L, vertxOptions.getBlockedThreadCheckInterval());
         Assert.assertEquals(60L, vertxOptions.getMaxEventLoopExecuteTime());
         Assert.assertEquals(70L, vertxOptions.getMaxWorkerExecuteTime());

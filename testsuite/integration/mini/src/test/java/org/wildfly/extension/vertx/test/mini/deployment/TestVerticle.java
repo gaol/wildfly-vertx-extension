@@ -18,23 +18,14 @@
 package org.wildfly.extension.vertx.test.mini.deployment;
 
 import io.vertx.core.AbstractVerticle;
-import io.vertx.core.eventbus.MessageConsumer;
 
 public class TestVerticle extends AbstractVerticle {
 
-    private MessageConsumer<String> consumer;
-
     @Override
     public void start() throws Exception {
-        consumer = vertx.eventBus()
+        vertx.eventBus()
                 .<String>localConsumer("echo")
                 .handler(msg -> msg.reply(msg.body()));
     }
 
-    @Override
-    public void stop() throws Exception {
-        if (consumer != null) {
-            consumer.unregister();
-        }
-    }
 }

@@ -89,11 +89,6 @@
                                         <name>modules.all</name>
                                     </included-packages>
                                 </feature-pack>
-<!--                                <feature-pack>-->
-<!--                                    <groupId>org.wildfly</groupId>-->
-<!--                                    <artifactId>wildfly-galleon-pack</artifactId>-->
-<!--                                    <version>${version.org.wildfly}</version>-->
-<!--                                </feature-pack>-->
                             </feature-packs>
                             <configurations>
                                 <config>
@@ -102,6 +97,14 @@
                                     <layers>
                                         <layer>jaxrs-server</layer>
                                         <layer>vertx</layer>
+                                    </layers>
+                                </config>
+                                <config>
+                                    <model>standalone</model>
+                                    <name>standalone-ha.xml</name>
+                                    <layers>
+                                        <layer>jaxrs-server</layer>
+                                        <layer>vertx-ha</layer>
                                     </layers>
                                 </config>
                             </configurations>

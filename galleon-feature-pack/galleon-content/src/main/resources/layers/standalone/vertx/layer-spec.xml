@@ -12,8 +12,6 @@
     <packages>
         <package name="org.wildfly.extension.vertx" />
         <package name="default-vertx-options.json" />
-        <package name="io.vertx.infinispan" />
-        <package name="org.wildfly.clustering.jgroups.spi" />
     </packages>
 
 </layer-spec>

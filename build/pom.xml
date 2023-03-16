@@ -91,6 +91,7 @@
                                     <name>standalone.xml</name>
                                     <layers>
                                         <layer>jaxrs-server</layer>
+                                        <layer>ejb-lite</layer>
                                         <layer>vertx</layer>
                                     </layers>
                                 </config>
@@ -99,6 +100,7 @@
                                     <name>standalone-ha.xml</name>
                                     <layers>
                                         <layer>jaxrs-server</layer>
+                                        <layer>ejb-lite</layer>
                                         <layer>vertx-ha</layer>
                                     </layers>
                                 </config>

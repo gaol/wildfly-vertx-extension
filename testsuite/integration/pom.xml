@@ -32,23 +32,24 @@
         <jbossas.ts.integ.dir>${basedir}/..</jbossas.ts.integ.dir>
         <jbossas.ts.dir>${jbossas.ts.integ.dir}/..</jbossas.ts.dir>
         <jbossas.project.dir>${jbossas.ts.dir}/..</jbossas.project.dir>
-        <!-- use the web build for tests -->
-        <jboss.dist>${jbossas.project.dir}/${thin.server.path}</jboss.dist>
+        <jboss.dist>${project.basedir}/target/wildfly</jboss.dist>
         <jboss.home>${jboss.dist}</jboss.home>
         <surefire.forked.process.timeout>3600</surefire.forked.process.timeout>
-        <jboss.home></jboss.home>
     </properties>
 
     <modules>
-        <module>mini</module>
         <module>basic</module>
         <module>ha</module>
     </modules>
 
     <dependencies>
         <dependency>
-            <groupId>org.wildfly.extension.vertx</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>wildfly-vertx-extension-testsuite-shared</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>wildfly-vertx-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -65,48 +66,6 @@
     <build>
         <pluginManagement>
             <plugins>
-
-                <!--
-                    A build of target/wildfly which is shared by all modules.
-                    Modules and bundles are not copied as they are read-only (see surefire props).
-                -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <executions combine.children="append">
-                        <execution>
-                            <id>ts.copy-wildfly</id>
-                            <inherited>true</inherited>
-                            <phase>generate-test-resources</phase>
-                            <goals><goal>copy-resources</goal></goals>
-                            <configuration>
-                                <outputDirectory>${basedir}/target/wildfly-vertx-extension</outputDirectory>
-                                <overwrite>true</overwrite>
-                                <resources>
-                                    <resource>
-                                        <directory>${jboss.home}</directory>
-                                        <excludes>
-                                            <exclude>bin/client/</exclude>
-                                            <exclude>bin/*.jar</exclude>
-                                            <exclude>bin/*.sh</exclude>
-                                            <exclude>bin/*.bat</exclude>
-                                            <exclude>bin/*.ps1</exclude>
-                                            <exclude>docs/licenses/</exclude>
-                                            <exclude>docs/schema/</exclude>
-                                            <exclude>docs/examples/configs/</exclude>
-                                            <exclude>modules/</exclude>
-                                            <exclude>welcome-content/*.png</exclude>
-                                            <exclude>standalone/data</exclude>
-                                            <exclude>standalone/log</exclude>
-                                            <exclude>standalone/tmp</exclude>
-                                        </excludes>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -117,7 +76,7 @@
                         <!-- System properties to forked surefire JVM which runs clients. -->
                         <argLine>${surefire.system.args} ${surefire.memory.args} ${jvm.args.ip.client} ${jvm.args.timeouts}</argLine>
                         <systemPropertyVariables combine.children="append">
-                            <jboss.install.dir>${basedir}/target/wildfly-vertx-extension</jboss.install.dir>
+                            <jboss.install.dir>${jboss.dist}</jboss.install.dir>
                             <jbossas.ts.submodule.dir>${basedir}</jbossas.ts.submodule.dir>
                             <jbossas.ts.integ.dir>${jbossas.ts.integ.dir}</jbossas.ts.integ.dir>
                             <jbossas.ts.dir>${jbossas.ts.dir}</jbossas.ts.dir>

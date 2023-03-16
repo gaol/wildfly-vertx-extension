@@ -40,63 +40,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>wildfly-vertx-feature-pack</artifactId>
             <type>zip</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>verifications-configuration</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <overwrite>true</overwrite>
-                            <outputDirectory>${basedir}/target/verifier</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/verifier</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>ts.copy-widfly-for-validation</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/xml-validation</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target/${project.build.finalName}</directory>
-                                    <includes>
-                                        <include>docs/**/*.xml</include>
-                                        <include>docs/**/*.xsd</include>
-                                        <include>standalone/**/*.xml</include>
-                                        <include>domain/**/*.xml</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.jboss.galleon</groupId>
                 <artifactId>galleon-maven-plugin</artifactId>
@@ -125,16 +74,36 @@
                                     <groupId>org.wildfly</groupId>
                                     <artifactId>wildfly-ee-galleon-pack</artifactId>
                                     <version>${version.org.wildfly}</version>
+                                    <inherit-packages>false</inherit-packages>
+                                    <inherit-configs>false</inherit-configs>
                                     <included-packages>
-                                        <name>docs.examples.configs</name>
+                                        <name>modules.all</name>
                                     </included-packages>
                                 </feature-pack>
-                                <feature-pack>
-                                    <groupId>org.wildfly</groupId>
-                                    <artifactId>wildfly-galleon-pack</artifactId>
-                                    <version>${version.org.wildfly}</version>
-                                </feature-pack>
+<!--                                <feature-pack>-->
+<!--                                    <groupId>org.wildfly</groupId>-->
+<!--                                    <artifactId>wildfly-galleon-pack</artifactId>-->
+<!--                                    <version>${version.org.wildfly}</version>-->
+<!--                                </feature-pack>-->
                             </feature-packs>
+                            <configurations>
+                                <config>
+                                    <model>standalone</model>
+                                    <name>standalone.xml</name>
+                                    <layers>
+                                        <layer>jaxrs-server</layer>
+                                        <layer>vertx</layer>
+                                    </layers>
+                                </config>
+                                <config>
+                                    <model>standalone</model>
+                                    <name>standalone-ha.xml</name>
+                                    <layers>
+                                        <layer>jaxrs-server</layer>
+                                        <layer>vertx-ha</layer>
+                                    </layers>
+                                </config>
+                            </configurations>
                         </configuration>
                     </execution>
                 </executions>

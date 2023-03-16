@@ -14,9 +14,9 @@ galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:commu
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version}
 ----
 
-after it completes, the `vertx` subsystem and the required bits are downloaded and installed to the existing server with an additional layer called `vertx` created in `<SERVER_DIR>/modules/system/layers/`.
+after it completes, the `vertx` subsystem and the required bits are downloaded and installed to the existing server.
 
-### Install part of the feature pack
+### Install the layers of the feature pack
 
 The feature pack has 2 https://docs.wildfly.org/galleon/#_layers[Galleon layers] produced:
 
@@ -35,7 +35,7 @@ galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:commu
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:${version} --layers=vertx
 ----
 
-this will update the default configuration `standalone.xml` instead of producing new configurations, and it will download necessary bits.
+this will update the default configuration `standalone.xml` and it will download necessary bits.
 
 in case of clustered Vertx, you need layer of `vertx-ha`, and you need to specify the ha configuration to update:
 

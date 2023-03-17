@@ -30,7 +30,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>${groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>wildfly-vertx-extension</artifactId>
         </dependency>
         <dependency>

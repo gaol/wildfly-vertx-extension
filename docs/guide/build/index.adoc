@@ -21,23 +21,18 @@ When the command finishes, it will have produced two server distributions and a 
 ** Located at `build/target/wildfly-vertx-build-{project-version}/`.
 ** The thin server contains all configurations and JBoss module files (`module.xml`) which define the Maven artifact, without the jar files.
 * Full server
-** Located at `dist/target/wildfly-vertx-build-{project-version}/`.
+** Located at `dist/target/wildfly-vertx-dist-{project-version}/`.
 ** The full server contains everything including jar files.
 * Galleon feature pack
-** Located at `galleon-feature-pack/target/wildfly-vertx-feature-pack-{project-version}.zip`.
+** Located at `galleon-feature-pack/wildfly-feature-pack/target/wildfly-vertx-feature-pack-{project-version}.zip`.
 ** This feature pack can be installed in an existing WildFly server.
 
-Both produced servers have `4` standalone configurations:
+Both produced servers have `2` standalone configurations:
 
-* `standalone-vertx-mini.xml`
-** This is a minimal setup based on the https://github.com/wildfly/wildfly/blob/27.0.0.Final/ee-feature-pack/galleon-content/src/main/resources/feature_groups/standalone-minimalistic.xml[standalone-minimalistic] https://docs.wildfly.org/galleon/#_feature_groups[galleon feature group] with the Vert.x subsystem and few extra layers added.
-* `standalone-vertx.xml`
+* `standalone.xml`
 ** This is the setup with the Vert.x subsystem added to the default `standalone.xml` in WildFly server.
-* `standalone-vertx-ha.xml`
+* `standalone-ha.xml`
 ** This is the setup with the Vert.x subsystem added to the default `standalone-ha.xml` in WildFly server.
-** The default Vert.x in this setup is a clustered Vert.x with default configuration.
-* `standalone-vertx-full-ha.xml`
-** This is the setup with the Vert.x subsystem added to the default standalone-full-ha.xml in WildFly server.
 ** The default Vert.x in this setup is a clustered Vert.x with default configuration.
 
 ### Start the server
@@ -47,5 +42,5 @@ You can start the server like you do for normal WildFly server by specifying the
 .Start Server
 [source,bash]
 ----
-$SERVER_HOME/bin/standalone.sh -c standalone-vertx-mini.xml
+$SERVER_HOME/bin/standalone.sh -c standalone-ha.xml
 ----

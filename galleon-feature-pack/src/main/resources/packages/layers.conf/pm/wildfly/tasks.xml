@@ -1,4 +1,0 @@
-<?xml version="1.0" ?>
-<tasks xmlns="urn:wildfly:wildfly-feature-pack-tasks:2.0">
-    <mkdir name="modules/system/layers/vertx"/>
-</tasks>

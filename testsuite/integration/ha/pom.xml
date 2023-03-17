@@ -32,8 +32,7 @@
         <jbossas.ts.integ.dir>${basedir}/..</jbossas.ts.integ.dir>
         <jbossas.ts.dir>${jbossas.ts.integ.dir}/..</jbossas.ts.dir>
         <jbossas.project.dir>${jbossas.ts.dir}/..</jbossas.project.dir>
-        <!-- use the web build for tests -->
-        <jboss.dist>${jbossas.project.dir}/${thin.server.path}</jboss.dist>
+        <jboss.dist>${project.basedir}/target/wildfly</jboss.dist>
         <jboss.home>${jboss.dist}</jboss.home>
     </properties>
 
@@ -67,5 +66,88 @@
             <artifactId>jgroups</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jboss.galleon</groupId>
+                <artifactId>galleon-maven-plugin</artifactId>
+                <executions>
+                    <!-- Provision a server with relevant layers for test -->
+                    <execution>
+                        <id>server-provisioning</id>
+                        <goals>
+                            <goal>provision</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <install-dir>${project.build.directory}/wildfly</install-dir>
+                            <record-state>false</record-state>
+                            <log-time>${galleon.log.time}</log-time>
+                            <offline>true</offline>
+                            <plugin-options>
+                                <jboss-maven-dist/>
+                                <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
+                                <optional-packages>passive+</optional-packages>
+                            </plugin-options>
+                            <feature-packs>
+                                <feature-pack>
+                                    <transitive>true</transitive>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-galleon-pack</artifactId>
+                                    <version>${version.org.wildfly}</version>
+                                    <inherit-packages>false</inherit-packages>
+                                    <inherit-configs>false</inherit-configs>
+                                </feature-pack>
+                                <feature-pack>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>wildfly-vertx-feature-pack</artifactId>
+                                    <version>${project.version}</version>
+                                    <inherit-packages>false</inherit-packages>
+                                    <inherit-configs>false</inherit-configs>
+                                </feature-pack>
+                            </feature-packs>
+                            <configurations>
+                                <config>
+                                    <model>standalone</model>
+                                    <name>standalone-ha.xml</name>
+                                    <layers>
+                                        <!--
+                                            Layers needed to have a base server that makes sense,
+                                            which are not required by this FP's layers
+                                        -->
+                                        <layer>jaxrs-server</layer>
+                                        <layer>jmx-remoting</layer>
+                                        <layer>ejb-lite</layer>
+                                        <!-- Layers from this FP -->
+                                        <layer>vertx-ha</layer>
+                                    </layers>
+                                </config>
+                            </configurations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <systemPropertyVariables combine.children="append">
+                                <jboss.install.dir>${jboss.dist}</jboss.install.dir>
+                                <server.jvm.args>${server.jvm.args}</server.jvm.args>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

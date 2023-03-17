@@ -34,14 +34,14 @@ Run the following command to build:
 
 After that, there will be 2 servers and 1 Galleon feature pack produced in the separated subdirectories:
 
-* `build/target/wildfly-vertx-dist-${version}/`
+* `build/target/wildfly-vertx-build-${version}/`
 * `dist/target/wildfly-vertx-dist-${version}/`
-* `galleon-feature-pack/target/wildfly-vertx-feature-pack-${version}.zip`
+* `galleon-feature-pack/wildfly-feature-pack/target/wildfly-vertx-feature-pack-${version}.zip`
 
 ## Start the server
 
 The generated servers can be started the same way as how WildFly server is started:
-> $SERVER_HOME/bin/standalone.sh -c standalone-vertx-mini.xml
+> $SERVER_HOME/bin/standalone.sh
 
 
 ## Installation to existing server

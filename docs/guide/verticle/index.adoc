@@ -11,7 +11,7 @@ A typical war deployment structure which contains a verticle implementation is:
 ----
 test-verticle.war:
 /WEB-INF/
-/WEB-INF/vertx-deployment.json
+/WEB-INF/vertx.json
 /WEB-INF/classes/
 /WEB-INF/classes/org/
 /WEB-INF/classes/org/wildfly/
@@ -23,7 +23,7 @@ test-verticle.war:
 /WEB-INF/classes/org/wildfly/extension/vertx/test/mini/deployment/TestVerticle.class
 ----
 
-The content of the deployment descriptor(`WEB-INF/vertx-deployment.json`) is:
+The content of the deployment descriptor(`WEB-INF/vertx.json`) is:
 
 .Deployment descriptor content
 [source, json]
@@ -43,11 +43,11 @@ These deployed verticles inside the Vert.x instance will be un-deployed when the
 
 ### Deployment Descriptor
 
-The deployment descriptor to be able to deploy the verticle is either at `META-INF/vertx-deployment.json` or `WEB-INF/vertx-deployment.json`.
+The deployment descriptor to be able to deploy the verticle is either at `META-INF/vertx.json` or `WEB-INF/vertx.json`.
 
-A full example of `vertx-deployment.json` is:
+A full example of `vertx.json` is:
 
-.Full example of vertx-deployment.json
+.Full example of vertx.json
 [source, json]
 ----
 {

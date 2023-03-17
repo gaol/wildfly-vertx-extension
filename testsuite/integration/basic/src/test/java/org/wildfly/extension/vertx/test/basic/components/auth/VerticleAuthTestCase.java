@@ -140,7 +140,7 @@ public class VerticleAuthTestCase {
                     "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.components.auth.VerticleAuthTestCase$VertxAuthVerticle\"\n" +
                     "    }\n" +
                     "  ]\n" +
-                    "}"), "vertx-deployment.json")
+                    "}"), "vertx.json")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource("vertx-auth.properties")
                 .addClasses(VertxAuthServlet.class,

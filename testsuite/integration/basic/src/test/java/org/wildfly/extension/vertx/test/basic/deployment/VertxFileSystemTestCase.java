@@ -124,7 +124,7 @@ public class VertxFileSystemTestCase {
                     "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.deployment.VertxFileSystemTestCase$FileAccessVerticle\"\n" +
                     "    }\n" +
                     "  ]\n" +
-                    "}"), "vertx-deployment.json")
+                    "}"), "vertx.json")
                 .addAsResource("assets")
                 .addAsResource("geo.json")
                 .addClasses(FileAccessServlet.class,

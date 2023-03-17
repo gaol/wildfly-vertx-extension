@@ -63,7 +63,7 @@ public class MQTTClientTestCase extends ContainerBasedTestCase {
         "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.components.client.mqtt.MQTTClientVerticle\"\n" +
         "    }\n" +
         "  ]\n" +
-        "}"), "vertx-deployment.json")
+        "}"), "vertx.json")
       .addClasses(ContainerBasedTestCase.class, MQTTClientTestCase.class, MQTTClientServlet.class, MQTTClientVerticle.class);
   }
 

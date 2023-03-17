@@ -36,7 +36,7 @@ import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Test ear deployment with verticle jar inside the ear, and WEB-INF/vertx-deployment.json is in the war inside of ear.
+ * Test ear deployment with verticle jar inside the ear, and WEB-INF/vertx.json is in the war inside of ear.
  *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
@@ -51,7 +51,7 @@ public class VerticleDeploymentInWarOfEARTestCase {
      * The EAR deployment, which has the structure:
      *     - test-servlet.war
      *        - TestServlet.class
-     *        - WEB-INF/vertx-deployment.json
+     *        - WEB-INF/vertx.json
      *     - test-verticle.jar
      *        - TestVerticle.class
      */
@@ -60,7 +60,7 @@ public class VerticleDeploymentInWarOfEARTestCase {
         return ShrinkWrap.create(EnterpriseArchive.class, "in-war-of-ear.ear")
                 .addAsModule(ShrinkWrap.create(WebArchive.class, "in-war.war")
                         .addClasses(TestServlet.class)
-                        .addAsWebInfResource("vertx-deployment.json"))
+                        .addAsWebInfResource("vertx.json"))
                 .addAsLibrary(ShrinkWrap.create(JavaArchive.class, "test-verticle.jar")
                         .addClasses(TestVerticle.class));
     }

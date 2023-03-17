@@ -12,7 +12,7 @@ It allows you to define Vertx instances using WildFly management model, and they
 
 You can access Vertx core APIs and some component APIs in your applications.
 
-You can package the verticle classes with the application, the extension will deploy the verticles to the associated Vertx instances managed by the WildFly server if there is a `META-INF/vertx-deployment.json` or `WEB-INF/vertx-deployment.json` file in the application archive.
+You can package the verticle classes with the application, the extension will deploy the verticles to the associated Vertx instances managed by the WildFly server if there is a `META-INF/vertx.json` or `WEB-INF/vertx.json` file in the application archive.
 
 In case of clustering vertx instance, this extension uses [vertx-infinispan](https://github.com/vert-x3/vertx-infinispan/) as the cluster manager to be able to talk with remote Vertx instances. You can specify the necessary JGroups settings for Vertx using standard WildFly configuration.
 

@@ -77,7 +77,7 @@ public class MultiResolvingTestCase {
         "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.deployment.multiple.MultipleFileAccessTestCase$ResourceAccessVerticle1\"\n" +
         "    }\n" +
         "  ]\n" +
-        "}"), "vertx-deployment.json")
+        "}"), "vertx.json")
       .addAsResource(new StringAsset("This can only be accessed in war a"), "private.txt")
       .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
       .addClasses(ResourceAccessServlet.class,
@@ -98,7 +98,7 @@ public class MultiResolvingTestCase {
         "  ],\n" +
         "  \"expose\": true,\n" +
         "  \"exposed-resources\": [\"/public/*\", \"/protected-b/anybody.txt\"]\n" +
-        "}"), "vertx-deployment.json")
+        "}"), "vertx.json")
       .addAsResource(new StringAsset("<html><body>Public Page</body></html>"), "public/index.html")
       .addAsResource(new StringAsset("anybody can access"), "protected-b/anybody.txt")
       .addAsResource(new StringAsset("only me can access"), "protected-b/secret.txt")

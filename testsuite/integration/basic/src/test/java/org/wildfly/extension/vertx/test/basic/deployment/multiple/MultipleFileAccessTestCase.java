@@ -88,7 +88,7 @@ public class MultipleFileAccessTestCase {
                   "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.deployment.multiple.MultipleFileAccessTestCase$ResourceAccessVerticle1\"\n" +
                   "    }\n" +
                   "  ]\n" +
-                  "}"), "vertx-deployment.json")
+                  "}"), "vertx.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res1\"}"), "config.json")
                 .addClasses(ResourceAccessServlet.class, ResourceAccessVerticle1.class, AbstractEventBusConsumerVerticle.class);
         return web;
@@ -103,7 +103,7 @@ public class MultipleFileAccessTestCase {
                 "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.deployment.multiple.MultipleFileAccessTestCase$ResourceAccessVerticle2\"\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}"), "vertx-deployment.json")
+                "}"), "vertx.json")
                 .addAsResource(new StringAsset("{\"name\": \"test-res2\"}"), "config.json")
                 .addClasses(ResourceAccessServlet.class,
                   ResourceAccessVerticle1.class,

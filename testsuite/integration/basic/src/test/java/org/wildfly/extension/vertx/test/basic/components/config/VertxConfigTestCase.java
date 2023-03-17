@@ -52,7 +52,7 @@ public class VertxConfigTestCase {
         "      \"verticle-class\": \"org.wildfly.extension.vertx.test.basic.components.config.VertxConfigTestCase$BasicVertxConfigFromFileVerticle\"\n" +
         "    }\n" +
         "  ]\n" +
-        "}"), "vertx-deployment.json")
+        "}"), "vertx.json")
       .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
       .addAsResource(new StringAsset("{\n" +
         "  \"name\": \"lgao\",\n" +

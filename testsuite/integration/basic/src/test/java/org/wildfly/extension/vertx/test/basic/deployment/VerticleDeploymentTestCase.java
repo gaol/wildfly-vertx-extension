@@ -49,7 +49,7 @@ public class VerticleDeploymentTestCase {
     @Deployment
     public static Archive<?> deployment() {
         return ShrinkWrap.create(WebArchive.class, "test-verticle.war")
-                .addAsWebInfResource("vertx-deployment.json")
+                .addAsWebInfResource("vertx.json")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addClasses(TestServlet.class, TestVerticle.class);
     }

@@ -444,7 +444,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="details">
 <span id="author" class="author">Lin Gao</span><br>
 <span id="revnumber">version {version},</span>
-<span id="revdate">2023-02-27</span>
+<span id="revdate">2023-03-17</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -458,7 +458,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_how_to_install_to_an_existing_wildfly_server">3. How to install to an existing WildFly server</a>
 <ul class="sectlevel2">
 <li><a href="#_install_the_whole_feature_pack">3.1. Install the whole feature pack</a></li>
-<li><a href="#_install_part_of_the_feature_pack">3.2. Install part of the feature pack</a></li>
+<li><a href="#_install_the_layers_of_the_feature_pack">3.2. Install the layers of the feature pack</a></li>
 </ul>
 </li>
 <li><a href="#_the_vertx_subsystem_configuration">4. The vertx subsystem configuration</a>
@@ -582,7 +582,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Located at <code>dist/target/wildfly-vertx-build-{version}/</code>.</p>
+<p>Located at <code>dist/target/wildfly-vertx-dist-{version}/</code>.</p>
 </li>
 <li>
 <p>The full server contains everything including jar files.</p>
@@ -595,7 +595,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
-<p>Located at <code>galleon-feature-pack/target/wildfly-vertx-feature-pack-{version}.zip</code>.</p>
+<p>Located at <code>galleon-feature-pack/wildfly-feature-pack/target/wildfly-vertx-feature-pack-{version}.zip</code>.</p>
 </li>
 <li>
 <p>This feature pack can be installed in an existing WildFly server.</p>
@@ -606,22 +606,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <div class="paragraph">
-<p>Both produced servers have <code>4</code> standalone configurations:</p>
+<p>Both produced servers have <code>2</code> standalone configurations:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>standalone-vertx-mini.xml</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This is a minimal setup based on the <a href="https://github.com/wildfly/wildfly/blob/27.0.0.Final/ee-feature-pack/galleon-content/src/main/resources/feature_groups/standalone-minimalistic.xml">standalone-minimalistic</a> <a href="https://docs.wildfly.org/galleon/#_feature_groups">galleon feature group</a> with the Vert.x subsystem and few extra layers added.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>standalone-vertx.xml</code></p>
+<p><code>standalone.xml</code></p>
 <div class="ulist">
 <ul>
 <li>
@@ -631,24 +621,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </li>
 <li>
-<p><code>standalone-vertx-ha.xml</code></p>
+<p><code>standalone-ha.xml</code></p>
 <div class="ulist">
 <ul>
 <li>
 <p>This is the setup with the Vert.x subsystem added to the default <code>standalone-ha.xml</code> in WildFly server.</p>
-</li>
-<li>
-<p>The default Vert.x in this setup is a clustered Vert.x with default configuration.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><code>standalone-vertx-full-ha.xml</code></p>
-<div class="ulist">
-<ul>
-<li>
-<p>This is the setup with the Vert.x subsystem added to the default standalone-full-ha.xml in WildFly server.</p>
 </li>
 <li>
 <p>The default Vert.x in this setup is a clustered Vert.x with default configuration.</p>
@@ -666,7 +643,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="title">Start Server</div>
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$SERVER_HOME/bin/standalone.sh -c standalone-vertx-mini.xml</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$SERVER_HOME/bin/standalone.sh -c standalone-ha.xml</code></pre>
 </div>
 </div>
 </div>
@@ -684,18 +661,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="title">Install feature pack to existing server</div>
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 # This line installs the wildfly-vertx-feature-pack on top of local WildFly server:
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>after it completes, the <code>vertx</code> subsystem and the required bits are downloaded and installed to the existing server with an additional layer called <code>vertx</code> created in <code>&lt;SERVER_DIR&gt;/modules/system/layers/</code>.</p>
+<p>after it completes, the <code>vertx</code> subsystem and the required bits are downloaded and installed to the existing server.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_install_part_of_the_feature_pack"><a class="anchor" href="#_install_part_of_the_feature_pack"></a><a class="link" href="#_install_part_of_the_feature_pack">3.2. Install part of the feature pack</a></h3>
+<h3 id="_install_the_layers_of_the_feature_pack"><a class="anchor" href="#_install_the_layers_of_the_feature_pack"></a><a class="link" href="#_install_the_layers_of_the_feature_pack">3.2. Install the layers of the feature pack</a></h3>
 <div class="paragraph">
 <p>The feature pack has 2 <a href="https://docs.wildfly.org/galleon/#_layers">Galleon layers</a> produced:</p>
 </div>
@@ -716,14 +693,14 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 <div class="title">Install part of the feature pack to existing server</div>
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 # This line installs the vertx layer only from wildfly-vertx-feature-pack.
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>this will update the default configuration <code>standalone.xml</code> instead of producing new configurations, and it will download necessary bits.</p>
+<p>this will update the default configuration <code>standalone.xml</code> and it will download necessary bits.</p>
 </div>
 <div class="paragraph">
 <p>in case of clustered Vertx, you need layer of <code>vertx-ha</code>, and you need to specify the ha configuration to update:</p>
@@ -731,7 +708,7 @@ galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash"># This line installs a WildFly server to local_server directory:
-galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#27.0.0.Final"
+galleon.sh install --dir=local_server "wildfly-ee@maven(org.jboss.universe:community-universe):current#${version.wildfly}"
 
 # This line installs the vertx-ha layer only from wildfly-vertx-feature-pack with config to standalone-ha.xml.
 galleon.sh install --dir=local_server org.wildfly.extension.vertx:wildfly-vertx-feature-pack:1.0.0-SNAPSHOT --layers=vertx-ha --config=standalone-ha.xml</code></pre>
@@ -1395,7 +1372,7 @@ public class EchoService {
 <div id="footer">
 <div id="footer-text">
 Version {version}<br>
-Last updated 2023-02-27 07:11:40 UTC
+Last updated 2023-03-17 02:16:23 UTC
 </div>
 </div>
 </body>

@@ -43,9 +43,6 @@ public class VertxSubsystemTestCase {
         ModelNode response = executeOperation(managementClient, readVertxOperation());
         ModelNode result = response.get(RESULT);
         Assert.assertNotNull(result);
-        Assert.assertFalse(result.get("clustered").asBoolean());
-        Assert.assertFalse(result.get("forked-channel").asBoolean());
-        Assert.assertFalse(result.get("jgroups-channel").isDefined());
         Assert.assertFalse(result.get("vertx-options-file").isDefined());
     }
 

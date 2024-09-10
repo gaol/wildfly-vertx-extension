@@ -1,7 +1,0 @@
-{
-  "deployments": [
-    {
-      "verticle-class": "org.wildfly.extension.vertx.test.basic.deployment.TestVerticle"
-    }
-  ]
-}

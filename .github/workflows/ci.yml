@@ -2,17 +2,17 @@ name: CI Tests
 on:
   push:
     branches:
-      - master
+      - 1.x
   pull_request:
     branches:
-      - master
+      - 1.x
 jobs:
   Test:
     name: Run tests
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        jdk: [11, 17]
+        jdk: [17, 21]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3

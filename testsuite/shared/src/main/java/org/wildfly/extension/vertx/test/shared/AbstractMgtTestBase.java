@@ -22,12 +22,6 @@ import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.test.shared.ServerReload;
 import org.jboss.dmr.ModelNode;
 
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.COMPOSITE;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OP_ADDR;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.STEPS;
-import static org.wildfly.extension.vertx.VertxConstants.ATTR_CLUSTERED;
-import static org.wildfly.extension.vertx.VertxConstants.ATTR_JGROUPS_STACK_FILE;
 import static org.wildfly.extension.vertx.VertxConstants.ATTR_OPTION_NAME;
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.executeOperation;
 
@@ -52,26 +46,6 @@ public class AbstractMgtTestBase {
     op.get(ModelDescriptionConstants.NAME).set(ATTR_OPTION_NAME);
     executeOperation(managementClient, op);
     reload();
-  }
-
-  protected static void updateVertx(ManagementClient managementClient, boolean clustered, String jgroupsStackFile) throws Exception {
-    ModelNode address = ManagementClientUtils.vertxAddress();
-    ModelNode batch = new ModelNode();
-    batch.get(OP).set(COMPOSITE);
-    batch.get(OP_ADDR).setEmptyList();
-
-    ModelNode writeAttributeOp = ManagementClientUtils.vertxOperation(ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION);
-    writeAttributeOp.get(ModelDescriptionConstants.NAME).set(ATTR_CLUSTERED);
-    writeAttributeOp.get(ModelDescriptionConstants.VALUE).set(clustered);
-    batch.get(STEPS).add(writeAttributeOp);
-    if (jgroupsStackFile != null) {
-      writeAttributeOp = ManagementClientUtils.vertxOperation(ModelDescriptionConstants.WRITE_ATTRIBUTE_OPERATION);
-      writeAttributeOp.get(ModelDescriptionConstants.NAME).set(ATTR_JGROUPS_STACK_FILE);
-      writeAttributeOp.get(ModelDescriptionConstants.VALUE).set(jgroupsStackFile);
-      batch.get(STEPS).add(writeAttributeOp);
-    }
-    executeOperation(managementClient, batch);
-    ServerReload.executeReloadAndWaitForCompletion(managementClient);
   }
 
   protected void reload() throws Exception {

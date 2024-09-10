@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>39</version>
+        <version>43</version>
     </parent>
 
     <groupId>org.wildfly.extension.vertx</groupId>
@@ -33,57 +33,33 @@
         <!-- Require Java 11 -->
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.release>11</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- WildFly versions -->
-        <version.org.wildfly>27.0.0.Final</version.org.wildfly>
-        <version.org.wildfly.core>19.0.0.Final</version.org.wildfly.core>
+        <version.org.wildfly>33.0.1.Final</version.org.wildfly>
+        <version.org.wildfly.core>25.0.1.Final</version.org.wildfly.core>
         <version.org.wildfly.common>1.6.0.Final</version.org.wildfly.common>
-        <version.org.infinispan>14.0.3.Final</version.org.infinispan>
-        <version.vertx>4.3.4</version.vertx>
-        <version.io.netty>4.1.84.Final</version.io.netty>
-        <version.org.wildfly.arquillian>5.0.0.Alpha3</version.org.wildfly.arquillian>
+        <version.io.vertx.vertx>4.5.9</version.io.vertx.vertx>
+        <version.io.smallrye.smallrye-mutiny-vertx>3.13.0</version.io.smallrye.smallrye-mutiny-vertx>
+
+        <module.name>org.wildfly.extension.vertx</module.name>
 
         <version.junit>4.13.1</version.junit>
-        <version.testcontainer>1.16.0</version.testcontainer>
-        <version.jsch>0.1.55</version.jsch>
-        <version.jzlib>1.1.3</version.jzlib>
-        <version.typesafe>1.4.1</version.typesafe>
-        <version.curator>2.13.0</version.curator>
-        <version.zookeeper>3.4.14</version.zookeeper>
-        <version.jackson-dataformat-yaml>2.12.3</version.jackson-dataformat-yaml>
-        <version.mongo>4.1.2</version.mongo>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <module.name>org.wildfly.extension.vertx</module.name>
-        <temp.file>tempfiles</temp.file>
-
-        <jboss.home></jboss.home>
-        <org.jboss.model.test.cache.root>[pom.xml,testsuite]</org.jboss.model.test.cache.root>
-        <org.jboss.model.test.classpath.cache>target/model-test-classpath-cache</org.jboss.model.test.classpath.cache>
-
-        <!-- properties for maven-surefile-plugin -->
-        <!-- Modularized JDK support (various workarounds) - activated via profile -->
-        <modular.jdk.args></modular.jdk.args>
-        <modular.jdk.props></modular.jdk.props>
-        <!-- Surefire args -->
-        <surefire.extra.args></surefire.extra.args>
-        <surefire.jpda.args></surefire.jpda.args>
-        <surefire.system.args>${modular.jdk.args} ${modular.jdk.props} -ea -Duser.region=US -Duser.language=en -XX:MaxMetaspaceSize=512m ${surefire.jpda.args} ${surefire.extra.args}</surefire.system.args>
-        <surefire.logmanager>org.jboss.logmanager.LogManager</surefire.logmanager>
-        <!-- Arquillian dependency versions -->
-        <version.arquillian_wildfly>${project.parent.version}</version.arquillian_wildfly>
-        <thin.server.path>build/target/wildfly-vertx-build-${project.version}</thin.server.path>
-
-        <surefire.redirect.tofile>true</surefire.redirect.tofile>
-        <surefire.enable.assert>true</surefire.enable.assert>
-        <version.org.jboss.galleon>5.0.5.Final</version.org.jboss.galleon>
-        <version.org.wildfly.galleon-plugins>6.2.2.Final</version.org.wildfly.galleon-plugins>
+        <!-- Plugin dependency versions -->
+        <version.org.jboss.galleon>6.0.3.Final</version.org.jboss.galleon>
+        <version.org.wildfly.galleon-plugins>7.0.0.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.licenses.plugin>2.4.1.Final</version.org.wildfly.licenses.plugin>
+        <version.org.wildfly.plugins.wildfly-maven-plugin>5.0.0.Final</version.org.wildfly.plugins.wildfly-maven-plugin>
+        <version.org.apache.maven.plugins.maven-assembly-plugin>3.2.0</version.org.apache.maven.plugins.maven-assembly-plugin>
 
         <!-- Galleon -->
         <galleon.fork.embedded>true</galleon.fork.embedded>
         <galleon.log.time>true</galleon.log.time>
         <galleon.offline>false</galleon.offline>
         <assembly.tarLongFileMode>posix</assembly.tarLongFileMode>
+
         <server.output.dir.prefix>wildfly</server.output.dir.prefix>
         <server.output.dir.version>${project.version}</server.output.dir.version>
 
@@ -91,14 +67,6 @@
         <full.dist.product.release.name>WildFly Vertx Extension</full.dist.product.release.name>
         <full.dist.product.release.version>${project.version}</full.dist.product.release.version>
 
-        <!-- Protocol to use for communication with remote maven repositories.
-         You can set to 'http' if you are using a maven proxy and 'https'
-         interferes with that. Use 'https' for builds that will be released
-         to non-snapshot public maven repos -->
-        <maven.repository.protocol>https</maven.repository.protocol>
-        <!-- The full remote maven repo URL; can be overridden via -D for special use cases -->
-        <maven.repository.url>${maven.repository.protocol}://repository.jboss.org/nexus/content/groups/public/</maven.repository.url>
-        <maven.redhat.repository.url>${maven.repository.protocol}://maven.repository.redhat.com/ga/</maven.redhat.repository.url>
     </properties>
 
     <scm>
@@ -119,7 +87,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.wildfly</groupId>
-                <artifactId>wildfly-standard-ee-bom</artifactId>
+                <artifactId>wildfly-standard-expansion-bom</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
                 <version>${version.org.wildfly}</version>
@@ -132,85 +100,13 @@
             </dependency>
             <dependency>
                 <groupId>io.vertx</groupId>
-                <artifactId>vertx-dependencies</artifactId>
-                <type>pom</type>
-                <scope>import</scope>
-                <version>${version.vertx}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
-                <version>${version.vertx}</version>
+                <version>${version.io.vertx.vertx}</version>
             </dependency>
             <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-mqtt</artifactId>
-                <version>${version.io.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-haproxy</artifactId>
-                <version>${version.io.netty}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-multimap</artifactId>
-                <version>${version.org.infinispan}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-clustered-lock</artifactId>
-                <version>${version.org.infinispan}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-clustered-counter</artifactId>
-                <version>${version.org.infinispan}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jcraft</groupId>
-                <artifactId>jsch</artifactId>
-                <version>${version.jsch}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.jcraft</groupId>
-                <artifactId>jzlib</artifactId>
-                <version>${version.jzlib}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.typesafe</groupId>
-                <artifactId>config</artifactId>
-                <version>${version.typesafe}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.curator</groupId>
-                <artifactId>curator-framework</artifactId>
-                <version>${version.curator}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${version.zookeeper}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${version.jackson-dataformat-yaml}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-reactivestreams</artifactId>
-                <version>${version.mongo}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongodb-driver-core</artifactId>
-                <version>${version.mongo}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>bson</artifactId>
-                <version>${version.mongo}</version>
+                <groupId>io.smallrye.reactive</groupId>
+                <artifactId>smallrye-mutiny-vertx-core</artifactId>
+                <version>${version.io.smallrye.smallrye-mutiny-vertx}</version>
             </dependency>
 
             <!-- Project own artifacts dependencies -->
@@ -261,12 +157,6 @@
                 <scope>test</scope>
                 <version>${version.junit}</version>
             </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${version.testcontainer}</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -274,9 +164,82 @@
         <module>subsystem</module>
         <module>galleon-feature-pack</module>
         <module>build</module>
-        <module>dist</module>
         <module>testsuite</module>
     </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>wildfly-assembly-plugin</artifactId>
+                    <version>${version.org.apache.maven.plugins.maven-assembly-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${version.surefire.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.maven.plugins</groupId>
+                    <artifactId>licenses-plugin</artifactId>
+                    <version>${version.org.wildfly.licenses.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.galleon-plugins</groupId>
+                    <artifactId>wildfly-galleon-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.galleon-plugins}</version>
+                    <dependencies>
+                        <!-- feature-spec-gen uses wildfly-embedded to generate the feature specs, hence the designated wildfly-embedded version must match the pack one -->
+                        <dependency>
+                            <groupId>org.wildfly.core</groupId>
+                            <artifactId>wildfly-embedded</artifactId>
+                            <version>${version.org.wildfly.core}</version>
+                        </dependency>
+                        <!-- If you add a dependency on wildfly-embedded you need to bring your own transitives -->
+                        <dependency>
+                            <groupId>org.wildfly.common</groupId>
+                            <artifactId>wildfly-common</artifactId>
+                            <version>${version.org.wildfly.common}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.jboss.galleon</groupId>
+                    <artifactId>galleon-maven-plugin</artifactId>
+                    <version>${version.org.jboss.galleon}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.org.wildfly.plugins.wildfly-maven-plugin}</version>
+                    <dependencies>
+                        <!-- Control the Galleon dependencies directly -->
+                        <dependency>
+                            <groupId>org.jboss.galleon</groupId>
+                            <artifactId>galleon-api</artifactId>
+                            <version>${version.org.jboss.galleon}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jboss.galleon</groupId>
+                            <artifactId>galleon-core</artifactId>
+                            <version>${version.org.jboss.galleon}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jboss.galleon</groupId>
+                            <artifactId>galleon-maven-plugin</artifactId>
+                            <version>${version.org.jboss.galleon}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.jboss.galleon</groupId>
+                            <artifactId>galleon-maven-universe</artifactId>
+                            <version>${version.org.jboss.galleon}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <repositories>
         <repository>
@@ -290,31 +253,8 @@
             </snapshots>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Repository Group</name>
-            <url>${maven.repository.url}</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
             <layout>default</layout>
-        </repository>
-        <repository>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-            <id>jboss-enterprise-maven-repository</id>
-            <name>JBoss Enterprise Maven Repository</name>
-            <url>${maven.redhat.repository.url}</url>
-            <layout>default</layout>
-        </repository>
-        <!-- Remove below repo after opensaml 4.2.0 is accessible from maven central repo-->
-        <repository>
-            <id>opensaml-repo</id>
-            <name>opensaml</name>
-            <url>https://build.shibboleth.net/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
         </repository>
     </repositories>
 
@@ -328,94 +268,7 @@
             </snapshots>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Repository Group</name>
-            <url>${maven.repository.url}</url>
-        </pluginRepository>
-        <pluginRepository>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>jboss-enterprise-maven-repository</id>
-            <name>JBoss Enterprise Maven Repository</name>
-            <url>${maven.redhat.repository.url}</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jboss.galleon</groupId>
-                    <artifactId>galleon-maven-plugin</artifactId>
-                    <version>${version.org.jboss.galleon}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.wildfly.galleon-plugins</groupId>
-                    <artifactId>wildfly-galleon-maven-plugin</artifactId>
-                    <version>${version.org.wildfly.galleon-plugins}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.wildfly.core</groupId>
-                            <artifactId>wildfly-embedded</artifactId>
-                            <version>${version.org.wildfly.core}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.wildfly.common</groupId>
-                            <artifactId>wildfly-common</artifactId>
-                            <version>${version.org.wildfly.common}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>jdk9</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <modular.jdk.args>--add-exports=java.base/sun.nio.ch=ALL-UNNAMED
-                    --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED
-                    --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED
-                    --add-modules=java.se</modular.jdk.args>
-            </properties>
-        </profile>
-        <profile>
-            <id>jpda</id>
-            <activation>
-                <property>
-                    <name>jpda</name>
-                </property>
-            </activation>
-            <properties>
-                <surefire.jpda.args>-agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=y</surefire.jpda.args>
-            </properties>
-        </profile>
-        <profile>
-            <id>release</id>
-            <activation>
-                <property>
-                    <name>release</name>
-                </property>
-            </activation>
-            <modules>
-                <module>examples</module>
-                <module>docs</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

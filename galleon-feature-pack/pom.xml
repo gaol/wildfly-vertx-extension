@@ -94,6 +94,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>galleon-local</module>
         <module>galleon-content</module>
         <module>wildfly-feature-pack</module>
     </modules>

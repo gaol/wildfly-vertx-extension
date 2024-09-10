@@ -16,6 +16,15 @@
  */
 package org.wildfly.extension.vertx.test.shared;
 
+import io.vertx.core.VertxOptions;
+import io.vertx.core.json.JsonObject;
+import org.jboss.as.arquillian.container.ManagementClient;
+import org.jboss.as.controller.client.helpers.ClientConstants;
+import org.jboss.dmr.ModelNode;
+import org.wildfly.extension.vertx.VertxConstants;
+
+import java.io.IOException;
+
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.CORE_SERVICE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.INCLUDE_RUNTIME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
@@ -25,17 +34,6 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REA
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RELOAD_REQUIRED;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SUBSYSTEM;
-
-import java.io.IOException;
-
-import org.jboss.as.arquillian.container.ManagementClient;
-import org.jboss.as.controller.client.helpers.ClientConstants;
-import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
-import org.jboss.dmr.ModelNode;
-import org.wildfly.extension.vertx.VertxConstants;
-
-import io.vertx.core.VertxOptions;
-import io.vertx.core.json.JsonObject;
 
 /**
  * Utilities for ManagementClient.
@@ -83,63 +81,8 @@ public final class ManagementClientUtils {
         return operation;
     }
 
-    public static ModelNode eventBusOperation(String eventBusName, String operationName) {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
-          .add(VertxConstants.ELEMENT_VERTX_EVENTBUS, eventBusName);
-        address.protect();
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(operationName);
-        operation.get(OP_ADDR).set(address);
-        return operation;
-    }
-
-    public static ModelNode keyStoreOptionBase(String keyStoreOptionName, String operationName) {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
-          .add(VertxConstants.ELEMENT_KEY_STORE, keyStoreOptionName);
-        address.protect();
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(operationName);
-        operation.get(OP_ADDR).set(address);
-        return operation;
-    }
-
     public static ModelNode vertxOptionOperation(String optionName, String operationName) {
         final ModelNode address = vertxOptionAddress(optionName);
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(operationName);
-        operation.get(OP_ADDR).set(address);
-        return operation;
-    }
-
-    public static ModelNode pemKeyCertOptionBase(String pemKeyCertOptionName, String operationName) {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
-          .add(VertxConstants.ELEMENT_PEM_KEY_CERT, pemKeyCertOptionName);
-        address.protect();
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(operationName);
-        operation.get(OP_ADDR).set(address);
-        return operation;
-    }
-
-    public static ModelNode pemTrustOptionBase(String pemTrustOptionName, String operationName) {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
-          .add(VertxConstants.ELEMENT_PEM_TRUST, pemTrustOptionName);
-        address.protect();
-        final ModelNode operation = new ModelNode();
-        operation.get(OP).set(operationName);
-        operation.get(OP_ADDR).set(address);
-        return operation;
-    }
-
-    public static ModelNode clusterNodeMetaOptionBase(String clusterNodeMeta, String operationName) {
-        ModelNode address = new ModelNode();
-        address.add(SUBSYSTEM, VertxConstants.ELEMENT_VERTX)
-          .add(VertxConstants.ELEMENT_CLUSTER_NODE_METADATA, clusterNodeMeta);
-        address.protect();
         final ModelNode operation = new ModelNode();
         operation.get(OP).set(operationName);
         operation.get(OP_ADDR).set(address);
@@ -149,12 +92,6 @@ public final class ManagementClientUtils {
     public static VertxOptions readVertxOptions(final ManagementClient managementClient, String optionName) throws IOException {
         ModelNode result = executeOperation(managementClient, vertxOptionOperation(optionName, "show-info")).get(RESULT);
         JsonObject json = new JsonObject(result.toJSONString(true));
-        if (json.containsKey("eventBusOptions")) {
-            JsonObject eventBusOption = json.getJsonObject("eventBusOptions");
-            if (eventBusOption.containsKey("clusterPublicPort") && eventBusOption.getInteger("clusterPublicPort") == -1) {
-                eventBusOption.put("clusterPublicPort", 0);
-            }
-        }
         return new VertxOptions(json);
     }
 

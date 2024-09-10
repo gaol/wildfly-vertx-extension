@@ -55,7 +55,6 @@
                 <groupId>org.jboss.galleon</groupId>
                 <artifactId>galleon-maven-plugin</artifactId>
                 <executions>
-                    <!-- Provision a server with relevant layers for test -->
                     <execution>
                         <id>server-provisioning</id>
                         <goals>
@@ -71,22 +70,32 @@
                                 <jboss-maven-dist/>
                                 <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
                                 <optional-packages>passive+</optional-packages>
+                                <ignore-not-excluded-layers>true</ignore-not-excluded-layers>
                             </plugin-options>
                             <feature-packs>
                                 <feature-pack>
                                     <transitive>true</transitive>
                                     <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-ee-galleon-pack</artifactId>
+                                    <version>${version.org.wildfly}</version>
+                                    <included-packages>
+                                        <name>docs.examples.configs</name>
+                                        <name>modules.all</name>
+                                    </included-packages>
+                                </feature-pack>
+                                <feature-pack>
+                                    <groupId>org.wildfly</groupId>
                                     <artifactId>wildfly-galleon-pack</artifactId>
                                     <version>${version.org.wildfly}</version>
-                                    <inherit-packages>false</inherit-packages>
-                                    <inherit-configs>false</inherit-configs>
+                                    <included-packages>
+                                        <name>docs.examples.configs</name>
+                                        <name>modules.all</name>
+                                    </included-packages>
                                 </feature-pack>
                                 <feature-pack>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>wildfly-vertx-feature-pack</artifactId>
                                     <version>${project.version}</version>
-                                    <inherit-packages>false</inherit-packages>
-                                    <inherit-configs>false</inherit-configs>
                                 </feature-pack>
                             </feature-packs>
                             <configurations>
@@ -94,18 +103,38 @@
                                     <model>standalone</model>
                                     <name>standalone.xml</name>
                                     <layers>
-                                        <!--
-                                            Layers needed to have a base server that makes sense,
-                                            which are not required by this FP's layers
-                                        -->
                                         <layer>jaxrs-server</layer>
                                         <layer>jmx-remoting</layer>
                                         <layer>ejb-lite</layer>
-                                        <!-- Layers from this FP -->
                                         <layer>vertx</layer>
                                     </layers>
                                 </config>
                             </configurations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <configuration>
+                    <overwrite-provisioned-server>true</overwrite-provisioned-server>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>vertx-subsystem-init</id>
+                        <goals>
+                            <goal>execute-commands</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <offline>true</offline>
+                            <jboss-home>${project.build.directory}/wildfly</jboss-home>
+                            <commands>
+                                <command>embed-server --stability=preview</command>
+                                <command>/subsystem=vertx/vertx=vertx:add</command>
+                                <command>stop-embedded-server</command>
+                            </commands>
                         </configuration>
                     </execution>
                 </executions>
@@ -124,26 +153,6 @@
                             <systemPropertyVariables combine.children="append">
                                 <jboss.install.dir>${jboss.dist}</jboss.install.dir>
                                 <server.jvm.args>${server.jvm.args}</server.jvm.args>
-                            </systemPropertyVariables>
-                            <excludes>
-                                <exclude>org/wildfly/extension/vertx/test/basic/multiresolving/**/*TestCase.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>multi-resolving-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>org/wildfly/extension/vertx/test/basic/multiresolving/**/*TestCase.java</include>
-                                <include>org/wildfly/extension/vertx/test/basic/deployment/multiple/**/*TestCase.java</include>
-                            </includes>
-                            <systemPropertyVariables>
-                                <jboss.install.dir>${jboss.dist}</jboss.install.dir>
-                                <server.jvm.args>${server.jvm.args} -Dvertx.classloading.multiple=true</server.jvm.args>
                             </systemPropertyVariables>
                         </configuration>
                     </execution>

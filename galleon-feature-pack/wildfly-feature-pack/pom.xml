@@ -26,12 +26,14 @@
 
     <name>WildFly Vertx Extension - Distributions :: Galleon Feature Pack</name>
     <description>The feature pack of the Vertx extension.</description>
-
     <packaging>pom</packaging>
 
     <properties>
+        <galleon.local.resources.directory>${project.basedir}/../galleon-local/src/main/resources</galleon.local.resources.directory>
         <galleon.content.resources.directory>${basedir}/../galleon-content/target/resources</galleon.content.resources.directory>
+        <license.directory>${project.build.directory}/resources/content/docs/licenses</license.directory>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.wildfly</groupId>
@@ -47,12 +49,16 @@
             <groupId>org.wildfly.galleon-plugins</groupId>
             <artifactId>wildfly-galleon-plugins</artifactId>
         </dependency>
-
-        <!-- project modules -->
+        <dependency>
+            <groupId>org.wildfly.galleon-plugins</groupId>
+            <artifactId>wildfly-config-gen</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>wildfly-vertx-feature-pack-content</artifactId>
             <type>pom</type>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -60,25 +66,11 @@
     <build>
         <plugins>
             <plugin>
-                <!-- Feature pack generation is vulnerable to leftover files in the target
-                     folder from previous builds, so always clean even if the clean lifecycle is not invoked -->
-                <artifactId>maven-clean-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>auto-clean</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-feature-pack-resources</id>
+                        <id>copy-galleon-shared-resources</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -88,6 +80,21 @@
                             <resources>
                                 <resource>
                                     <directory>${galleon.content.resources.directory}</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-galleon-local-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${galleon.local.resources.directory}</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -116,6 +123,30 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.wildfly.maven.plugins</groupId>
+                <artifactId>licenses-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>update-licenses-xml</id>
+                        <goals>
+                            <goal>insert-versions</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <generateVersionProperty>true</generateVersionProperty>
+                            <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
+                            <licensesConfigFiles>
+                                <licensesConfigFile>${galleon.content.resources.directory}/wildfly-vertx-extension-license/licenses.xml</licensesConfigFile>
+                            </licensesConfigFiles>
+                            <licensesOutputFile>${license.directory}/wildfly-vertx-extension-feature-pack-licenses.xml</licensesOutputFile>
+                            <excludedGroups>org.wildfly.galleon-plugins</excludedGroups>
+                            <excludedArtifacts>wildfly-vertx-feature-pack-contentpack\z</excludedArtifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.wildfly.galleon-plugins</groupId>
                 <artifactId>wildfly-galleon-maven-plugin</artifactId>
                 <executions>
@@ -124,10 +155,15 @@
                         <goals>
                             <goal>build-feature-pack</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <resources-dir>${basedir}/target/resources</resources-dir>
                             <config-file>wildfly-feature-pack-build.xml</config-file>
+                            <fork-embedded>${galleon.fork.embedded}</fork-embedded>
+                            <generate-channel-manifest>true</generate-channel-manifest>
+                            <minimum-stability-level>preview</minimum-stability-level>
+                            <config-stability-level>preview</config-stability-level>
+                            <package-stability-level>preview</package-stability-level>
                         </configuration>
                     </execution>
                 </executions>

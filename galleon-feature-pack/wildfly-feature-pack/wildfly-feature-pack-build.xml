@@ -13,27 +13,37 @@
   -->
 
 <build xmlns="urn:wildfly:feature-pack-build:3.1" producer="org.wildfly.extension.vertx:wildfly-vertx-feature-pack">
-    <transitive>
+    <dependencies>
         <dependency group-id="org.wildfly" artifact-id="wildfly-ee-galleon-pack">
             <name>org.wildfly:wildfly-ee-galleon-pack</name>
             <packages inherit="false">
                 <exclude name="product.conf"/>
+                <exclude name="docs.licenses.merge"/>
             </packages>
-            <default-configs inherit="false"/>
+            <default-configs inherit="true"/>
         </dependency>
-    </transitive>
-    <dependencies>
         <dependency group-id="org.wildfly" artifact-id="wildfly-galleon-pack">
             <name>org.wildfly:wildfly-galleon-pack</name>
-            <packages inherit="false" />
-            <default-configs inherit="false"/>
+            <packages inherit="false">
+                <exclude name="docs.licenses.merge"/>
+                <include name="docs"/>
+            </packages>
+            <default-configs inherit="true"/>
         </dependency>
     </dependencies>
 
     <default-packages>
-        <package name="org.wildfly.extension.vertx"/>
-        <package name="default-vertx-options.json"/>
+        <package name="modules.all"/>
+        <package name="docs.licenses.merge"/>
+        <package name="docs" />
     </default-packages>
+    <package-schemas>
+        <group name="org.wildfly"/>
+    </package-schemas>
+
+    <plugins>
+        <plugin artifact="org.wildfly.galleon-plugins:wildfly-galleon-plugins"/>
+    </plugins>
 
     <generate-feature-specs>
         <extensions>

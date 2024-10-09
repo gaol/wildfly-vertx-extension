@@ -114,7 +114,7 @@ public class StreamUtils {
         try (StringReader sr = new StringReader(data)) {
             props.load(sr);
         } catch (IOException ioe) {
-            ;// ignore
+            // ignore
         }
         return props;
     }

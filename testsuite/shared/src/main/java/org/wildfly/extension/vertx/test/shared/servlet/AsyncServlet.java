@@ -56,7 +56,7 @@ public class AsyncServlet extends HttpServlet {
                 consumer.unregister().toCompletionStage().toCompletableFuture().get();
                 consumer = null;
             } catch (Exception e) {
-                ; //ignore
+                //ignore
             }
         }
     }

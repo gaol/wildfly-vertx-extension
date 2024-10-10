@@ -35,6 +35,7 @@
         <module name="org.jboss.as.weld.common"/>
         <module name="org.jboss.jandex"/>
         <module name="io.vertx.core" />
+        <module name="io.smallrye.common.annotation" />
         <module name="io.smallrye.reactive.mutiny.vertx-core" />
     </dependencies>
 </module>

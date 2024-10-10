@@ -42,6 +42,7 @@
         <version.org.wildfly.common>1.6.0.Final</version.org.wildfly.common>
         <version.io.vertx.vertx>4.5.9</version.io.vertx.vertx>
         <version.io.smallrye.smallrye-mutiny-vertx>3.13.0</version.io.smallrye.smallrye-mutiny-vertx>
+        <version.io.smallrye.smallrye-common>2.5.0</version.io.smallrye.smallrye-common>
 
         <module.name>org.wildfly.extension.vertx</module.name>
 
@@ -102,6 +103,11 @@
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
                 <version>${version.io.vertx.vertx}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-annotation</artifactId>
+                <version>${version.io.smallrye.smallrye-common}</version>
             </dependency>
             <dependency>
                 <groupId>io.smallrye.reactive</groupId>

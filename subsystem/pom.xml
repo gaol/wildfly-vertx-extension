@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wildfly.extension.vertx</groupId>
+        <groupId>org.wildfly.extras.vertx</groupId>
         <artifactId>wildfly-vertx-extension-pom</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>

@@ -9,7 +9,7 @@
     </properties>
 
     <resources>
-        <artifact name="${org.wildfly.extension.vertx:wildfly-vertx-extension}"/>
+        <artifact name="${org.wildfly.extras.vertx:wildfly-vertx-extension}"/>
     </resources>
 
     <dependencies>

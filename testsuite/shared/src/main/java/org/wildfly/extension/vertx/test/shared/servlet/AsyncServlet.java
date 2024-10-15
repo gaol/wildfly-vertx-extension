@@ -4,9 +4,11 @@
  */
 package org.wildfly.extension.vertx.test.shared.servlet;
 
+import io.smallrye.common.annotation.Identifier;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.MessageConsumer;
 
+import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
@@ -17,6 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static org.wildfly.extension.vertx.VertxConstants.CDI_QUALIFIER;
+
 /**
  * AsyncServlet which requests a response from `echo` Vert.x EventBus address.
  *
@@ -25,6 +29,8 @@ import java.io.PrintWriter;
 @WebServlet(value = "/async", asyncSupported = true)
 public class AsyncServlet extends HttpServlet {
 
+    @Any
+    @Identifier(CDI_QUALIFIER)
     @Inject
     private Vertx vertx;
 

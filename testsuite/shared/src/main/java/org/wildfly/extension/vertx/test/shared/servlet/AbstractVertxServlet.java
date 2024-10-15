@@ -6,13 +6,17 @@ package org.wildfly.extension.vertx.test.shared.servlet;
 
 import java.io.IOException;
 
+import io.smallrye.common.annotation.Identifier;
 import io.vertx.core.Vertx;
+import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import static org.wildfly.extension.vertx.VertxConstants.CDI_QUALIFIER;
 
 /**
  * An abstract servlet class which communicates with a Vert.x eventbus address.
@@ -21,6 +25,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class AbstractVertxServlet<S, R> extends HttpServlet {
 
+  @Any
+  @Identifier(CDI_QUALIFIER)
   @Inject
   private Vertx vertx;
 

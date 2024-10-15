@@ -29,7 +29,7 @@ import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.read
 import static org.wildfly.extension.vertx.test.shared.ManagementClientUtils.vertxOptionOperation;
 
 /**
- * Test vertx eventbus message in async ejb on basic set up.
+ * Test vertx subsystem management operations.
  *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
